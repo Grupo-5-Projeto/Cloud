@@ -1,0 +1,145 @@
+id_endereco,cep,rua,bairro,numero,cidade,estado,latitude,longitude,entidade_referenciada
+1,08472-170,"Rua Igarapé da Diana","Cidade Tiradentes",125,"São Paulo",SP,-23.571499774265742,-46.40351160313361,P
+2,03978-400,"Rua das Águias Reais","Conjunto Residencial Sítio Oratório",120,"São Paulo",SP,-23.62275801272042,-46.50733680498756,P
+3,05639-100,"Rua Paulo Sérgio de Macedo","Jardim Lar São Paulo",71,"São Paulo",SP,-23.60957798626678,-46.742377147314905,P
+4,08090-510,"Rua Araguaia Paraense","Jardim Helena",214,"São Paulo",SP,-23.479767128578285,-46.42175520313586,P
+5,08311-200,"Rua Miguel Miranda","Parque São Rafael",137,"São Paulo",SP,-23.631634270971738,-46.46738517615096,P
+6,05711-900,"Rua Doutor Luiz Magliano","Portal do Morumbi",641,"São Paulo",SP,-23.61087639579339,-46.74421871662315,P
+7,04288-100,"Rua Doutor Ascanio Cerqueira","Vila Brasilio Machado",65,"São Paulo",SP,-23.609959425232223,-46.61285914360466,P
+8,04475-490,"Rua Doutor Carlos de Rezende Enout","Parque Dorotéia",202,"São Paulo",SP,-23.7025774980033,-46.63889398963969,P
+9,08031-210,"Rua Luís Antônio Pereira","Vila Nova Curuçá",49,"São Paulo",SP,-23.718160665570192,-46.59712017614864,P
+10,05662-060,"Rua Leandro Teixeira",Paraisópolis,8,"São Paulo",SP,-23.610561664646045,-46.72318233011395,P
+11,08320-451,"Rua Cipriano Funtan","Parque São Rafael",415,"São Paulo",SP,-23.620837930426816,-46.4723370049875,P
+12,05685-901,"Rua Barão de Santa Eulália","Real Parque",150,"São Paulo",SP,-23.606516296578796,-46.70648364360488,P
+13,05735-030,"Rua Carlos Magalhães","Vila Andrade",100,"São Paulo",SP,-23.629627925586618,-46.74960100040423,P
+14,08071-050,"Rua Papiro do Egito","Jardim São Roberto",45,"São Paulo",SP,-23.491568905474583,-46.457073918481335,P
+15,02312-020,"Rua Ibimirim",Tucuruvi,442,"São Paulo",SP,-23.466564273779113,-46.598419018482055,P
+16,05352-050,"Rua Dr. Teodoro Quartim Barbosa","Vila São Francisco",119,"São Paulo",SP,-23.553549379265764,-46.75761271662477,P
+17,04366-901,"Avenida Cupecê","Cidade Ademar",6062,"São Paulo",SP,-23.683486645377656,-46.63449765048258,P
+18,04321-002,"Rua dos Buritis",Mirandópolis,890,"São Paulo",SP,-23.651427360191292,-46.64704370498681,P
+19,08490-740,"Rua Flor da Noite","Jardim São Pedro",51,"São Paulo",SP,-23.58013051693936,-46.418333631969716,P
+20,05181-030,"Rua Dr. Rafael de Araújo Ribeiro",Jaraguá,873,"São Paulo",SP,-23.45118077077926,-46.74281693011778,P
+21,05786-120,"Rua Jacaratinga","Jardim Umarizal",119,"São Paulo",SP,-23.63156324177025,-46.770180876150825,P
+22,08485-432,"Avenida Brasil","Conjunto Habitacional Santa Etelvina III",45,"São Paulo",SP,-23.52255566692355,-46.830105705513446,P
+23,04880-610,"Rua Dois","Residencial Vilela",150,"São Paulo",SP,-23.453853130430986,-46.58872650313634,P
+24,08020-310,"Rua Cassiodoro","Vila Sinhá",228,"São Paulo",SP,-23.501862773879953,-46.44083451848098,P
+25,08130-120,"Rua Desembargador Thrasybulo Pinheiro de Albuquerque","Cidade Kemel",785,"São Paulo",SP,-23.5089126528356,-46.37076199613398,P
+26,08030-810,"Rua Amarelinhas","Vila Curuçá",229,"São Paulo",SP,-23.50846356525098,-46.42125561662582,P
+27,08131-215,"Rua Pedro Gil","Itaim Paulista",15,"São Paulo",SP,-23.50438764444364,-46.376927604990485,P
+28,08032-150,"Rua Emílio Pantoja","Jardim Santo Antônio",113,"São Paulo",SP,-23.51428689639223,-46.42825414546211,P
+29,08140-030,"Travessa Megilo de Agrigento","Jardim Luciana",1051,"São Paulo",SP,-23.499984460252456,-46.40000973382685,P
+30,02736-110,"R. Dr. Francisco Laraya","Freguesia do Ó",20,"São Paulo",SP,-23.489573382451223,-46.688539776679434,U
+31,08295-005,"Av. Miguel Ignácio Curi","Vila Carmosina",41,"São Paulo",SP,-23.54352522620211,-46.46377732470953,U
+32,05846-420,"R. Thereza Mouco de Oliveira","Vila Maracana",121,"São Paulo",SP,-23.649135705937717,-46.749285387785804,U
+33,03403-002,"Av. Conselheiro Carrão","Vila Carrão",2893,"São Paulo",SP,-23.549836720462324,-46.53388806080707,U
+34,08472-610,"R. Cachoeira Camaleão","Conj. Hab. Inacio Monteiro",599,"São Paulo",SP,-23.57173780731084,-46.40321344360557,U
+35,02995-145,"Estr. das Taipas","Parque Nações Unidas",1650,"São Paulo",SP,-23.4415835921965,-46.7336772031367,U
+36,04845-000,"R. Antônio Felipe Filho","Jardim Somara",180,"São Paulo",SP,-23.748674651976952,-46.690298553381695,U
+37,08140-270,"R. Ilha do Arvoredo","Vila Morgadouro",251,"São Paulo",SP,-23.50811451136299,-46.39554027429856,U
+38,03807-370,"R. Miguel Novais","Vila Paranagua",113,"São Paulo",SP,-23.499019410172885,-46.4734811264065,U
+39,04174-040,"R. Júlio Felipe Guedes",Sacomâ,200,"São Paulo",SP,-23.633257472676398,-46.60763470550903,U
+40,04330-060,"R. Cruz das Almas","Vila Campestre",290,"São Paulo",SP,-23.652651145439606,-46.646336894669915,U
+41,02278-040,"R. Ester Elisa","Vila Nilo",200,"São Paulo",SP,-23.45920739639394,-46.58023287615497,U
+42,04937-000,"Estrada Guavirituba","Vila Santa Lúcia",49,"São Paulo",SP,-23.68564272750281,-46.76846860127565,U
+43,02873-250,"R. Rômulo Naldi","Conj. Promorar Estrada da Parada",1,"São Paulo",SP,-23.455947947971506,-46.68542691106174,U
+44,08090-370,"R. Kumaki Aoki","Jardim Helena",1022,"São Paulo",SP,-23.479347849463796,-46.41971307429958,U
+45,04837-150,"Rua São Roque do Paraguaçu","Vila Quintana",190,"São Paulo",SP,-23.743919168480776,-46.70525140312929,U
+46,02671-100,"R. Afonso Lopes Vieira","Vila Dionisia",35,"São Paulo",SP,-23.467089647011925,-46.667496170991804,U
+47,08431-640,"R. Serra da Queimada","Parque Guaianazes",800,"São Paulo",SP,-23.52736495090477,-46.41124703011615,U
+48,02675-031,"Av. Queiroz Filho","Vila Hamburguesa",313,"São Paulo",SP,-23.537063127587963,-46.72274535236222,U
+49,03163-030,"Rua Dr. Fomm",Belenzinho,261,"São Paulo",SP,-23.546233339358903,-46.594781801279225,U
+50,04883-025,"Estr. Ecoturística de Parelheiros","Jardim Casa Grande",5252,"São Paulo",SP,-23.81569586497946,-46.73535506080041,U
+51,04474-000,"R. dos Aniquis","Jardim Santa Terezinha (Zona Sul)",3,"São Paulo",SP,-23.69705377034639,-46.648435389639914,U
+52,04459-000,"R. Antônio do Campo","Jardim Campo Grande",40,"São Paulo",SP,-23.69489149129381,-46.67641787429412,U
+53,05202-140,"R. Estevan Ribeiro Resende",Perus,400,"São Paulo",SP,-23.40039334288541,-46.74677025052984,U
+54,02945-000,"Av. Menotti Laudisio","Jardim Cidade Pirituba",100,"São Paulo",SP,-23.48452649654462,-46.727524747318064,U
+55,05376-000,"R. José Vicente da Cruz","Vila Antonio",90,"São Paulo",SP,-23.57647255888145,-46.764966979337096,U
+56,04743-050,"R. Promotor Gabriel Nettuzzi Perez","Santo Amaro",41,"São Paulo",SP,-23.651403732996098,-46.70480936817678,U
+57,03064-000,"Av. Celso Garcia",Tatuapé,4974,"São Paulo",SP,-23.533241075923637,-46.56464030551301,U
+58,08020-000,"Av. Pires do Rio","Vila Americana",294,"São Paulo",SP,-23.49879291932364,-46.443183451539134,U
+59,04962-000,"Av. dos Funcionários Públicos","Vila do Sol",379,"São Paulo",SP,-23.734286793398386,-46.781529274821594,U
+60,01504-000,"R. Vergueiro",Liberdade,613,"São Paulo",SP,-23.567303431966824,-46.63959460551172,U
+61,02168-050,"Praça Eng. Hugo Brandi","Vila Maria",15,"São Paulo",SP,-23.514807426537345,-46.577102443057434,U
+62,04037-002,"R. Dr. Diogo de Faria","Vila Clementino",609,"São Paulo",SP,-23.595696692465722,-46.64294613619371,U
+63,04377-036,"R. Cidade de Bagdá","Vila Santa Catarina",529,"São Paulo",SP,-23.656628497233307,-46.653536503660234,U
+64,63675-346,"Vereda de Dias","Conjunto Taquaril",231,"São Paulo",SP,85.067274,23.726089,P
+65,94467-784,"Largo Melo",Floramar,83,"São Paulo",SP,-68.4929765,-153.551717,P
+66,67168-738,"Rua de Araújo","Vila Califórnia",369,"São Paulo",SP,42.297488,52.115974,P
+67,23566-129,"Aeroporto Laís Rodrigues","Ernesto Nascimento",16,"São Paulo",SP,-43.5718335,113.593218,P
+68,72219-539,"Campo Paulo Pimenta","Mariano De Abreu",25,"São Paulo",SP,25.8046425,-70.70874,P
+69,99789-074,"Loteamento Catarina Rocha","Vila Santa Monica 1ª Seção",82,"São Paulo",SP,8.1186105,126.839171,P
+70,37498-958,"Via das Neves","Morro Dos Macacos",79,"São Paulo",SP,69.051241,174.330457,P
+71,60348-010,"Chácara Novais","Nova Pampulha",62,"São Paulo",SP,-45.3510435,-128.669859,P
+72,63898-323,"Colônia Fernandes","Conjunto Capitão Eduardo",298,"São Paulo",SP,13.431525,112.638941,P
+73,53152-957,"Rodovia de da Cunha",Penha,8,"São Paulo",SP,-2.1089095,102.37318,P
+74,35659-784,"Morro de Sales","Lagoinha Leblon",393,"São Paulo",SP,-39.961392,-111.052438,P
+75,38978-961,"Fazenda de Vasconcelos","Conjunto Capitão Eduardo",57,"São Paulo",SP,83.246748,-18.227407,P
+76,29420-080,"Pátio Rios","Santo Antônio",27,"São Paulo",SP,43.792116,124.931605,P
+77,93592-653,"Lago Breno Monteiro","Santa Margarida",80,"São Paulo",SP,-0.8573645,-82.899829,P
+78,84173-944,"Colônia de Freitas","Pindura Saia",344,"São Paulo",SP,-64.244527,-17.458643,P
+79,27886-991,"Lagoa Bárbara Gomes","Jardim América",77,"São Paulo",SP,-48.6566315,-117.680213,P
+80,62100-751,"Viaduto Montenegro","Vila Sumaré",93,"São Paulo",SP,44.9424625,168.548632,P
+81,42129-907,"Estação de Oliveira","Novo Tupi",135,"São Paulo",SP,31.7062655,120.219556,P
+82,21837-640,"Vereda Peixoto","Vila Real 2ª Seção",15,"São Paulo",SP,-71.791177,-176.998652,P
+83,83857-712,"Aeroporto de Moraes","Conjunto Providencia",2,"São Paulo",SP,-14.669661,-107.72224,P
+84,46148-679,"Viaduto Moura","São Gabriel",23,"São Paulo",SP,76.3870705,23.198557,P
+85,48561-207,"Recanto Ferreira","Vila Das Oliveiras",41,"São Paulo",SP,13.420791,-60.092418,P
+86,80876-332,"Avenida Isis Montenegro",Lindéia,43,"São Paulo",SP,-70.882566,38.627465,P
+87,03291-085,"Alameda Azevedo","São Francisco Das Chagas",96,"São Paulo",SP,-83.1604465,-10.067337,P
+88,25720-934,"Esplanada Campos","Marieta 3ª Seção",30,"São Paulo",SP,-89.716606,26.654099,P
+89,47010-879,"Passarela Porto","Nossa Senhora Do Rosário",70,"São Paulo",SP,-5.335652,142.560932,P
+90,70866-403,"Praça Milena Oliveira",Itatiaia,8,"São Paulo",SP,-83.355026,-111.598558,P
+91,02388-354,"Esplanada Anna Liz Novais","Vila Pilar",34,"São Paulo",SP,37.6880865,-146.78691,P
+92,99430-945,"Loteamento Garcia",Flamengo,69,"São Paulo",SP,-83.436996,-26.806987,P
+93,52725-609,"Passarela Bernardo Freitas",Horto,71,"São Paulo",SP,-72.046058,146.835243,P
+94,50616-209,"Fazenda Farias","Minas Caixa",17,"São Paulo",SP,-16.9197945,131.54028,P
+95,60272-353,"Conjunto Almeida","Vila Coqueiral",29,"São Paulo",SP,46.746716,-179.31091,P
+96,20868-853,"Avenida de Campos","Jardim Atlântico",3,"São Paulo",SP,-78.2231835,-173.279412,P
+97,58176-829,"Conjunto de Sales",Barroca,647,"São Paulo",SP,22.451235,-30.781549,P
+98,51766-598,"Distrito de Câmara",Floramar,67,"São Paulo",SP,56.1336,37.408692,P
+99,52655-319,"Fazenda Duarte",Urca,73,"São Paulo",SP,54.3376225,-21.651534,P
+100,74647-855,"Avenida de Viana","Antonio Ribeiro De Abreu 1ª Seção",13,"São Paulo",SP,-49.855949,33.621376,P
+101,77969-117,"Núcleo Novais","Vila Do Pombal",27,"São Paulo",SP,-42.779558,66.796396,P
+102,64160-094,"Estrada de Ramos","Cônego Pinheiro 2ª Seção",1,"São Paulo",SP,-7.714698,157.791971,P
+103,20576-900,"Viaduto Santos",Gameleira,76,"São Paulo",SP,-50.993972,-128.517239,P
+104,32256-780,"Conjunto Cunha",Goiania,86,"São Paulo",SP,-82.9028795,15.715138,P
+105,72729-560,"Via de Dias",Esperança,41,"São Paulo",SP,41.1506135,-90.61958,P
+106,11990-781,"Rodovia Nogueira",Piratininga,615,"São Paulo",SP,64.866291,-108.58763,P
+107,31699-055,"Largo Guerra","Vila Pinho",60,"São Paulo",SP,-62.1569395,-83.320052,P
+108,03706-152,"Pátio Pereira","São Bento",7,"São Paulo",SP,42.2593775,-20.147692,P
+109,85670-449,"Jardim Gabriel Aragão",Floresta,25,"São Paulo",SP,4.5136705,161.514526,P
+110,80456-593,"Chácara de Cavalcanti","Santa Monica",46,"São Paulo",SP,47.2904405,19.272339,P
+111,21862-122,"Viaduto Costa",Pantanal,64,"São Paulo",SP,-58.7981715,152.762412,P
+112,83060-042,"Viaduto de da Mota","Vila Batik",691,"São Paulo",SP,-80.4576925,114.86415,P
+113,42631-499,"Quadra Pires",Gutierrez,515,"São Paulo",SP,-5.548454,175.546758,P
+114,01653-365,"Trecho de Macedo","Vila Coqueiral",718,"São Paulo",SP,-38.634111,107.139554,P
+115,49184-593,"Feira de Fogaça",Petropolis,36,"São Paulo",SP,27.156417,-68.346017,P
+116,57643-175,"Lagoa de da Cruz",Liberdade,15,"São Paulo",SP,51.2883785,167.572566,P
+117,90350-753,"Conjunto de Carvalho","Conjunto Califórnia I",96,"São Paulo",SP,-72.4683945,101.890195,P
+118,70032-464,"Fazenda Jade Moura","Jardim Leblon",41,"São Paulo",SP,-0.430518,38.028333,P
+119,29959-322,"Trecho de da Cruz","Antonio Ribeiro De Abreu 1ª Seção",45,"São Paulo",SP,70.19646,149.102735,P
+120,63733-405,"Viaduto de Correia","Conjunto Jatoba",810,"São Paulo",SP,89.7784085,-7.174042,P
+121,45886-377,"Alameda Moreira","Vila Santa Monica 2ª Seção",6,"São Paulo",SP,-88.7906855,-86.840543,P
+122,54161-587,"Praia de Ramos",Centro,478,"São Paulo",SP,89.7013465,123.763211,P
+123,97825-064,"Feira Gomes",Palmares,65,"São Paulo",SP,-2.9910285,173.853792,P
+124,68762-420,"Praça Nunes",Barroca,54,"São Paulo",SP,34.126529,-129.701131,P
+125,22008-611,"Passarela Mariana Nascimento","Vera Cruz",76,"São Paulo",SP,38.5873885,-166.88791,P
+126,91818-952,"Avenida Mathias Aparecida",Ambrosina,159,"São Paulo",SP,-19.841851,45.777014,P
+127,88609-630,"Sítio Luan Peixoto",Lagoinha,621,"São Paulo",SP,56.9482165,121.244525,P
+128,81563-374,"Travessa Mendes",Eymard,33,"São Paulo",SP,80.7847715,19.609558,P
+129,13171-700,"Jardim Garcia","Bom Jesus",96,"São Paulo",SP,-38.301148,-119.104452,P
+130,78241-798,"Núcleo Maria Fernanda Ribeiro","Santa Cecilia",15,"São Paulo",SP,-58.8247865,-143.798704,P
+131,72927-145,"Trevo de Cirino",Lagoinha,20,"São Paulo",SP,32.309616,-27.864856,P
+132,56349-418,"Travessa de Fernandes","Vila Suzana Primeira Seção",55,"São Paulo",SP,30.3246035,-135.921778,P
+133,26058-615,"Colônia Maria Fernanda Jesus",Itaipu,3,"São Paulo",SP,-57.105616,-6.265942,P
+134,25229-573,"Fazenda de Oliveira","São Lucas",65,"São Paulo",SP,-38.5448955,-173.467599,P
+135,74542-932,"Residencial de Novaes",Embaúbas,782,"São Paulo",SP,-81.8556755,-171.975165,P
+136,53875-564,"Lago de Vasconcelos","Vila Independencia 1ª Seção",62,"São Paulo",SP,-75.701089,104.414189,P
+137,08017-901,"Campo Vitor Gabriel Costa",Serrano,32,"São Paulo",SP,-28.3685505,137.069058,P
+138,95458-010,"Quadra Oliveira","Vila Independencia 3ª Seção",339,"São Paulo",SP,32.0629105,-84.691658,P
+139,29413-340,"Núcleo Campos","Santana Do Cafezal",55,"São Paulo",SP,26.663603,52.937229,P
+140,60321-339,"Avenida de Lima",Europa,36,"São Paulo",SP,-83.34378,16.750817,P
+141,20774-927,"Esplanada Casa Grande","Vera Cruz",777,"São Paulo",SP,18.6254285,-151.22602,P
+142,59662-368,"Passarela Abreu","Conjunto Califórnia I",58,"São Paulo",SP,-12.415153,105.037761,P
+143,20999-876,"Colônia Garcia","João Alfredo",39,"São Paulo",SP,-41.641307,-103.962893,P
+144,68351-997,"Trevo Martins",Braúnas,2,"São Paulo",SP,1.9512555,-42.955096,P
