@@ -1,0 +1,5 @@
+id_sensor,nome_sensor
+1,"Câmera de Visão Computacional"
+2,DHT22
+3,"MAX30102 - Oxímetro"
+4,"MLX90614 - Termômetro"
