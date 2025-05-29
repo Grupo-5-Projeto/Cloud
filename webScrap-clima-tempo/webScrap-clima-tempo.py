@@ -2,8 +2,9 @@ import requests
 from datetime import date
 import calendar
 import json
+import boto3
 
-def pegar_historico_mensal_json(latitude, longitude):
+def pegar_historico_mensal_json_enviar_s3(latitude, longitude, bucket_name, s3_key):
     hoje = date.today()
     ano = hoje.year
     mes_atual = hoje.month
@@ -47,10 +48,25 @@ def pegar_historico_mensal_json(latitude, longitude):
                 "temperatura_media": media
             })
 
-    with open("historico_temperatura.json", "w", encoding='utf-8') as f:
-        json.dump(historico, f, indent=4, ensure_ascii=False)
+    json_conteudo = json.dumps(historico, indent=4, ensure_ascii=False)
 
-    print("✅ Arquivo 'historico_temperatura.json' gerado com média incluída!")
+    s3 = boto3.client('s3')
+    try:
+        s3.put_object(
+            Bucket=bucket_name,
+            Key=s3_key,
+            Body=json_conteudo.encode('utf-8'),
+            ContentType='application/json'
+        )
+        print(f"✅ JSON enviado com sucesso para s3://{bucket_name}/{s3_key}")
+    except Exception as e:
+        print(f"Erro ao enviar para o S3: {e}")
 
-# São Paulo: -23.55, -46.63
-pegar_historico_mensal_json(-23.55, -46.63)
+
+# bucket_name: substitua pelo nome do seu bucket
+pegar_historico_mensal_json_enviar_s3(
+    latitude=-23.55,
+    longitude=-46.63,
+    bucket_name='bucket_name',
+    s3_key='historico_2025.json'
+)
