@@ -21,7 +21,7 @@ last_time = datetime.strftime(datetime.now(timezone.utc) - timedelta(minutes=5),
 
 pag = client.get_paginator('list_objects_v2')
 page_it = pag.paginate(Bucket="bucket-raw-upa-connect-eduardo")
-filtered = page_it.search(f"Contents[?to_string(LastModified)>='\"{last_time}\"'].Key")
+filtered = page_it.search(f'Contents[?to_string(LastModified)>=\'\"{last_time}\"\'].Key')
 
 for page in filtered:
     nome_arquivo = page
@@ -37,3 +37,5 @@ if nome_arquivo != None:
             print("Notebook executado com sucesso!")
         except concurrent.futures.TimeoutError:
             print("erro ao executar o jupyter notebook")
+else:
+    print("nenhum arquivo encontrado")
