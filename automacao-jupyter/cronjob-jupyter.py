@@ -9,8 +9,8 @@ from datetime import datetime, timedelta, timezone
 nome_arquivo = None
 def executar_notebook():
     pm.execute_notebook(
-        '../../opt/jupyter/notebook/limpeza-camera-visao-comp.ipynb',
-        '../../opt/jupyter/notebook/limpeza-camera-visao-comp-exec.ipynb',
+        '../../../opt/jupyter/notebook/limpeza-camera-visao-comp.ipynb',
+        '../../../opt/jupyter/notebook/limpeza-camera-visao-comp-exec.ipynb',
         parameters=dict(nome_arquivo=nome_arquivo)
     )
 
