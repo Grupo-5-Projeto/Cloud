@@ -39,7 +39,11 @@ def pegar_historico_mensal_json_enviar_s3(latitude, longitude, bucket_name, s3_k
         for i in range(len(dias)):
             minima = temp_min[i]
             maxima = temp_max[i]
-            media = round((minima + maxima) / 2, 1)
+            
+            if minima is not None and maxima is not None:
+                media = round((minima + maxima) / 2, 1)
+            else:
+                 media = "NULL"
 
             historico[nome_mes].append({
                 "data": dias[i],
@@ -67,6 +71,6 @@ def pegar_historico_mensal_json_enviar_s3(latitude, longitude, bucket_name, s3_k
 pegar_historico_mensal_json_enviar_s3(
     latitude=-23.55,
     longitude=-46.63,
-    bucket_name='bucket_name',
-    s3_key='historico_2025.json'
+    bucket_name='bucket-raw-upa-connect',
+    s3_key='historico_climatempo_2025.json'
 )
