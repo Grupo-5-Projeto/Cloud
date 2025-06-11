@@ -1,0 +1,10 @@
+function gerarGraficoTemperaturaAmbiente() {
+  //Usar a variavel 'idUpaSelecionada' para pegar id da UPA a ser gerado o gráfico
+  //Usar a variavel 'dataEscolhida' para pegar a data a ser gerado o gráfico
+  //Usar a variável 'nomeUpaEscolhida' para pegar o nome da UPA escolhida
+
+  //Seu gráfico deve estar nessa posição e ter essas dimensões
+      // .setPosition(9, 2, 0, 0)
+      // .setOption("width", 700)
+      // .setOption("height", 500)
+}

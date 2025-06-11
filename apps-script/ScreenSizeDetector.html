@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script>
+      // Função para enviar o tamanho da tela para o Apps Script
+      function sendScreenSize() {
+        // Obtém a largura e altura da janela visível do navegador
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        // Chama a função 'openDashboardWithDynamicSize' no Apps Script,
+        // passando as dimensões da tela.
+        google.script.run
+          .withSuccessHandler(function() {
+            // Após a chamada ser bem-sucedida, esta janela temporária não precisa mais existir.
+            // Para 'showModalDialog', o script não pode fechar a janela diretamente.
+            // No entanto, a nova janela do dashboard será aberta, sobrepondo esta.
+          })
+          .openDashboardWithDynamicSize(screenWidth, screenHeight);
+      }
+
+      // Chama a função assim que a página é carregada
+      window.onload = sendScreenSize;
+    </script>
+    <style>
+      /* Estilos básicos para a janela de detecção, tornando-a quase invisível */
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: transparent; /* Torna o fundo transparente */
+        color: transparent; /* Torna o texto transparente */
+        display: none; /* Oculta o conteúdo para que o usuário não a veja */
+      }
+    </style>
+  </head>
+  <body>
+    <p>Carregando...</p>
+  </body>
+</html>

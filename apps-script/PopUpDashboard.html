@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+  <style>
+    /* Garante que o HTML e o BODY ocupem 100% da altura e largura da janela do diálogo */
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      /* Usando Poppins conforme seu CSS original */
+      overflow: auto;
+      /* Permite rolagem se o conteúdo for maior que a janela */
+    }
+
+    .full-screen-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      /* Alinha ao topo */
+      align-items: center;
+      width: 100%;
+      min-height: 100%;
+      /* Garante que o contêiner ocupe pelo menos 100% */
+      background-color: #f0f4f8;
+      /* Cor de fundo para visualização */
+      padding: 1rem;
+      /* Adiciona um pouco de padding interno */
+      box-sizing: border-box;
+      /* Inclui padding na largura/altura total */
+    }
+
+    .content-box {
+      /* Este estilo não está sendo usado diretamente, mas pode ser útil */
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      text-align: center;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 1rem;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(1000px, 1fr));
+      /* Ajustado para 2 colunas, mais flexível */
+      gap: 2rem;
+      /* Espaçamento entre os gráficos */
+      width: 100%;
+      max-width: 90%;
+      /* Mesma largura máxima do content-box */
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .chart-container {
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 650px;
+      /* Altura mínima para o contêiner do gráfico */
+    }
+
+    canvas {
+      max-width: 100%;
+      /* Garante que o canvas não transborde */
+      height: auto;
+      /* Mantém a proporção */
+    }
+
+    .cabecalho {
+        display: flex;
+        align-items: center; /* Centraliza verticalmente os itens */
+        /* justify-content: space-between; -- REMOVA ISTO! Usaremos margins automáticas */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        padding: 2rem;
+        width: 90%;
+        background-color: #ffffff;
+        margin-bottom: 2rem;
+        min-height: 100px;
+        gap: 1.5rem; /* Espaçamento padrão entre os elementos */
+        /* flex-wrap: nowrap; /* Garante que os itens não quebrem linha, a menos que especificado */
+    }
+
+    .logo {
+        width: 120px;
+        flex-shrink: 0; /* Impede que a logo encolha */
+        /* A logo ficará à esquerda por padrão em um flex container com flex-start */
+    }
+
+    .titulo {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.8rem;
+        color: #2d3748;
+        margin: 0 auto; /* ESSENCIAL! Isso centraliza o título entre a logo e o botão */
+        font-weight: bold;
+        padding: 5px;
+        flex-grow: 1; /* Permite que o título ocupe o espaço restante */
+        flex-shrink: 1; /* Permite que o título encolha, se necessário */
+        text-align: center; /* Centraliza o texto DENTRO do espaço do título */
+        /* max-width: 60%; /* Opcional: Para controlar a quebra de linha em telas muito grandes */
+        white-space: normal; /* Garante que o texto quebre linha */
+        word-break: break-word; /* Ajuda na quebra de palavras longas */
+    }
+
+    .btnUpa {
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px;
+        height: 60px;
+        padding: 0.75rem 1.5rem;
+        background-color: #00B3B3;
+        color: white;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0; /* Impede que o botão encolha */
+        /* Não precisamos de margin-left: auto; aqui porque o margin auto do título já o empurra */
+    }
+
+
+    .btnUpa:hover {
+      background-color: #319795;
+    }
+
+    /* Estilos para o formulário de seleção */
+    .selection-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      /* Espaçamento entre os elementos do formulário */
+      margin-bottom: 2rem;
+      /* Espaçamento abaixo do formulário */
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      width: 100%;
+      min-height:400px;
+      max-width: 600px;
+      /* Largura máxima para o formulário */
+      align-items: center;
+    }
+
+    .selection-form h2 {
+      font-size: 1.5rem;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+
+    .selection-form select,
+    .selection-form input {
+      width: 80%;
+      /* Largura dos campos de seleção */
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.375rem;
+      box-sizing: border-box;
+    }
+
+    .selection-form button {
+      width: 80%;
+      /* Largura do botão de confirmar */
+      height: 45px;
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    .selection-form button:hover {
+      background-color: #357ae8;
+      transform: scale(1.02);
+    }
+
+    .selection-form button:active {
+      transform: scale(0.98);
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Classes utilitárias para ocultar/mostrar elementos */
+    .hidden {
+      display: none !important;
+    }
+
+    .chart-container h3 {
+      font-family: 'Poppins', sans-serif;
+      color: #2d3748;
+    }
+
+    #wordCloudContainer {
+      /* Ajuste a altura e largura conforme o desejado para a nuvem de palavras */
+      width: 100%;
+      height: 650px;
+      /* Altura fixa para a nuvem */
+      display: flex;
+      /* Para centralizar o canvas */
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Estilo para o container do Highcharts, que substituirá o canvas */
+    #wordCloudChartContainer {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="full-screen-container">
+
+    <div class="cabecalho">
+        <img src="https://raw.githubusercontent.com/teuscapellari/entregaveis/refs/heads/main/Captura_de_Tela_2025-03-05_%25C3%25A0s_19.13.20-removebg-preview.png" class="logo" alt="Logo da UPA">
+        <h1 class="titulo" id="dashboardTitle">Dashboard</h1>
+        <button class="btnUpa" onclick="toggleSelectionForm(true)">&#x21BB; Selecionar UPA/Data</button>
+    </div>
+
+    <div id="selectionForm" class="selection-form hidden">
+      <h2>Selecione a UPA</h2>
+      <select id="upa">
+          <option disabled selected>Carregando UPAs...</option>
+        </select>
+
+      <h2>Selecione a Data</h2>
+      <input type="date" id="data">
+
+      <button onclick="enviarSelecao()">Confirmar</button>
+    </div>
+
+    <div id="chartGrid" class="chart-grid hidden">
+      <!-- @ -->
+      <div class="chart-container">
+        <canvas id="upaChart1"></canvas>
+      </div>
+      <!-- SOFHIA -->
+      <div class="chart-container">
+        <canvas id="lineChart"></canvas>
+      </div>
+      <!-- @ -->
+      <div class="chart-container">
+        <canvas id="tendenciaChart"></canvas>
+      </div>
+      <!-- @ -->
+      <div class="chart-container">
+        <canvas id="comparativoBarChart"></canvas>
+      </div>
+      <!-- @ -->
+      <div class="chart-container">
+        <canvas id="areaChart"></canvas>
+      </div>
+      <!-- OTÁVIO -->
+      <div class="chart-container">
+        <canvas id="scatterChart"></canvas> 
+      </div>
+      <div class="chart-container">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
+        <div class="word-cloud-legend mb-4 text-sm text-gray-600">
+          <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
+          <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
+        </div>
+        <div id="wordCloudContainer"
+          style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
+          <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
+        </div>
+        <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
+          UPA/data.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let scatterChartInstance = null;
+    let lineChartInstance = null;
+    let allCharts = {}; // Objeto para armazenar todas as instâncias de gráficos
+    let highchartsWordCloudInstance = null; // Variável para armazenar a instância do Highcharts WordCloud
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        carregarUpas();
+        // O formulário e os gráficos já começam ocultos pelo CSS
+    });
+
+    /**
+     * Alterna a visibilidade do formulário de seleção.
+     * @param {boolean} forceShow Se true, força a exibição do formulário e oculta os gráficos.
+     */
+    function toggleSelectionForm(forceShow = false) {
+        const form = document.getElementById('selectionForm');
+        const chartGrid = document.getElementById('chartGrid');
+
+        if (forceShow) {
+            form.classList.remove('hidden');
+            chartGrid.classList.add('hidden');
+        } else {
+            form.classList.toggle('hidden');
+            chartGrid.classList.toggle('hidden');
+        }
+    }
+
+    function carregarUpas() {
+        google.script.run.withSuccessHandler(function(upas) {
+            const select = document.getElementById("upa");
+            select.innerHTML = '<option disabled selected>Escolha uma UPA</option>';
+            upas.forEach(upa => {
+                const option = document.createElement("option");
+                option.value = upa; // O valor pode ser o nome da UPA ou um ID, dependendo do que getScatterChartDataForUpaAndDate espera
+                option.textContent = upa;
+                select.appendChild(option);
+            });
+        }).getListaUpas();
+    }
+
+
+<!-- GRÁFICO 1 -->
+
+<!-- GRÁFICO 2 -->
+    /**
+    * Renderiza o gráfico de umidade.
+    * @param {Array<Object>} chartData Dados para o gráfico de umidade.
+    * @param {string} upaNome O nome da UPA selecionada.
+    * @param {string} dataFormatada A data formatada para o título.
+    */
+    function renderLineChart(chartData, upaNome, dataFormatada) {
+        if (allCharts.lineChart) {
+            allCharts.lineChart.destroy();
+        }
+
+        const ctx = document.getElementById('lineChart').getContext('2d');
+
+            const datasets = [
+        {
+            label: 'Umidade',
+            data: chartData.umidade, // Array de {x: hora, y: umidade}
+            borderColor: '#36A2EB', // Azul
+            backgroundColor: '#36A2EB',
+            borderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+
+            fill: false,
+            tension: 0.1,
+            yAxisID: 'yUmidade' // Associa ao eixo Y da umidade
+        },
+        {
+            label: 'Temp. mínima',
+            data: [{ x: 0, y: chartData.tempMinima }, { x: 23, y: chartData.tempMinima }], // Linha horizontal
+            borderColor: 'green',
+            backgroundColor: 'green',
+            borderWidth: 2,
+            borderDash: [5, 5], // Linha tracejada
+            pointRadius: 0, // Sem pontos
+            fill: false,
+            showLine: true,
+            yAxisID: 'yTemperatura' // Associa ao eixo Y da temperatura
+        },
+        {
+            label: 'Temp. média',
+            data: [{ x: 0, y: chartData.tempMedia }, { x: 23, y: chartData.tempMedia }], // Linha horizontal
+            borderColor: 'yellow',
+            backgroundColor: 'yellow',
+            borderWidth: 2,
+            borderDash: [5, 5], // Linha tracejada
+            pointRadius: 0,
+            fill: false,
+            showLine: true,
+            yAxisID: 'yTemperatura'
+        },
+        {
+            label: 'Temp. máxima',
+            data: [{ x: 0, y: chartData.tempMaxima }, { x: 23, y: chartData.tempMaxima }], // Linha horizontal
+            borderColor: 'red',
+            backgroundColor: 'red',
+            borderWidth: 2,
+            borderDash: [5, 5], // Linha tracejada
+            pointRadius: 0,
+            fill: false,
+            showLine: true,
+            yAxisID: 'yTemperatura'
+        }
+    ];
+
+    allCharts.lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Umidade por Hora com Temperaturas de Referência (${upaNome} - ${dataFormatada})`,
+                    font: {
+                        size: 18
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'top', // Posição da legenda como na imagem
+                    labels: {
+                        font: {
+                            size: 12
+                        },
+                        usePointStyle: true // Usar o estilo do ponto/linha para os itens da legenda
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            if (label === 'Umidade') {
+                                return `Umidade: ${context.parsed.y}%`;
+                            } else {
+                                // Para as linhas de temperatura, só queremos o rótulo
+                                return `${label}: ${context.parsed.y}°C`;
+                            }
+                        },
+                        title: function(context) {
+                            // Only show hour for humidity points, for temperature lines, no title is needed
+                            if (context[0].dataset.label === 'Umidade') {
+                                return `Hora: ${context[0].parsed.x}`;
+                            }
+                            return null; // Don't show title for temperature lines
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: 'Hora do dia',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    min: 0,
+                    max: 23,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    grid: {
+                        display: false // Remover as linhas de grade verticais
+                    }
+                },
+                yUmidade: {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Umidade (%)',
+                        font: {
+                            size: 14,
+                            weight: 'bold', // Deixar o título do eixo em negrito
+                            color: '#36A2EB' // Cor do texto do eixo Y da umidade
+                        }
+                    },
+                    min: 40, // Ajuste de acordo com a imagem
+                    max: 95, // Ajuste de acordo com a imagem
+                    ticks: {
+                        color: '#36A2EB' // Cor dos ticks do eixo Y da umidade
+                    },
+                    grid: {
+                        drawOnChartArea: true // Manter as linhas de grade horizontais para umidade
+                    }
+                },
+                yTemperatura: {
+                    type: 'linear',
+                    position: 'right', // Eixo Y secundário à direita
+                    title: {
+                        display: true,
+                        text: 'Temperatura (°C)',
+                        font: {
+                            size: 14,
+                            weight: 'bold', // Deixar o título do eixo em negrito
+                            color: 'red' // Cor do texto do eixo Y da temperatura
+                        }
+                    },
+                    min: 16, // Ajuste de acordo com a imagem
+                    max: 27, // Ajuste de acordo com a imagem
+                    ticks: {
+                        color: 'red' // Cor dos ticks do eixo Y da temperatura
+                    },
+                    grid: {
+                        drawOnChartArea: false // Não desenhar linhas de grade para este eixo
+                    }
+                }
+            }
+        }
+    });
+    }
+<!-- GRÁFICO 3 -->
+
+<!-- GRÁFICO 4 -->
+
+<!-- GRÁFICO 5 -->
+
+<!-- GRÁFICO 6 -->
+    /**
+    * Renderiza o gráfico de dispersão.
+    * @param {Array<Object>} chartData Dados planos (pacientes individuais) para o gráfico de dispersão.
+    * @param {string} upaNome O nome da UPA selecionada.
+    * @param {string} dataFormatada A data formatada para o título.
+    */
+    function renderScatterChart(chartData, upaNome, dataFormatada) {
+        if (allCharts.scatterChart) {
+            allCharts.scatterChart.destroy();
+        }
+
+        const ctx = document.getElementById('scatterChart').getContext('2d');
+
+        // 1. Mapear legendas únicas e as cores associadas
+        const uniqueLegends = new Map(); // Map<legenda, cor>
+        chartData.forEach(point => {
+            if (!uniqueLegends.has(point.legenda)) {
+                uniqueLegends.set(point.legenda, point.cor);
+            }
+        });
+
+        const datasets = [];
+
+        // 2. Criar um dataset para cada legenda única
+        uniqueLegends.forEach((color, legenda) => {
+            const pointsForThisLegend = chartData.filter(point => point.legenda === legenda);
+
+            datasets.push({
+                label: legenda,
+                data: pointsForThisLegend, // Contém apenas os pontos desta legenda
+                backgroundColor: color,
+                borderColor: color.replace('0.6', '1') || '#000000', // Um border color ligeiramente mais escuro
+                borderWidth: 1,
+                pointRadius: 7,
+                pointHoverRadius: 9,
+                showLine: false
+            });
+        });
+
+        allCharts.scatterChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Temperatura Média vs Oximetria Média (${upaNome} - ${dataFormatada})`,
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 12
+                            },
+                            usePointStyle: true // Usar o estilo do ponto para os itens da legenda
+                        },
+                        onClick: (e, legendItem, legend) => {
+                            // Lógica padrão do Chart.js para ocultar/mostrar dataset ao clicar na legenda
+                            const index = legendItem.datasetIndex;
+                            const meta = legend.chart.getDatasetMeta(index);
+                            meta.hidden = meta.hidden === null ? !legend.chart.data.datasets[index].hidden : null;
+                            legend.chart.update();
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const dataPoint = context.raw;
+                                return [
+                                    `Paciente: ${dataPoint.paciente}`,
+                                    `Temperatura: ${dataPoint.temperatura}°C`,
+                                    `Oximetria: ${dataPoint.oximetria}%`,
+                                    `Legenda: ${dataPoint.legenda}`,
+                                    `Chegada: ${dataPoint.chegada}`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: 'Temperatura Corporal (°C)',
+                            font: {
+                                size: 14
+                            }
+                        },
+                        min: 36.0,
+                        max: 40.0,
+                        ticks: {
+                            stepSize: 0.5
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Oximetria (%)',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+/**
+ * Renderiza a nuvem de palavras usando Highcharts.
+ * @param {Array<Object>} wordData Array de objetos com { text: string, weight: number, color: string, type: string }.
+ */
+function renderWordCloud(wordData) {
+    const wordCloudChartContainer = document.getElementById('wordCloudChartContainer');
+    const messageElement = document.getElementById('noWordCloudDataMessage');
+
+    // Destruir a instância anterior do Highcharts se ela existir
+    if (highchartsWordCloudInstance) {
+        highchartsWordCloudInstance.destroy();
+        highchartsWordCloudInstance = null;
+    }
+
+    if (!wordData || wordData.length === 0) {
+        messageElement.classList.remove('hidden');
+        wordCloudChartContainer.classList.add('hidden');
+        console.warn("Nenhum dado para a nuvem de palavras. Exibindo mensagem.");
+        return;
+    } else {
+        messageElement.classList.add('hidden');
+        wordCloudChartContainer.classList.remove('hidden');
+    }
+
+    const dataForHighcharts = wordData.map(item => {
+        return {
+            name: item.text,
+            weight: item.weight,
+            color: item.color,
+            custom: {
+                type: item.type
+            }
+        };
+    });
+
+    highchartsWordCloudInstance = Highcharts.chart('wordCloudChartContainer', {
+        series: [{
+            type: 'wordcloud',
+            data: dataForHighcharts,
+            name: 'Ocorrências',
+
+            // PRIORIDADE PARA ROTAÇÃO HORIZONTAL E EMPACOTAMENTO DENSO
+            // A rotação deve estar dentro de 'series'
+            rotation: {
+                from: 0,
+                to: 0,
+                orientations: 1 // Garante apenas orientação horizontal
+            },
+
+            // O algoritmo de layout também é uma propriedade direta da série
+            layoutAlgorithm: {
+                type: 'rectangular', // Tenta preencher o espaço em um formato retangular
+
+                // gridSize: **DIMINUÍDO AINDA MAIS** (padrão é 10)
+                // Um valor menor faz as palavras ficarem mais próximas.
+                // Tente 0 para o empacotamento mais denso possível (se a performance permitir).
+                gridSize: 0, // Aumentei o nível de agressividade para empacotamento. Se 0 der problema, tente 0.5 ou 1.
+
+                // maxSpeed: (Opcional) A velocidade máxima de deslocamento das palavras.
+                // Um valor menor pode levar a um empacotamento mais denso, mas pode ser mais lento.
+                // Não vou definir por enquanto para não complicar, mas é uma opção se o gridSize não for suficiente.
+
+                spiral: 'rectangular' // Define a forma da espiral como retangular
+            },
+
+            dataLabels: {
+                enabled: true,
+                style: {
+                    fontFamily: 'Poppins',
+                    textOutline: 'none',
+                }
+            },
+            // Balanceamento do tamanho da fonte: Comprimir a faixa de tamanho
+            font: {
+                min: 20, // Aumentei o mínimo para garantir que as palavras menores sejam BEM legíveis (era 18)
+                max: 40 // Diminuí o máximo para balancear os tamanhos ainda mais (era 45)
+                         // Isso torna a variação entre as palavras menos drástica.
+            }
+        }],
+        title: {
+            text: ''
+        },
+        tooltip: {
+            enabled: true,
+            formatter: function() {
+                const word = this.point.name;
+                const occurrences = this.point.weight;
+                const sentimentType = this.point.custom ? this.point.custom.type : 'N/A';
+                return `<b>${word}</b>: ${occurrences} vezes (${sentimentType.replace('sentimento_', '')})`;
+            },
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            borderColor: 'transparent',
+            style: {
+                color: '#FFFFFF'
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        chart: {
+            backgroundColor: 'transparent'
+        }
+    });
+
+    console.log("Nuvem de palavras Highcharts renderizada com sucesso (ajuste agressivo).");
+}
+
+/**
+ * Formata a data de AAAA-MM-DD para DD/MM/AAAA para exibição no título.
+ */
+function formatarDataParaTitulo(dataStr) {
+    const [ano, mes, dia] = dataStr.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
+function enviarSelecao() {
+    console.log("enviarSelecao() iniciada.");
+    const upaNome = document.getElementById("upa").value;
+    // Pegamos a string exatamente como o input a fornece (AAAA-MM-DD)
+    const dataSelecionadaInput = document.getElementById("data").value;
+
+    console.log(`UPA selecionada: ${upaNome}`);
+    console.log(`Data que será enviada para o Apps Script (raw do input): ${dataSelecionadaInput}`);
+
+    if (!upaNome || upaNome === "Escolha uma UPA") {
+        alert("Selecione uma UPA válida.");
+        return;
+    }
+
+    if (!dataSelecionadaInput) {
+        alert("Selecione uma data.");
+        return;
+    }
+
+    document.getElementById('selectionForm').classList.add('hidden');
+    document.getElementById('chartGrid').classList.remove('hidden');
+    // Para o título, continuamos usando a data original do input.
+    const dataFormatadaParaTitulo = formatarDataParaTitulo(dataSelecionadaInput);
+    document.getElementById('dashboardTitle').textContent = `Dashboard da ${upaNome} ${dataFormatadaParaTitulo}`;
+
+    // 1.1 Chamar a função para o Gráfico de ?
+
+    // 1.2 Chamar a função para o Gráfico de Umidade
+    google.script.run
+        .withSuccessHandler(function(chartData) {
+            console.log("Dados recebidos para o Gráfico de Dispersão (planos):", chartData);
+            if (chartData && chartData.length > 0) {
+                renderLineChart(chartData, upaNome, dataFormatadaParaTitulo);
+            } else {
+                console.warn("Nenhum dado encontrado para o Gráfico de Dispersão com a UPA e data selecionadas.");
+                if (allCharts.lineChart) {
+                    allCharts.lineChart.destroy();
+                    allCharts.lineChart = null;
+                }
+                const ctx = document.getElementById('lineChart').getContext('2d');
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            }
+            renderOtherCharts(upaNome, dataFormatadaParaTitulo);
+        })
+        .withFailureHandler(function(error) {
+            console.error("Erro ao carregar dados para o Gráfico de Umidade:", error);
+            alert("Erro ao carregar dados de Umidade e Temperatura: " + error.message);
+            if (allCharts.lineChart) {
+                allCharts.lineChart.destroy();
+                allCharts.lineChart = null;
+            }
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        })
+        .getLineChartDataForUpaAndDate(upaNome, dataSelecionadaInput); // <-- ENVIE A STRING RAW AQUI!
+
+    // 1.3 Chamar a função para o Gráfico de ?
+    // 1.4 Chamar a função para o Gráfico de ?
+    // 1.5 Chamar a função para o Gráfico de ?
+    // 1.6 Chamar a função para o Gráfico de Dispersão
+    google.script.run
+        .withSuccessHandler(function(chartData) {
+            console.log("Dados recebidos para o Gráfico de Dispersão (planos):", chartData);
+            if (chartData && chartData.length > 0) {
+                renderScatterChart(chartData, upaNome, dataFormatadaParaTitulo);
+            } else {
+                console.warn("Nenhum dado encontrado para o Gráfico de Dispersão com a UPA e data selecionadas.");
+                if (allCharts.scatterChart) {
+                    allCharts.scatterChart.destroy();
+                    allCharts.scatterChart = null;
+                }
+                const ctx = document.getElementById('scatterChart').getContext('2d');
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            }
+            renderOtherCharts(upaNome, dataFormatadaParaTitulo);
+        })
+        .withFailureHandler(function(error) {
+            console.error("Erro ao carregar dados para o Gráfico de Dispersão:", error);
+            alert("Erro ao carregar dados de Temperatura/Oximetria: " + error.message);
+            if (allCharts.scatterChart) {
+                allCharts.scatterChart.destroy();
+                allCharts.scatterChart = null;
+            }
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        })
+        .getScatterChartDataForUpaAndDate(upaNome, dataSelecionadaInput); // <-- ENVIE A STRING RAW AQUI!
+
+    // 2. Chamar a função para a Nuvem de Palavras
+    google.script.run
+        .withSuccessHandler(function(wordCloudData) {
+            console.log("Dados recebidos para a Nuvem de Palavras:", wordCloudData);
+            renderWordCloud(wordCloudData);
+        })
+        .withFailureHandler(function(error) {
+            console.error("Erro ao carregar dados para a Nuvem de Palavras:", error);
+            alert("Erro ao carregar dados para a Nuvem de Palavras: " + error.message);
+            renderWordCloud([]);
+        })
+        .getWordsForWordCloud(); // <-- Se esta função também depender da data, passe dataSelecionadaInput
+}
+
+      /**
+       * Função placeholder para renderizar outros gráficos.
+       * Você precisará adaptar esta função para buscar e renderizar os dados dos outros gráficos
+       * de forma dinâmica, semelhante ao scatterChart.
+       * Por exemplo, você pode chamar uma única função no Apps Script que retorna todos os dados
+       * de uma vez, ou chamar funções separadas para cada tipo de gráfico.
+       */
+      function renderOtherCharts(upaNome, dataFormatada) {
+          // Aqui você pode chamar outras funções do Apps Script para obter dados
+          // e renderizar os outros gráficos (upaChart1, upaChart2, tendenciaChart, etc.).
+
+          // Exemplo de como você faria para um upaChart1 (assumindo que 'getOtherChartData' retorne dados para todos eles)
+          google.script.run
+            .withSuccessHandler(function(allDashboardData) {
+              // Destruir gráficos existentes antes de criar novos
+              for (const chartId in allCharts) {
+                if (chartId !== 'scatterChart' && allCharts[chartId]) { // Não destruir o scatterChart novamente
+                  allCharts[chartId].destroy();
+                }
+              }
+
+              if (!allDashboardData || allDashboardData.length < 2) {
+                console.warn("Dados insuficientes para criar outros gráficos.");
+                return;
+              }
+
+              const headers = allDashboardData[0];
+              const dataRows = allDashboardData.slice(1);
+
+              const labels = dataRows.map(row => row[0]); // Coluna 0 (UPA) como labels
+              const atendimentos = dataRows.map(row => row[1]); // Coluna 1 (Atendimentos)
+              const emergencia = dataRows.map(row => row[2]); // Coluna 2 (Emergência)
+              const naoUrgente = dataRows.map(row => row[3]); // Coluna 3 (Não Urgente)
+
+              const colors = {
+                primary: 'rgba(75, 192, 192, 0.6)',
+                secondary: 'rgba(153, 102, 255, 0.6)',
+                tertiary: 'rgba(255, 159, 64, 0.6)',
+                borderPrimary: 'rgba(75, 192, 192, 1)',
+                borderSecondary: 'rgba(153, 102, 255, 1)',
+                borderTertiary: 'rgba(255, 159, 64, 1)'
+              };
+
+              // --- Gráfico 1: Atendimentos por UPA (Coluna) ---
+              allCharts.upaChart1 = new Chart(document.getElementById('upaChart1'), {
+                type: 'bar',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: headers[1],
+                    data: atendimentos,
+                    backgroundColor: colors.primary,
+                    borderColor: colors.borderPrimary,
+                    borderWidth: 1
+                  }, {
+                    label: headers[2],
+                    data: emergencia,
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.borderSecondary,
+                    borderWidth: 1
+                  }, {
+                    label: headers[3],
+                    data: naoUrgente,
+                    backgroundColor: colors.tertiary,
+                    borderColor: colors.borderTertiary,
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: `Atendimentos por UPA (${upaNome} - ${dataFormatada})` // Título dinâmico
+                    }
+                  },
+                  scales: { y: { beginAtZero: true } }
+                }
+              });
+
+              // --- Gráfico 2: Atendimentos por UPA (Coluna - Repetição para exemplo) ---
+              // allCharts.upaChart2 = new Chart(document.getElementById('upaChart2'), {
+              //   type: 'bar',
+              //   data: {
+              //     labels: labels,
+              //     datasets: [{
+              //       label: headers[1],
+              //       data: atendimentos,
+              //       backgroundColor: colors.primary,
+              //       borderColor: colors.borderPrimary,
+              //       borderWidth: 1
+              //     }]
+              //   },
+              //   options: {
+              //     responsive: true,
+              //     maintainAspectRatio: false,
+              //     plugins: {
+              //       title: {
+              //         display: true,
+              //         text: `Total de Atendimentos por UPA (${upaNome} - ${dataFormatada})`
+              //       }
+              //     },
+              //     scales: { y: { beginAtZero: true } }
+              //   }
+              // });
+
+              // --- Gráfico 3: Tendência de Atendimentos (Linha) ---
+              allCharts.tendenciaChart = new Chart(document.getElementById('tendenciaChart'), {
+                type: 'line',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: headers[1],
+                    data: atendimentos,
+                    backgroundColor: colors.primary,
+                    borderColor: colors.borderPrimary,
+                    borderWidth: 2,
+                    fill: false
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: `Tendência de Atendimentos (${upaNome} - ${dataFormatada})`
+                    }
+                  },
+                  scales: { y: { beginAtZero: true } }
+                }
+              });
+
+              // --- Gráfico 4: Comparativo Bar (Barra Horizontal) ---
+              allCharts.comparativoBarChart = new Chart(document.getElementById('comparativoBarChart'), {
+                type: 'bar',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: headers[2],
+                    data: emergencia,
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.borderSecondary,
+                    borderWidth: 1
+                  }, {
+                    label: headers[3],
+                    data: naoUrgente,
+                    backgroundColor: colors.tertiary,
+                    borderColor: colors.borderTertiary,
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  indexAxis: 'y',
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: `Comparativo Emergência vs Não Urgente (${upaNome} - ${dataFormatada})`
+                    }
+                  },
+                  scales: { x: { beginAtZero: true } }
+                }
+              });
+
+              // --- Gráfico 5: Gráfico de Área ---
+              allCharts.areaChart = new Chart(document.getElementById('areaChart'), {
+                type: 'line',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: headers[1],
+                    data: atendimentos,
+                    backgroundColor: colors.primary,
+                    borderColor: colors.borderPrimary,
+                    borderWidth: 1,
+                    fill: true
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: `Gráfico de Área de Atendimentos (${upaNome} - ${dataFormatada})`
+                    }
+                  },
+                  scales: { y: { beginAtZero: true } }
+                }
+              });
+
+              // O scatterChart já foi renderizado.
+            })
+            // Você precisará de uma função no Apps Script que retorne os dados para os outros gráficos
+            .getChartData(); // Presumo que essa função retorna os dados gerais do dashboard
+      }
+  </script>
+</body>
+
+</html>
