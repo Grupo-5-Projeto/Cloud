@@ -88,6 +88,46 @@
       /* Mantém a proporção */
     }
 
+    .chart-container-biometria {
+    position: relative; /* Importante para que a legenda absoluta flutue dentro dele */
+    min-height: 650px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+/* Estilo da legenda flutuante */
+.chart-legend {
+    position: absolute; /* Posiciona a legenda sobre o gráfico */
+    top: 10px;          /* Distância do topo do container */
+    right: 10px;        /* Distância da direita do container */
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
+    border: 1px solid #ccc; /* Borda leve */
+    border-radius: 5px; /* Cantos arredondados */
+    padding: 10px 15px; /* Espaçamento interno */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
+    z-index: 10;        /* Garante que a legenda fique acima do gráfico */
+    display: flex;      /* Para organizar os itens da legenda */
+    flex-direction: column; /* Itens um abaixo do outro */
+    gap: 8px;           /* Espaçamento entre os itens */
+}
+
+.chart-legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.chart-legend-color-box {
+    width: 18px;     /* Tamanho do quadrado de cor */
+    height: 18px;    /* Tamanho do quadrado de cor */
+    margin-right: 8px; /* Espaçamento entre o quadrado e o texto */
+    border: 1px solid rgba(0, 0, 0, 0.2); /* Borda leve para o quadrado */
+    border-radius: 3px; /* Leve arredondamento nos quadrados de cor */
+}
+
     .cabecalho {
         display: flex;
         align-items: center; /* Centraliza verticalmente os itens */
@@ -268,8 +308,9 @@
         <canvas id="graficoOcupacaoTemperatura"></canvas>
       </div>
       <!-- Mateus -->
-      <div class="chart-container">
+      <div class="chart-container-biometria">
         <canvas id="comparativoBarChartBiometria"></canvas>
+        <div id="customBiometriaLegend" class="chart-legend"></div>
       </div>
       <!-- Gabriel -->
       <div class="chart-container">
@@ -611,69 +652,60 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
     }
 
     // Definir as faixas de horário fixas
-      const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
+    const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
 
-      // Definir as faixas etárias fixas e na ordem desejada
-      const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
+    // Definir as faixas etárias fixas e na ordem desejada
+    const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
 
-      // Define specific colors for each fixed age range for consistency
-      const faixaEtariaColors = {
-          '0-12': 'rgba(75, 192, 192, 0.8)',   // Example: Teal/Cyan
-          '13-17': 'rgba(255, 159, 64, 0.8)',  // Example: Orange
-          '18-39': 'rgba(54, 162, 235, 0.8)',  // Example: Blue
-          '40-59': 'rgba(153, 102, 255, 0.8)', // Example: Purple
-          '60+': 'rgba(255, 99, 132, 0.8)'     // Example: Red
-      };
+    // Define specific colors for each fixed age range for consistency
+    const faixaEtariaColors = {
+        '0-12': 'rgba(75, 192, 192, 0.8)',   // Example: Teal/Cyan
+        '13-17': 'rgba(255, 159, 64, 0.8)',  // Example: Orange
+        '18-39': 'rgba(54, 162, 235, 0.8)',  // Example: Blue
+        '40-59': 'rgba(153, 102, 255, 0.8)', // Example: Purple
+        '60+': 'rgba(255, 99, 132, 0.8)'     // Example: Red
+    };
 
-      // Estrutura para contar os atendimentos por faixa etária e faixa de hora
-      const counts = {};
-      fixedFaixasEtarias.forEach(faixa => { // Initialize counts for all fixed age ranges
-          counts[faixa] = {};
-          faixasHorario.forEach(hora => {
-              counts[faixa][hora] = 0;
-          });
-      });
+    // Estrutura para contar os atendimentos por faixa etária e faixa de hora
+    const counts = {};
+    fixedFaixasEtarias.forEach(faixa => {
+        counts[faixa] = {};
+        faixasHorario.forEach(hora => {
+            counts[faixa][hora] = 0;
+        });
+    });
 
-      // Preencher as contagens com os dados recebidos
-      chartData.forEach(item => {
-          // AQUI ESTÁ A CORREÇÃO! Use item.faixaEtaria e item.faixaHora
-          // pois são essas as chaves que vêm no objeto 'item' do Apps Script
-          const currentFaixaEtaria = item.faixaEtaria;
-          const currentFaixaHora = item.faixaHora;
+    // Preencher as contagens com os dados recebidos
+    chartData.forEach(item => {
+        const currentFaixaEtaria = item.faixaEtaria;
+        const currentFaixaHora = item.faixaHora;
 
-          // A normalização para hífen já deve ter sido feita no Apps Script.
-          // Agora, apenas verificamos se os valores existem nas nossas listas fixas.
-          if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
-              // Garantir que a estrutura de contagem para esta faixa etária existe
-              if (!counts[currentFaixaEtaria]) {
-                  counts[currentFaixaEtaria] = {};
-              }
-              // Garantir que a contagem para esta faixa de hora dentro da faixa etária existe
-              if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
-                  counts[currentFaixaEtaria][currentFaixaHora] = 0;
-              }
-              counts[currentFaixaEtaria][currentFaixaHora]++;
-          } else {
-              // Se ainda aparecer esse console.warn, significa que a normalização no Apps Script
-              // não está funcionando perfeitamente ou que há dados na planilha que não se encaixam
-              // nas suas faixas fixas, mesmo após a normalização.
-              console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
-          }
-      });
+        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
+            if (!counts[currentFaixaEtaria]) {
+                counts[currentFaixaEtaria] = {};
+            }
+            if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
+                counts[currentFaixaEtaria][currentFaixaHora] = 0;
+            }
+            counts[currentFaixaEtaria][currentFaixaHora]++;
+        } else {
+            console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
+        }
+    });
 
     // Preparar os datasets para o Chart.js
-      const datasets = fixedFaixasEtarias.map((faixaEtaria) => { // Renomeado para 'faixaEtaria'
-      const data = faixasHorario.map(hora => counts[faixaEtaria][hora]); // Usando 'faixaEtaria'
-      const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)'; // Usando 'faixaEtaria'
-      const borderColor = backgroundColor.replace('0.8', '1');
+    const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
+        const data = faixasHorario.map(hora => counts[faixaEtaria][hora]);
+        const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)';
+        const borderColor = backgroundColor.replace('0.8', '1');
 
-      return {
-          label: faixaEtaria, // O label é a faixa etária normalizada
-          data: data,
-          backgroundColor: backgroundColor,
-          borderColor: borderColor,
-          borderWidth: 1
-      };
+        return {
+            label: faixaEtaria,
+            data: data,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            borderWidth: 1
+        };
     });
 
     allCharts.comparativoBarChartBiometria = new Chart(ctx, {
@@ -694,15 +726,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     }
                 },
                 legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                        font: {
-                            size: 12
-                        },
-                        // Use point style for legend items (if desired, like scatter chart)
-                        // usePointStyle: true
-                    }
+                    display: false, // <-- MUITO IMPORTANTE: DESATIVA A LEGENDA PADRÃO DO CHART.JS
                 },
                 tooltip: {
                     callbacks: {
@@ -712,7 +736,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                         label: function(context) {
                             const datasetLabel = context.dataset.label || '';
                             const value = context.raw;
-                            return `${datasetLabel}: ${value} biometrias`;
+                            return `${datasetLabel}: ${value} pacientes`;
                         }
                     }
                 }
@@ -727,31 +751,53 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                         }
                     },
                     grid: {
-                        display: false // No vertical grid lines
+                        display: false
                     }
                 },
                 y: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Número de Biometrias',
+                        text: 'Número de Pacientes',
                         font: {
                             size: 14
                         }
                     },
                     ticks: {
-                        precision: 0 // Ensure integer ticks on Y-axis
+                        precision: 0
                     },
                     grid: {
-                        display: true, // Show horizontal grid lines (default is usually true, but explicit for clarity)
-                        color: 'rgba(0, 0, 0, 0.1)' // Light gray grid lines
+                        display: true,
+                        color: 'rgba(0, 0, 0, 0.1)'
                     }
                 }
             }
         }
     });
-}
 
+    // --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
+    const customLegendContainer = document.getElementById('customBiometriaLegend');
+    if (customLegendContainer) {
+        customLegendContainer.innerHTML = ''; // Limpa qualquer conteúdo anterior
+
+        fixedFaixasEtarias.forEach(faixaEtaria => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-legend-item';
+
+            const colorBox = document.createElement('span');
+            colorBox.className = 'chart-legend-color-box';
+            colorBox.style.backgroundColor = faixaEtariaColors[faixaEtaria] || 'gray'; // Usa a cor definida ou cinza padrão
+
+            const labelText = document.createTextNode(faixaEtaria);
+
+            itemDiv.appendChild(colorBox);
+            itemDiv.appendChild(labelText);
+            customLegendContainer.appendChild(itemDiv);
+        });
+    }
+    // --- FIM DO CÓDIGO NOVO ---
+
+}
 // GRÁFICO 5
 function plotarGraficoTemperaturasPorMes(dados) {
   const ctx = document.getElementById('lineChartTemperaturaPaciente').getContext('2d');
