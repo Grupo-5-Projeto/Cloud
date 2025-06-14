@@ -348,10 +348,9 @@
     * @param {string} dataFormatada A data formatada para o título.
     */
     function renderLineChart(chartData, upaNome, dataFormatada) {
-      console.log("CHEGOU A HORA DE PLOTAR")
-        if (allCharts.lineChart) {
-            allCharts.lineChart.destroy();
-        }
+        // if (allCharts.lineChart) {
+        //     allCharts.lineChart.destroy();
+        // }
 
         const ctx = document.getElementById('lineChart').getContext('2d');
 
@@ -846,30 +845,36 @@ function enviarSelecao() {
     const dataFormatadaParaTitulo = formatarDataParaTitulo(dataSelecionadaInput);
     document.getElementById('dashboardTitle').textContent = `Dashboard da ${upaNome} ${dataFormatadaParaTitulo}`;
 
+
+    // Colocar aqui a função para destruir os gráficos!!!
+    // allCharts.lineChart.destroy();
+    // allCharts.lineChart = null;
+
+
+
+
     // 1.1 Chamar a função para o Gráfico de ?
 
     // 1.2 Chamar a função para o Gráfico de Umidade
     google.script.run
         .withSuccessHandler(function(chartData) {
             console.log("Dados recebidos para o Gráfico de Umidade:", chartData);
-            hideErrorMessage(); // Esconde qualquer mensagem de erro anterior
+            
 
             // Validação para verificar o array 'umidade' dentro do objeto
-            if (chartData && chartData.umidade && Array.isArray(chartData.umidade) && chartData.umidade.length > 0) {
-                console.log("quase renderizando ein")
+            if (chartData && chartData.umidade.length > 0) {
                 renderLineChart(chartData, upaNome, dataFormatadaParaTitulo);
             } else {
                 console.warn("Nenhum dado válido de umidade encontrado para o Gráfico de Umidade com a UPA e data selecionadas.");
-                if (allCharts.lineChart) {
-                    allCharts.lineChart.destroy();
-                    allCharts.lineChart = null;
-                }
+                // if (allCharts.lineChart) {
+                //     allCharts.lineChart.destroy();
+                //     allCharts.lineChart = null;
+                // }
                 const ctx = document.getElementById('lineChart').getContext('2d');
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 // Opcional: mostrar uma mensagem de "nenhum dado" ao usuário
                 alert("Nenhum dado de umidade disponível para a UPA e data selecionadas.");
             }
-            // renderOtherCharts(upaNome, dataFormatadaParaTitulo); // Descomente se tiver outros gráficos
         })
         .withFailureHandler(function(error) {
             console.error("Erro ao carregar dados para o Gráfico de Umidade:", error);
@@ -917,7 +922,6 @@ function enviarSelecao() {
                 const ctx = document.getElementById('scatterChart').getContext('2d');
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             }
-            renderOtherCharts(upaNome, dataFormatadaParaTitulo);
         })
         .withFailureHandler(function(error) {
             console.error("Erro ao carregar dados para o Gráfico de Dispersão:", error);
