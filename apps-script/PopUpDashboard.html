@@ -88,95 +88,65 @@
       /* Mantém a proporção */
     }
 
-    .chart-container-biometria {
-    position: relative; /* Importante para que a legenda absoluta flutue dentro dele */
-    min-height: 650px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 0.5rem;
-    padding: 1rem;
-}
-
-/* Estilo da legenda flutuante */
-.chart-legend {
-    position: absolute; /* Posiciona a legenda sobre o gráfico */
-    top: 10px;          /* Distância do topo do container */
-    right: 10px;        /* Distância da direita do container */
-    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
-    border: 1px solid #ccc; /* Borda leve */
-    border-radius: 5px; /* Cantos arredondados */
-    padding: 10px 15px; /* Espaçamento interno */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
-    z-index: 10;        /* Garante que a legenda fique acima do gráfico */
-    display: flex;      /* Para organizar os itens da legenda */
-    flex-direction: column; /* Itens um abaixo do outro */
-    gap: 8px;           /* Espaçamento entre os itens */
-}
-
-.chart-legend-item {
-    display: flex;
-    align-items: center;
-    font-size: 0.9em;
-    color: #333;
-}
-
-.chart-legend-color-box {
-    width: 18px;     /* Tamanho do quadrado de cor */
-    height: 18px;    /* Tamanho do quadrado de cor */
-    margin-right: 8px; /* Espaçamento entre o quadrado e o texto */
-    border: 1px solid rgba(0, 0, 0, 0.2); /* Borda leve para o quadrado */
-    border-radius: 3px; /* Leve arredondamento nos quadrados de cor */
-}
-
     .cabecalho {
-        display: flex;
-        align-items: center; /* Centraliza verticalmente os itens */
-        /* justify-content: space-between; -- REMOVA ISTO! Usaremos margins automáticas */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 0.5rem;
-        padding: 2rem;
-        width: 90%;
-        background-color: #ffffff;
-        margin-bottom: 2rem;
-        min-height: 100px;
-        gap: 1.5rem; /* Espaçamento padrão entre os elementos */
-        /* flex-wrap: nowrap; /* Garante que os itens não quebrem linha, a menos que especificado */
+      display: flex;
+      align-items: center;
+      /* Centraliza verticalmente os itens */
+      /* justify-content: space-between; -- REMOVA ISTO! Usaremos margins automáticas */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      width: 90%;
+      background-color: #ffffff;
+      margin-bottom: 1rem;
+      min-height: 100px;
+      gap: 1.5rem;
+      /* Espaçamento padrão entre os elementos */
+      /* flex-wrap: nowrap; /* Garante que os itens não quebrem linha, a menos que especificado */
     }
 
     .logo {
-        width: 120px;
-        flex-shrink: 0; /* Impede que a logo encolha */
-        /* A logo ficará à esquerda por padrão em um flex container com flex-start */
+      width: 120px;
+      flex-shrink: 0;
+      /* Impede que a logo encolha */
+      /* A logo ficará à esquerda por padrão em um flex container com flex-start */
     }
 
     .titulo {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.8rem;
-        color: #2d3748;
-        margin: 0 auto; /* ESSENCIAL! Isso centraliza o título entre a logo e o botão */
-        font-weight: bold;
-        padding: 5px;
-        flex-grow: 1; /* Permite que o título ocupe o espaço restante */
-        flex-shrink: 1; /* Permite que o título encolha, se necessário */
-        text-align: center; /* Centraliza o texto DENTRO do espaço do título */
-        /* max-width: 60%; /* Opcional: Para controlar a quebra de linha em telas muito grandes */
-        white-space: normal; /* Garante que o texto quebre linha */
-        word-break: break-word; /* Ajuda na quebra de palavras longas */
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      color: #2d3748;
+      margin: 0 auto;
+      /* ESSENCIAL! Isso centraliza o título entre a logo e o botão */
+      font-weight: bold;
+      padding: 5px;
+      flex-grow: 1;
+      /* Permite que o título ocupe o espaço restante */
+      flex-shrink: 1;
+      /* Permite que o título encolha, se necessário */
+      text-align: center;
+      /* Centraliza o texto DENTRO do espaço do título */
+      /* max-width: 60%; /* Opcional: Para controlar a quebra de linha em telas muito grandes */
+      white-space: normal;
+      /* Garante que o texto quebre linha */
+      word-break: break-word;
+      /* Ajuda na quebra de palavras longas */
     }
 
     .btnUpa {
-        font-family: 'Poppins', sans-serif;
-        font-size: 18px;
-        height: 60px;
-        padding: 0.75rem 1.5rem;
-        background-color: #00B3B3;
-        color: white;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        flex-shrink: 0; /* Impede que o botão encolha */
-        /* Não precisamos de margin-left: auto; aqui porque o margin auto do título já o empurra */
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      height: 60px;
+      padding: 0.75rem 1.5rem;
+      background-color: #00B3B3;
+      color: white;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+      /* Impede que o botão encolha */
+      /* Não precisamos de margin-left: auto; aqui porque o margin auto do título já o empurra */
     }
 
 
@@ -197,7 +167,7 @@
       border-radius: 0.5rem;
       padding: 1.5rem;
       width: 100%;
-      min-height:400px;
+      min-height: 400px;
       max-width: 600px;
       /* Largura máxima para o formulário */
       align-items: center;
@@ -277,9 +247,9 @@
   <div class="full-screen-container">
 
     <div class="cabecalho">
-        <img src="https://raw.githubusercontent.com/teuscapellari/entregaveis/refs/heads/main/Captura_de_Tela_2025-03-05_%25C3%25A0s_19.13.20-removebg-preview.png" class="logo" alt="Logo da UPA">
-        <h1 class="titulo" id="dashboardTitle">Dashboard</h1>
-        <button class="btnUpa" onclick="toggleSelectionForm(true)">&#x21BB; Selecionar UPA/Data</button>
+      <img src="https://raw.githubusercontent.com/teuscapellari/entregaveis/refs/heads/main/Captura_de_Tela_2025-03-05_%25C3%25A0s_19.13.20-removebg-preview.png" class="logo" alt="Logo da UPA">
+      <h1 class="titulo" id="dashboardTitle">Dashboard</h1>
+      <button class="btnUpa" onclick="toggleSelectionForm(true)">&#x21BB; Selecionar UPA/Data</button>
     </div>
 
     <div id="selectionForm" class="selection-form hidden">
@@ -295,6 +265,46 @@
     </div>
 
     <div id="chartGrid" class="chart-grid hidden">
+      <!-- Linha 1 - KPIs -->
+      <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 1</h2>
+          <p class="text-2xl font-bold text-black">123</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 2</h2>
+          <p class="text-2xl font-bold text-black">456</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 3</h2>
+          <p class="text-2xl font-bold text-black">789</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 4</h2>
+          <p class="text-2xl font-bold text-black">101</p>
+        </div>
+      </div>
+
+      <!-- Linha 2 - KPIs -->
+      <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 5</h2>
+          <p class="text-2xl font-bold text-black">202</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 6</h2>
+          <p class="text-2xl font-bold text-black">303</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 7</h2>
+          <p class="text-2xl font-bold text-black">404</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">KPI 8</h2>
+          <p class="text-2xl font-bold text-black">505</p>
+        </div>
+      </div>
+
       <!-- @ -->
       <div class="chart-container">
         <canvas id="upaChart1"></canvas>
@@ -307,19 +317,52 @@
       <div class="chart-container">
         <canvas id="graficoOcupacaoTemperatura"></canvas>
       </div>
-      <!-- Mateus -->
-      <div class="chart-container-biometria">
-        <canvas id="comparativoBarChartBiometria"></canvas>
-        <div id="customBiometriaLegend" class="chart-legend"></div>
+      <!-- @ -->
+      <div class="chart-container">
+        <canvas id="comparativoBarChart"></canvas>
       </div>
       <!-- Gabriel -->
       <div class="chart-container">
         <canvas id="lineChartTemperaturaPaciente"></canvas>
       </div>
       <!-- OTÁVIO -->
-      <div class="chart-container">
-        <canvas id="scatterChart"></canvas> 
+      <!-- Container único para controles e gráfico -->
+      <div class="grafico-container p-4 border rounded bg-white shadow-md">
+
+        <!-- Controles -->
+        <div class="flex items-center gap-4 mb-4">
+          <label for="horarioInicio">Início:</label>
+          <select id="horarioInicio" class="border p-1 rounded">
+      <script>
+        for (let h = 0; h < 24; h++) {
+          const hora = h.toString().padStart(2, '0') + ":00:00";
+          document.write(`<option value="${hora}">${hora}</option>`);
+        }
+      </script>
+    </select>
+
+          <label for="horarioFim">Fim:</label>
+          <select id="horarioFim" class="border p-1 rounded">
+      <script>
+        for (let h = 0; h < 24; h++) {
+          const hora = h.toString().padStart(2, '0') + ":00:00";
+          document.write(`<option value="${hora}">${hora}</option>`);
+        }
+      </script>
+    </select>
+
+          <button onclick="filtrarPorHorario()" class="bg-blue-600 text-white px-4 py-1 rounded">
+      Filtrar
+    </button>
+        </div>
+
+        <!-- Gráfico -->
+        <div class="chart-container">
+          <canvas id="scatterChart"></canvas>
+        </div>
+
       </div>
+
       <div class="chart-container">
         <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
         <div class="word-cloud-legend mb-4 text-sm text-gray-600">
@@ -559,7 +602,14 @@
             }
         }
     });
+
     }
+
+function testeVisao(dados){
+  console.log(dados)
+  return {}
+}
+
 // GRÁFICO 3 
 
 function plotarGraficoOcupacaoTemperatura(dados) {
@@ -575,63 +625,132 @@ function plotarGraficoOcupacaoTemperatura(dados) {
   const dadosOcupacao = dados.map(d => d.ocupacao);
 
   allCharts.ocupacaoTemperaturaChart = new Chart(ctx, {
-    type: 'bar',  // Pode mudar para 'line' se quiser
+    type: 'bar', // O tipo principal é 'bar' porque 'ocupação' será barras
     data: {
       labels: labels,
       datasets: [
         {
-          label: 'Temperatura Ambiente (°C)',
-          data: dadosTemperatura,
-          backgroundColor: 'rgba(255, 99, 132, 0.6)',
-          yAxisID: 'y1'
+          label: 'Ocupação (número de pessoas)', // Ocupação como barras
+          data: dadosOcupacao,
+          backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para ocupação
+          borderColor: 'rgba(173, 216, 230, 1)', // Borda azul clara
+          borderWidth: 1,
+          yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
         },
         {
-          label: 'Ocupação (número de pessoas)',
-          data: dadosOcupacao,
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
-          yAxisID: 'y2'
+          label: 'Temperatura Ambiente (°C)', // Temperatura como linha
+          data: dadosTemperatura,
+          type: 'line', // Define este dataset como um gráfico de linha
+          borderColor: 'rgba(255, 0, 0, 1)', // Cor da linha vermelha
+          backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
+          fill: false, // Não preenche a área abaixo da linha
+          tension: 0.1, // Suaviza a linha
+          pointRadius: 3, // Tamanho dos pontos na linha
+          pointHoverRadius: 5,
+          yAxisID: 'yTemperatura' // Associa ao eixo Y da temperatura
         }
       ]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false, // Permite maior controle sobre a altura/largura
       plugins: {
         title: {
           display: true,
-          text: 'Ocupação da Sala de Espera vs Temperatura Ambiente (por Hora)'
+          // Título mais conciso, alinhado com a imagem de referência
+          text: 'Ocupação da Sala vs Temperatura',
+          font: {
+            size: 20 // Tamanho da fonte do título
+          }
         },
         legend: {
-          position: 'top'
+          display: true,
+          position: 'top', // Legenda no topo
+          labels: {
+            font: {
+              size: 14 // Tamanho da fonte da legenda
+            },
+            usePointStyle: true // Usa o estilo do ponto/barra na legenda
+          }
+        },
+        tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: function(context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                        label += ': ';
+                    }
+                    if (context.dataset.label === 'Temperatura Ambiente (°C)') {
+                        return label + context.parsed.y + '°C';
+                    } else if (context.dataset.label === 'Ocupação (número de pessoas)') {
+                        return label + context.parsed.y + ' pessoas';
+                    }
+                    return label + context.parsed.y;
+                }
+            }
         }
       },
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
       scales: {
-        y1: {
+        x: {
+          title: {
+            display: true,
+            text: 'Hora do Dia', // Rótulo do eixo X
+            font: {
+              size: 16 // Tamanho da fonte do rótulo do eixo X
+            }
+          },
+          // Garante que todos os rótulos sejam visíveis, se houver muitos, pode haver sobreposição.
+          // Para um "a cada 1 hora" é melhor ter dados para cada hora exata ou agrupar.
+          ticks: {
+            autoSkip: false, // Tenta mostrar todos os ticks
+            maxRotation: 45, // Rotaciona os rótulos se houver muitos
+            minRotation: 0,
+            font: {
+                size: 12
+            }
+          },
+          grid: {
+              display: false // Remover linhas de grade verticais para um visual mais limpo
+          }
+        },
+        yOcupacao: { // Eixo Y para Ocupação (esquerda)
           type: 'linear',
           position: 'left',
           title: {
             display: true,
-            text: 'Temperatura (°C)'
+            text: 'Ocupação', // Rótulo do eixo Y da ocupação
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
           },
           ticks: {
-            beginAtZero: true
+            beginAtZero: true // Começa em zero
+          },
+          grid: {
+            drawOnChartArea: true, // Manter as linhas de grade horizontais para ocupação
+            color: 'rgba(0, 0, 0, 0.1)' // Cor da grade clara
           }
         },
-        y2: {
+        yTemperatura: { // Eixo Y para Temperatura (direita)
           type: 'linear',
           position: 'right',
           title: {
             display: true,
-            text: 'Ocupação (número de pessoas)'
+            text: 'Temperatura (°C)', // Rótulo do eixo Y da temperatura
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
           },
           ticks: {
-            beginAtZero: true
+            // Você pode definir min/max aqui se quiser um controle mais preciso da escala.
+            // Exemplo: min: 20, max: 30
           },
           grid: {
-            drawOnChartArea: false
+            drawOnChartArea: false // Não desenhar linhas de grade para este eixo (para não duplicar)
           }
         }
       }
@@ -639,165 +758,8 @@ function plotarGraficoOcupacaoTemperatura(dados) {
   });
 }
 
-// GRÁFICO 4
-function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
-    if (allCharts.comparativoBarChartBiometria) {
-        allCharts.comparativoBarChartBiometria.destroy();
-    }
+// GRÁFICO 4 
 
-    const ctx = document.getElementById('comparativoBarChartBiometria').getContext('2d');
-    if (!ctx) {
-        console.error("Canvas element with ID 'comparativoBarChartBiometria' not found.");
-        return;
-    }
-
-    // Definir as faixas de horário fixas
-    const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
-
-    // Definir as faixas etárias fixas e na ordem desejada
-    const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
-
-    // Define specific colors for each fixed age range for consistency
-    const faixaEtariaColors = {
-        '0-12': 'rgba(75, 192, 192, 0.8)',   // Example: Teal/Cyan
-        '13-17': 'rgba(255, 159, 64, 0.8)',  // Example: Orange
-        '18-39': 'rgba(54, 162, 235, 0.8)',  // Example: Blue
-        '40-59': 'rgba(153, 102, 255, 0.8)', // Example: Purple
-        '60+': 'rgba(255, 99, 132, 0.8)'     // Example: Red
-    };
-
-    // Estrutura para contar os atendimentos por faixa etária e faixa de hora
-    const counts = {};
-    fixedFaixasEtarias.forEach(faixa => {
-        counts[faixa] = {};
-        faixasHorario.forEach(hora => {
-            counts[faixa][hora] = 0;
-        });
-    });
-
-    // Preencher as contagens com os dados recebidos
-    chartData.forEach(item => {
-        const currentFaixaEtaria = item.faixaEtaria;
-        const currentFaixaHora = item.faixaHora;
-
-        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
-            if (!counts[currentFaixaEtaria]) {
-                counts[currentFaixaEtaria] = {};
-            }
-            if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
-                counts[currentFaixaEtaria][currentFaixaHora] = 0;
-            }
-            counts[currentFaixaEtaria][currentFaixaHora]++;
-        } else {
-            console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
-        }
-    });
-
-    // Preparar os datasets para o Chart.js
-    const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
-        const data = faixasHorario.map(hora => counts[faixaEtaria][hora]);
-        const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)';
-        const borderColor = backgroundColor.replace('0.8', '1');
-
-        return {
-            label: faixaEtaria,
-            data: data,
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1
-        };
-    });
-
-    allCharts.comparativoBarChartBiometria = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: faixasHorario,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: `Distribuição de Biometrias por Faixa Etária e Horário (${upaNome} - ${dataFormatada})`,
-                    font: {
-                        size: 18
-                    }
-                },
-                legend: {
-                    display: false, // <-- MUITO IMPORTANTE: DESATIVA A LEGENDA PADRÃO DO CHART.JS
-                },
-                tooltip: {
-                    callbacks: {
-                        title: function(context) {
-                            return `Horário: ${context[0].label}`;
-                        },
-                        label: function(context) {
-                            const datasetLabel = context.dataset.label || '';
-                            const value = context.raw;
-                            return `${datasetLabel}: ${value} pacientes`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Horário do Dia',
-                        font: {
-                            size: 14
-                        }
-                    },
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Número de Pacientes',
-                        font: {
-                            size: 14
-                        }
-                    },
-                    ticks: {
-                        precision: 0
-                    },
-                    grid: {
-                        display: true,
-                        color: 'rgba(0, 0, 0, 0.1)'
-                    }
-                }
-            }
-        }
-    });
-
-    // --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
-    const customLegendContainer = document.getElementById('customBiometriaLegend');
-    if (customLegendContainer) {
-        customLegendContainer.innerHTML = ''; // Limpa qualquer conteúdo anterior
-
-        fixedFaixasEtarias.forEach(faixaEtaria => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'chart-legend-item';
-
-            const colorBox = document.createElement('span');
-            colorBox.className = 'chart-legend-color-box';
-            colorBox.style.backgroundColor = faixaEtariaColors[faixaEtaria] || 'gray'; // Usa a cor definida ou cinza padrão
-
-            const labelText = document.createTextNode(faixaEtaria);
-
-            itemDiv.appendChild(colorBox);
-            itemDiv.appendChild(labelText);
-            customLegendContainer.appendChild(itemDiv);
-        });
-    }
-    // --- FIM DO CÓDIGO NOVO ---
-
-}
 // GRÁFICO 5
 function plotarGraficoTemperaturasPorMes(dados) {
   const ctx = document.getElementById('lineChartTemperaturaPaciente').getContext('2d');
@@ -868,7 +830,7 @@ function plotarGraficoTemperaturasPorMes(dados) {
     * @param {string} upaNome O nome da UPA selecionada.
     * @param {string} dataFormatada A data formatada para o título.
     */
-    function renderScatterChart(chartData, upaNome, dataFormatada) {
+    function renderScatterChart(chartData, upaNome, dataFormatada, horarioInicio = "00:00:00", horarioFim = "23:59:59") {
         if (allCharts.scatterChart) {
             allCharts.scatterChart.destroy();
         }
@@ -912,7 +874,7 @@ function plotarGraficoTemperaturasPorMes(dados) {
                 plugins: {
                     title: {
                         display: true,
-                        text: `Temperatura Média vs Oximetria Média (${upaNome} - ${dataFormatada})`,
+                        text: `Temperatura Média vs Oximetria Média (${upaNome} - ${dataFormatada} ${horarioInicio} - ${horarioFim})`,
                         font: {
                             size: 18
                         }
@@ -1165,48 +1127,31 @@ function enviarSelecao() {
         .getLineChartDataForUpaAndDate(upaNome, dataSelecionadaInput); 
 
     // 1.3 Chamar a função para o Gráfico de temperatura x ambiente
+  
       google.script.run
-    .withSuccessHandler(function(dados) {
-      if (dados && dados.length > 0) {
-        plotarGraficoOcupacaoTemperatura(dados);
-      } else {
-        alert("Nenhum dado de ocupação/temperatura disponível.");
-      }
-    })
-    .withFailureHandler(function(error) {
-      console.error("Erro ao obter dados de ocupação/temperatura:", error);
-      alert("Erro ao carregar dados de ocupação/temperatura.");
-    })
-  .getOcupacaoTemperaturaPorHora();  
-
-    // 1.4 Chamar a função para o Gráfico de biometria
-    google.script.run
-    .withSuccessHandler(function(biometricChartData) {
-        console.log("Dados recebidos para o Gráfico de Biometria:", biometricChartData);
-        if (biometricChartData && biometricChartData.length > 0) {
-            renderComparativoBarChartBiometria(biometricChartData, upaNome, dataFormatadaParaTitulo);
-        } else {
-            console.warn("Nenhum dado de biometria encontrado para a UPA e data selecionadas.");
-            if (allCharts.comparativoBarChartBiometria) {
-                allCharts.comparativoBarChartBiometria.destroy();
-                allCharts.comparativoBarChartBiometria = null;
+        .withSuccessHandler(function(chartData) {
+            console.log("Dados recebidos para o Gráfico de Ocupação vs Temperatura:", chartData);
+            if (chartData && chartData.length > 0) {
+                // Se a função plotarGraficoOcupacaoTemperatura não usa upaNome e dataFormatada,
+                // você pode omitir passá-los aqui, mas é uma boa prática incluí-los
+                // se for atualizar o título do gráfico dentro dela.
+                plotarGraficoOcupacaoTemperatura(chartData);
+            } else {
+                console.warn("Nenhum dado válido de ocupação vs temperatura encontrado.");
+                // Opcionalmente, limpar o gráfico ou mostrar uma mensagem no próprio canvas.
             }
-            const ctx = document.getElementById('comparativoBarChartBiometria').getContext('2d');
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Limpa o canvas
-        }
-    })
-    .withFailureHandler(function(error) {
-        console.error("Erro ao carregar dados para o Gráfico de Biometria:", error);
-        alert("Erro ao carregar dados de Biometria: " + error.message);
-        if (allCharts.comparativoBarChartBiometria) {
-            allCharts.comparativoBarChartBiometria.destroy();
-            allCharts.comparativoBarChartBiometria = null;
-        }
-        const ctx = document.getElementById('comparativoBarChartBiometria').getContext('2d');
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    })
-    .getBiometricChartDataForUpaAndDate(upaNome, dataSelecionadaInput);
+        })
+        .withFailureHandler(function(error) {
+            console.error("Erro ao carregar dados para o Gráfico de Ocupação vs Temperatura:", error);
+        })
+        // **IMPORTANTE**: Sua função getOcupacaoTemperaturaPorHora no Apps Script
+        // precisa ser modificada para aceitar upaNome e dataSelecionadaInput
+        // se você quiser filtrar os dados por UPA e data. Atualmente, ela não os recebe.
+        .getOcupacaoTemperaturaPorHora(); // Chamando a função do Apps Script
+                                          // Se precisar de UPA/Data, mude para:
+                                          // .getOcupacaoTemperaturaPorHora(upaNome, dataSelecionadaInput);
 
+    // 1.4 Chamar a função para o Gráfico de ?
     // 1.5 Chamar a função para o Gráfico de temperatura do paciente
     google.script.run
       .withSuccessHandler(function(dados) {
@@ -1263,6 +1208,22 @@ function enviarSelecao() {
             renderWordCloud([]);
         })
         .getWordsForWordCloud(); // <-- Se esta função também depender da data, passe dataSelecionadaInput
+
+
+    google.script.run
+    .withSuccessHandler(function(chartData) {
+        console.log("a", chartData);
+        if (chartData && chartData.length > 0) {
+            testeVisao(chartData); // Passa chartData para a função de plotagem
+        } else {
+            console.warn("Nenhum dado válido de ocupação vs temperatura encontrado.");
+            // Opcionalmente, limpe ou mostre uma mensagem para este gráfico específico se não houver dados
+        }
+    })
+    .withFailureHandler(function(error) {
+        console.error("Erro ao carregar dados para o Gráfico de Ocupação vs Temperatura:", error);
+    })
+    .getGraficoVisaoComputacionalSemanal(); // Esta é a função no seu Apps Script
 }
 
       /**
@@ -1464,6 +1425,43 @@ function enviarSelecao() {
             // Você precisará de uma função no Apps Script que retorne os dados para os outros gráficos
             .getChartData(); // Presumo que essa função retorna os dados gerais do dashboard
       }
+
+      function filtrarPorHorario() {
+  const upaNome = document.getElementById('upa').value;
+  const dataSelecionadaInput = document.getElementById("data").value;
+   const horarioInicio = document.getElementById('horarioInicio').value || '00:00:00';
+   const horarioFim = document.getElementById('horarioFim').value || '23:59:59';
+
+  const dataSelecionada = new Date(dataSelecionadaInput);
+  const dataFormatadaParaTitulo = dataSelecionada.toLocaleDateString('pt-BR');
+
+  google.script.run
+    .withSuccessHandler(function(chartData) {
+      console.log("Dados recebidos para o Gráfico de Dispersão (planos):", chartData);
+      if (chartData && chartData.length > 0) {
+        renderScatterChart(chartData, upaNome, dataFormatadaParaTitulo, horarioInicio, horarioFim);
+      } else {
+        console.warn("Nenhum dado encontrado para o Gráfico de Dispersão com a UPA e data selecionadas.");
+        if (allCharts.scatterChart) {
+          allCharts.scatterChart.destroy();
+          allCharts.scatterChart = null;
+        }
+        const ctx = document.getElementById('scatterChart').getContext('2d');
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      }
+    })
+    .withFailureHandler(function(error) {
+      console.error("Erro ao carregar dados para o Gráfico de Dispersão:", error);
+      alert("Erro ao carregar dados de Temperatura/Oximetria: " + error.message);
+      if (allCharts.scatterChart) {
+        allCharts.scatterChart.destroy();
+        allCharts.scatterChart = null;
+      }
+      const ctx = document.getElementById('scatterChart').getContext('2d');
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    })
+    .getScatterChartDataForUpaAndDate(upaNome, dataSelecionadaInput, horarioInicio, horarioFim);
+}
   </script>
 </body>
 

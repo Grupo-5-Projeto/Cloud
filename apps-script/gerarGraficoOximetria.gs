@@ -48,13 +48,15 @@ function formatSheetDate(dateObj, format) {
 
 /**
  * Retorna os dados formatados para o gráfico de dispersão de Oximetria vs Temperatura.
- * Os dados são filtrados pelo ID da UPA e pela data selecionada.
+ * Os dados são filtrados pelo nome da UPA, pela data e pelos horários (opcionalmente).
  *
- * @param {string|number} idUpaParaFiltrar O ID numérico da UPA a ser filtrada (vindo do HTML).
- * @param {string} dataParaFiltrar A data no formato "yyyy-MM-dd" (vindo do HTML).
- * @returns {Array<Object>} Um array de objetos com dados para o gráfico de dispersão.
+ * @param {string} upaNome O nome da UPA a ser filtrada.
+ * @param {string} dateString A data no formato "yyyy-MM-dd".
+ * @param {string} [horaInicio="00:00:00"] Horário inicial opcional (formato "HH:mm:ss").
+ * @param {string} [horaFim="23:59:59"] Horário final opcional (formato "HH:mm:ss").
+ * @returns {Array<Object>} Array de pontos formatados para o gráfico.
  */
-function getScatterChartDataForUpaAndDate(upaNome, dateString) {
+function getScatterChartDataForUpaAndDate(upaNome, dateString, horaInicio = "00:00:00", horaFim = "23:59:59") {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(OXY_DATA_SHEET_NAME);
   if (!sheet) {
@@ -62,102 +64,77 @@ function getScatterChartDataForUpaAndDate(upaNome, dateString) {
     return [];
   }
 
-  const range = sheet.getDataRange();
-  const values = range.getValues();
-
-  const dataRows = values.slice(1); // Pula o cabeçalho (primeira linha)
+  const values = sheet.getDataRange().getValues();
+  const dataRows = values.slice(1); // Remove cabeçalho
 
   const scatterChartData = [];
-  const partesDataSelecionada = dateString.split('-');
-  const anoSelecionado = parseInt(partesDataSelecionada[0]);
-  const mesSelecionado = parseInt(partesDataSelecionada[1]) - 1; // Mês é base 0
-  const diaSelecionado = parseInt(partesDataSelecionada[2]);
 
-  // Esta é a data que você selecionou, no fuso horário do seu script.
-  const selectedDate = new Date(anoSelecionado, mesSelecionado, diaSelecionado); // A data vem como YYYY-MM-DD do HTML
-  console.log(`Função chamada com UPA: "<span class="math-inline">\{upaNome\}" e Data\: "</span>{dateString}" (Objeto Date: ${selectedDate.toLocaleDateString('pt-BR')})`);
+  const [ano, mes, dia] = dateString.split('-').map(Number);
+  const selectedDate = new Date(ano, mes - 1, dia); // YYYY-MM-DD
 
-  if (dataRows.length === 0) {
-    console.warn("Nenhuma linha de dados encontrada na planilha (além do cabeçalho).");
-  }
+  const [hIni, mIni, sIni] = horaInicio.split(':').map(Number);
+  const [hFim, mFim, sFim] = horaFim.split(':').map(Number);
+
+  const inicioMillis = hIni * 3600000 + mIni * 60000 + sIni * 1000;
+  const fimMillis = hFim * 3600000 + mFim * 60000 + sFim * 1000;
 
   dataRows.forEach((row, index) => {
-    // Obter valores brutos da linha
     const currentUpaRaw = row[COL_NOME_DA_UPA - 1];
     const rowDateRaw = row[COL_DATA_CHEGADA - 1];
+    const horarioChegadaRaw = row[COL_HORARIO_CHEGADA - 1];
 
-    // --- Depuração de UPA ---
-    console.log(`--- Linha ${index + 2} ---`); // +2 porque pula o cabeçalho e é base 1
-    console.log(`UPA na linha: "<span class="math-inline">\{currentUpaRaw\}" \| UPA Selecionada\: "</span>{upaNome}"`);
-    console.log(`Comparação UPA: ${currentUpaRaw === upaNome}`);
-
-    // --- Depuração de Data ---
+    // Converter data da planilha
     let dateFromSheet = null;
     if (rowDateRaw instanceof Date) {
       dateFromSheet = rowDateRaw;
     } else if (typeof rowDateRaw === 'string' && rowDateRaw.includes('/')) {
       const parts = rowDateRaw.split('/');
       if (parts.length === 3) {
-        // Converte "DD/MM/YYYY" para um objeto Date
         dateFromSheet = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
       }
-    } else if (typeof rowDateRaw === 'string' && rowDateRaw.includes('-')) {
-      // Assume "YYYY-MM-DD" ou formato similar de string, tenta criar Date
-      dateFromSheet = new Date(rowDateRaw);
     } else if (typeof rowDateRaw === 'number') {
-      // Se for um número que representa uma data (serial number de Excel/Sheets)
-      dateFromSheet = new Date((rowDateRaw - (25569)) * 86400 * 1000); // Conversão para datas serial
+      dateFromSheet = new Date((rowDateRaw - 25569) * 86400 * 1000);
     }
 
     let dateMatch = false;
     if (dateFromSheet) {
-      // Normaliza as datas para comparação (removendo a hora)
       const normalizedSheetDate = new Date(dateFromSheet.getFullYear(), dateFromSheet.getMonth(), dateFromSheet.getDate());
-
-      dateMatch = (normalizedSheetDate.getTime() === selectedDate.getTime());
+      dateMatch = normalizedSheetDate.getTime() === selectedDate.getTime();
     }
 
-    console.log(`Data na linha (bruta): "${rowDateRaw}" | Data convertida: ${dateFromSheet ? dateFromSheet.toLocaleDateString('pt-BR') : 'Inválida'}`);
-    console.log(`Data Selecionada (convertida): ${selectedDate.toLocaleDateString('pt-BR')}`);
-    console.log(`Comparação Data (normalized): ${dateMatch}`);
+    // --- Novo Filtro: horário_chegada ---
+    let horarioMatch = true; // Padrão: aceitar tudo
 
-    // Condição final de filtro
-    if (currentUpaRaw === upaNome && dateMatch) {
-      const temperatura = parseFloat(row[COL_TEMPERATURA_MEDIA - 1]);
-      const oximetria = parseFloat(row[COL_OXIMETRIA_MEDIA - 1]);
+    if (horarioChegadaRaw && typeof horarioChegadaRaw === 'string' && horarioChegadaRaw.includes(':')) {
+      const [h, m, s] = horarioChegadaRaw.split(':').map(Number);
+      const horarioMillis = h * 3600000 + m * 60000 + (s || 0) * 1000;
+      horarioMatch = horarioMillis >= inicioMillis && horarioMillis <= fimMillis;
+    }
+
+    // Filtro final
+    if (currentUpaRaw === upaNome && dateMatch && horarioMatch) {
+      const temperatura = parseNumber(row[COL_TEMPERATURA_MEDIA - 1]);
+      const oximetria = parseNumber(row[COL_OXIMETRIA_MEDIA - 1]);
       const nomePaciente = row[COL_NOME_PACIENTE - 1];
       const legenda = row[COL_LEGENDA_GRAVIDADE - 1];
       const cor = row[COL_COR_INDICATIVA - 1];
-      const horarioChegada = row[COL_HORARIO_CHEGADA - 1];
-      const dateObjFromSheet = rowDateRaw; // Usa o valor bruto para o tooltip, ou o dateFromSheet
-
-      console.log(`Condição de filtro ATENDIDA! Processando linha...`);
-      console.log(`Valores para gráfico: Temp=<span class="math-inline">\{temperatura\}, Oxi\=</span>{oximetria}, Cor=${cor}`);
-      console.log(`É NaN: Temp=<span class="math-inline">\{isNaN\(temperatura\)\}, Oxi\=</span>{isNaN(oximetria)}`);
 
       if (!isNaN(temperatura) && !isNaN(oximetria)) {
         scatterChartData.push({
           x: temperatura,
           y: oximetria,
           paciente: nomePaciente,
-          temperatura: temperatura,
-          oximetria: oximetria,
-          legenda: legenda,
-          cor: cor,
+          temperatura,
+          oximetria,
+          legenda,
+          cor,
           upa: upaNome,
-          // Usa formatSheetDate para garantir que a data no tooltip esteja no formato DD/MM/YYYY
-          chegada: `${dateFromSheet ? formatSheetDate(dateFromSheet, "dd/MM/yyyy") : 'Data Inválida'} ${horarioChegada}`
+          chegada: `${dateFromSheet ? formatSheetDate(dateFromSheet, "dd/MM/yyyy") : 'Data Inválida'} ${horarioChegadaRaw}`
         });
-        console.log("Ponto adicionado ao gráfico.");
-      } else {
-        console.warn(`Dados inválidos (NaN) para temperatura ou oximetria na linha: ${row.join(', ')}`);
       }
-    } else {
-      console.log("Condição de filtro NÃO ATENDIDA.");
     }
   });
 
-  console.log(`Dados filtrados para gráfico de dispersão (final): ${JSON.stringify(scatterChartData)}`);
   return scatterChartData;
 }
 
