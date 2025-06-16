@@ -337,10 +337,13 @@
           <h2 class="text-sm text-black">KPI 6</h2>
           <p class="text-2xl font-bold text-black">303</p>
         </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 7</h2>
-          <p class="text-2xl font-bold text-black">404</p>
-        </div>
+<div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+  <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
+    Palavras Mais Frequentes
+    <div id="topPalavras" style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;"></div>
+  </div>
+</div>
+
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
           Quantidade Média de Pessoas<br>
@@ -1546,6 +1549,30 @@ function enviarSelecao() {
      console.error("Erro ao calcular KPI:", error);
     })
   .getKpiQuantidadeMediaPessoas(dataSelecionadaInput);
+
+  //Chamar a função KPI sentimentos
+google.script.run
+  .withSuccessHandler(function(palavras) {
+    const container = document.getElementById('topPalavras');
+    container.innerHTML = ''; // limpa antes
+
+    if (!palavras || palavras.length === 0) {
+      container.textContent = "Sem dados";
+      return;
+    }
+
+palavras.forEach(({ palavra, sentimento }, index) => {
+  const div = document.createElement('div');
+  div.textContent = `${index + 1}° ${palavra}`;
+  div.style.color = sentimento === 'sentimento_positivo' ? 'green' : 'red';
+  container.appendChild(div);
+});
+  })
+  .withFailureHandler(function(error) {
+    console.error("Erro ao carregar palavras:", error);
+  })
+  .getTop3PalavrasSentimento();
+
 }
 
       /**
