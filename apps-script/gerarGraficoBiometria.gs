@@ -1,4 +1,4 @@
-// --- DEFINIÇÕES DE CONSTANTES NO TOPO DO ARQUIVO ---
+// --- DEFINIÇÕES DE CONSTANTES NO TOPO DO ARQUIVO ---Add commentMore actions
 const BIOMETRY_DATA_SHEET_NAME = 'BiometriaPaciente'; // O nome exato da sua planilha
 const COL_FAIXA_ETARIA = 4;       // Coluna D: Faixa_Etaria
 const COL_DATA_BIOMETRIA = 5;     // Coluna E: data_biometria

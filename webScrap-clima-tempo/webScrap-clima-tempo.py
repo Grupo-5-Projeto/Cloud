@@ -1,5 +1,5 @@
 import requests
-from datetime import date
+from datetime import date, timedelta
 import calendar
 import csv
 import io
@@ -12,9 +12,10 @@ def pegar_historico_mensal_csv_enviar_s3(latitude, longitude, bucket_name, s3_ke
 
     historico = []
 
-    for mes in range(1, mes_atual):
+    for mes in range(1, mes_atual + 1):
         primeiro_dia = date(ano, mes, 1)
-        ultimo_dia = date(ano, mes, calendar.monthrange(ano, mes)[1])
+        ultimo_dia_do_mes = date(ano, mes, calendar.monthrange(ano, mes)[1])
+        ultimo_dia = min(ultimo_dia_do_mes, hoje - timedelta(days=2))
 
         url = (
             f'https://archive-api.open-meteo.com/v1/archive'

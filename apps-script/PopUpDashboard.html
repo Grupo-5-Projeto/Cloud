@@ -242,62 +242,46 @@
     }
 
     .chart-container-biometria {
-      position: relative;
-      /* Importante para que a legenda absoluta flutue dentro dele */
-      min-height: 650px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 0.5rem;
-      padding: 1rem;
+        position: relative; /* Importante para que a legenda absoluta flutue dentro dele */
+        min-height: 650px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        padding: 1rem;
     }
 
     /* Estilo da legenda flutuante */
     .chart-legend {
-      position: absolute;
-      /* Posiciona a legenda sobre o gráfico */
-      top: 10px;
-      /* Distância do topo do container */
-      right: 10px;
-      /* Distância da direita do container */
-      background-color: rgba(255, 255, 255, 0.9);
-      /* Fundo branco semi-transparente */
-      border: 1px solid #ccc;
-      /* Borda leve */
-      border-radius: 5px;
-      /* Cantos arredondados */
-      padding: 10px 15px;
-      /* Espaçamento interno */
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      /* Sombra para dar profundidade */
-      z-index: 10;
-      /* Garante que a legenda fique acima do gráfico */
-      display: flex;
-      /* Para organizar os itens da legenda */
-      flex-direction: column;
-      /* Itens um abaixo do outro */
-      gap: 8px;
-      /* Espaçamento entre os itens */
+        position: absolute; /* Posiciona a legenda sobre o gráfico */
+        top: 10px;          /* Distância do topo do container */
+        right: 10px;        /* Distância da direita do container */
+        background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
+        border: 1px solid #ccc; /* Borda leve */
+        border-radius: 5px; /* Cantos arredondados */
+        padding: 10px 15px; /* Espaçamento interno */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
+        z-index: 10;        /* Garante que a legenda fique acima do gráfico */
+        display: flex;      /* Para organizar os itens da legenda */
+        flex-direction: column; /* Itens um abaixo do outro */
+        gap: 8px;           /* Espaçamento entre os itens */
     }
 
     .chart-legend-item {
-      display: flex;
-      align-items: center;
-      font-size: 0.9em;
-      color: #333;
+        display: flex;
+        align-items: center;
+        font-size: 0.9em;
+        color: #333;
     }
 
     .chart-legend-color-box {
-      width: 18px;
-      /* Tamanho do quadrado de cor */
-      height: 18px;
-      /* Tamanho do quadrado de cor */
-      margin-right: 8px;
-      /* Espaçamento entre o quadrado e o texto */
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      /* Borda leve para o quadrado */
-      border-radius: 3px;
-      /* Leve arredondamento nos quadrados de cor */
+        width: 18px;     /* Tamanho do quadrado de cor */
+        height: 18px;    /* Tamanho do quadrado de cor */
+        margin-right: 8px; /* Espaçamento entre o quadrado e o texto */
+        border: 1px solid rgba(0, 0, 0, 0.2); /* Borda leve para o quadrado */
+        border-radius: 3px; /* Leve arredondamento nos quadrados de cor */
     }
+
+
   </style>
 </head>
 
@@ -353,6 +337,13 @@
           <h2 class="text-sm text-black">KPI 6</h2>
           <p class="text-2xl font-bold text-black">303</p>
         </div>
+<div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+  <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
+    Palavras Mais Frequentes
+    <div id="topPalavras" style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;"></div>
+  </div>
+</div>
+
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
             Palavras Mais Frequentes
@@ -367,6 +358,10 @@
             Quantidade Média de Pessoas<br>
             <span id="variacaoQtdPessoas"></span>
           </div>
+          <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
+          Quantidade Média de Pessoas<br>
+          <span id="variacaoQtdPessoas"></span>
+        </div>
         </div>
       </div>
 
