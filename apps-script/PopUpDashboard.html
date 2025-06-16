@@ -240,6 +240,48 @@
       width: 100%;
       height: 100%;
     }
+
+    .chart-container-biometria {
+        position: relative; /* Importante para que a legenda absoluta flutue dentro dele */
+        min-height: 650px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    /* Estilo da legenda flutuante */
+    .chart-legend {
+        position: absolute; /* Posiciona a legenda sobre o gráfico */
+        top: 10px;          /* Distância do topo do container */
+        right: 10px;        /* Distância da direita do container */
+        background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
+        border: 1px solid #ccc; /* Borda leve */
+        border-radius: 5px; /* Cantos arredondados */
+        padding: 10px 15px; /* Espaçamento interno */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
+        z-index: 10;        /* Garante que a legenda fique acima do gráfico */
+        display: flex;      /* Para organizar os itens da legenda */
+        flex-direction: column; /* Itens um abaixo do outro */
+        gap: 8px;           /* Espaçamento entre os itens */
+    }
+
+    .chart-legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.9em;
+        color: #333;
+    }
+
+    .chart-legend-color-box {
+        width: 18px;     /* Tamanho do quadrado de cor */
+        height: 18px;    /* Tamanho do quadrado de cor */
+        margin-right: 8px; /* Espaçamento entre o quadrado e o texto */
+        border: 1px solid rgba(0, 0, 0, 0.2); /* Borda leve para o quadrado */
+        border-radius: 3px; /* Leve arredondamento nos quadrados de cor */
+    }
+
+
   </style>
 </head>
 
@@ -307,9 +349,10 @@
         </div>
       </div>
 
-      <!-- @ -->
-      <div class="chart-container">
-        <canvas id="upaChart1"></canvas>
+      <!-- MATEUS -->
+      <div class="chart-container-biometria">
+        <canvas id="comparativoBarChartBiometria"></canvas>
+        <div id="customBiometriaLegend" class="chart-legend"></div>
       </div>
       <!-- SOFHIA -->
       <div class="chart-container">
@@ -319,7 +362,7 @@
       <div class="chart-container">
         <canvas id="occupancyTempChart"></canvas>
       </div>
-      <!-- @ -->
+      <!-- EDUARDO -->
       <div class="chart-container">
         <canvas id="graficoVisaoComputacionalSemanal"></canvas>
       </div>
@@ -426,6 +469,162 @@
 
 
 // GRÁFICO 1
+function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
+    if (allCharts.comparativoBarChartBiometria) {
+        allCharts.comparativoBarChartBiometria.destroy();
+    }
+
+    const ctx = document.getElementById('comparativoBarChartBiometria').getContext('2d');
+    if (!ctx) {
+        console.error("Canvas element with ID 'comparativoBarChartBiometria' not found.");
+        return;
+    }
+
+    // Definir as faixas de horário fixas
+    const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
+
+    // Definir as faixas etárias fixas e na ordem desejada
+    const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
+
+    // Define specific colors for each fixed age range for consistency
+    const faixaEtariaColors = {
+        '0-12': 'rgba(75, 192, 192, 0.8)',   // Example: Teal/Cyan
+        '13-17': 'rgba(255, 159, 64, 0.8)',  // Example: Orange
+        '18-39': 'rgba(54, 162, 235, 0.8)',  // Example: Blue
+        '40-59': 'rgba(153, 102, 255, 0.8)', // Example: Purple
+        '60+': 'rgba(255, 99, 132, 0.8)'     // Example: Red
+    };
+
+    // Estrutura para contar os atendimentos por faixa etária e faixa de hora
+    const counts = {};
+    fixedFaixasEtarias.forEach(faixa => {
+        counts[faixa] = {};
+        faixasHorario.forEach(hora => {
+            counts[faixa][hora] = 0;
+        });
+    });
+
+    // Preencher as contagens com os dados recebidos
+    chartData.forEach(item => {
+        const currentFaixaEtaria = item.faixaEtaria;
+        const currentFaixaHora = item.faixaHora;
+
+        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
+            if (!counts[currentFaixaEtaria]) {
+                counts[currentFaixaEtaria] = {};
+            }
+            if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
+                counts[currentFaixaEtaria][currentFaixaHora] = 0;
+            }
+            counts[currentFaixaEtaria][currentFaixaHora]++;
+        } else {
+            console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
+        }
+    });
+
+    // Preparar os datasets para o Chart.js
+      const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
+        const data = faixasHorario.map(hora => counts[faixaEtaria][hora]);
+        const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)';
+        const borderColor = backgroundColor.replace('0.8', '1');
+
+        return {
+            label: faixaEtaria,
+            data: data,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            borderWidth: 1
+        };
+    });
+
+    allCharts.comparativoBarChartBiometria = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: faixasHorario,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Distribuição de Biometrias por Faixa Etária e Horário (${upaNome} - ${dataFormatada})`,
+                    font: {
+                        size: 18
+                    }
+                },
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return `Horário: ${context[0].label}`;
+                        },
+                        label: function(context) {
+                            const datasetLabel = context.dataset.label || '';
+                            const value = context.raw;
+                            return `${datasetLabel}: ${value} pacientes`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Horário do Dia',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    grid: {
+                        display: false // No vertical grid lines
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Número de Pacientes',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    ticks: {
+                        precision: 0 // Ensure integer ticks on Y-axis
+                    },
+                    grid: {
+                        display: true, // Show horizontal grid lines (default is usually true, but explicit for clarity)
+                        color: 'rgba(0, 0, 0, 0.1)' // Light gray grid lines
+                    }
+                }
+            }
+        }
+    });
+// --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
+    const customLegendContainer = document.getElementById('customBiometriaLegend');
+    if (customLegendContainer) {
+        customLegendContainer.innerHTML = ''; // Limpa qualquer conteúdo anterior
+
+        fixedFaixasEtarias.forEach(faixaEtaria => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'chart-legend-item';
+
+            const colorBox = document.createElement('span');
+            colorBox.className = 'chart-legend-color-box';
+            colorBox.style.backgroundColor = faixaEtariaColors[faixaEtaria] || 'gray'; // Usa a cor definida ou cinza padrão
+
+            const labelText = document.createTextNode(faixaEtaria);
+
+            itemDiv.appendChild(colorBox);
+            itemDiv.appendChild(labelText);
+            customLegendContainer.appendChild(itemDiv);
+        });
+    }
+    // --- FIM DO CÓDIGO NOVO ---
+}
 
 // GRÁFICO 2 
     /**
@@ -1162,14 +1361,34 @@ function enviarSelecao() {
     document.getElementById('dashboardTitle').textContent = `Dashboard da ${upaNome} ${dataFormatadaParaTitulo}`;
 
 
-    // Colocar aqui a função para destruir os gráficos!!!
-    // allCharts.lineChart.destroy();
-    // allCharts.lineChart = null;
 
-
-
-
-    // 1.1 Chamar a função para o Gráfico de ?
+    // 1.1 Chamar a função para o Gráfico de biometria
+    google.script.run
+    .withSuccessHandler(function(biometricChartData) {
+        console.log("Dados recebidos para o Gráfico de Biometria:", biometricChartData);
+        if (biometricChartData && biometricChartData.length > 0) {
+            renderComparativoBarChartBiometria(biometricChartData, upaNome, dataFormatadaParaTitulo);
+        } else {
+            console.warn("Nenhum dado de biometria encontrado para a UPA e data selecionadas.");
+            if (allCharts.comparativoBarChartBiometria) {
+                allCharts.comparativoBarChartBiometria.destroy();
+                allCharts.comparativoBarChartBiometria = null;
+            }
+            const ctx = document.getElementById('comparativoBarChartBiometria').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Limpa o canvas
+        }
+    })
+    .withFailureHandler(function(error) {
+        console.error("Erro ao carregar dados para o Gráfico de Biometria:", error);
+        alert("Erro ao carregar dados de Biometria: " + error.message);
+        if (allCharts.comparativoBarChartBiometria) {
+            allCharts.comparativoBarChartBiometria.destroy();
+            allCharts.comparativoBarChartBiometria = null;
+        }
+        const ctx = document.getElementById('comparativoBarChartBiometria').getContext('2d');
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    })
+    .getBiometricChartDataForUpaAndDate(upaNome, dataSelecionadaInput);
 
     // 1.2 Chamar a função para o Gráfico de Umidade
     google.script.run
