@@ -300,8 +300,10 @@
           <p class="text-2xl font-bold text-black">404</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 8</h2>
-          <p class="text-2xl font-bold text-black">505</p>
+          <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
+          Quantidade Média de Pessoas<br>
+          <span id="variacaoQtdPessoas"></span>
+        </div>
         </div>
       </div>
 
@@ -666,151 +668,151 @@ function plotarGraficoMediaPessoasSemanal(dados){
 
 // GRÁFICO 3 
 
-// function plotarGraficoOcupacaoTemperatura(dados) {
-//   const ctx = document.getElementById('graficoOcupacaoTemperatura').getContext('2d');
+function plotarGraficoOcupacaoTemperatura(dados) {
+  const ctx = document.getElementById('graficoOcupacaoTemperatura').getContext('2d');
 
-//   // Se já existir um gráfico, destrói ele antes de criar o novo
-//   if (allCharts.ocupacaoTemperaturaChart) {
-//     allCharts.ocupacaoTemperaturaChart.destroy();
-//   }
+  // Se já existir um gráfico, destrói ele antes de criar o novo
+  if (allCharts.ocupacaoTemperaturaChart) {
+    allCharts.ocupacaoTemperaturaChart.destroy();
+  }
 
-//   const labels = dados.map(d => d.horario);
-//   const dadosTemperatura = dados.map(d => d.temperatura);
-//   const dadosOcupacao = dados.map(d => d.ocupacao);
+  const labels = dados.map(d => d.horario);
+  const dadosTemperatura = dados.map(d => d.temperatura);
+  const dadosOcupacao = dados.map(d => d.ocupacao);
 
-//   allCharts.ocupacaoTemperaturaChart = new Chart(ctx, {
-//     type: 'bar', // O tipo principal é 'bar' porque 'ocupação' será barras
-//     data: {
-//       labels: labels,
-//       datasets: [
-//         {
-//           label: 'Ocupação (número de pessoas)', // Ocupação como barras
-//           data: dadosOcupacao,
-//           backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para ocupação
-//           borderColor: 'rgba(173, 216, 230, 1)', // Borda azul clara
-//           borderWidth: 1,
-//           yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
-//         },
-//         {
-//           label: 'Temperatura Ambiente (°C)', // Temperatura como linha
-//           data: dadosTemperatura,
-//           type: 'line', // Define este dataset como um gráfico de linha
-//           borderColor: 'rgba(255, 0, 0, 1)', // Cor da linha vermelha
-//           backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
-//           fill: false, // Não preenche a área abaixo da linha
-//           tension: 0.1, // Suaviza a linha
-//           pointRadius: 3, // Tamanho dos pontos na linha
-//           pointHoverRadius: 5,
-//           yAxisID: 'yTemperatura' // Associa ao eixo Y da temperatura
-//         }
-//       ]
-//     },
-//     options: {
-//       responsive: true,
-//       maintainAspectRatio: false, // Permite maior controle sobre a altura/largura
-//       plugins: {
-//         title: {
-//           display: true,
-//           // Título mais conciso, alinhado com a imagem de referência
-//           text: 'Ocupação da Sala vs Temperatura',
-//           font: {
-//             size: 20 // Tamanho da fonte do título
-//           }
-//         },
-//         legend: {
-//           display: true,
-//           position: 'top', // Legenda no topo
-//           labels: {
-//             font: {
-//               size: 14 // Tamanho da fonte da legenda
-//             },
-//             usePointStyle: true // Usa o estilo do ponto/barra na legenda
-//           }
-//         },
-//         tooltip: {
-//             mode: 'index',
-//             intersect: false,
-//             callbacks: {
-//                 label: function(context) {
-//                     let label = context.dataset.label || '';
-//                     if (label) {
-//                         label += ': ';
-//                     }
-//                     if (context.dataset.label === 'Temperatura Ambiente (°C)') {
-//                         return label + context.parsed.y + '°C';
-//                     } else if (context.dataset.label === 'Ocupação (número de pessoas)') {
-//                         return label + context.parsed.y + ' pessoas';
-//                     }
-//                     return label + context.parsed.y;
-//                 }
-//             }
-//         }
-//       },
-//       scales: {
-//         x: {
-//           title: {
-//             display: true,
-//             text: 'Hora do Dia', // Rótulo do eixo X
-//             font: {
-//               size: 16 // Tamanho da fonte do rótulo do eixo X
-//             }
-//           },
-//           // Garante que todos os rótulos sejam visíveis, se houver muitos, pode haver sobreposição.
-//           // Para um "a cada 1 hora" é melhor ter dados para cada hora exata ou agrupar.
-//           ticks: {
-//             autoSkip: false, // Tenta mostrar todos os ticks
-//             maxRotation: 45, // Rotaciona os rótulos se houver muitos
-//             minRotation: 0,
-//             font: {
-//                 size: 12
-//             }
-//           },
-//           grid: {
-//               display: false // Remover linhas de grade verticais para um visual mais limpo
-//           }
-//         },
-//         yOcupacao: { // Eixo Y para Ocupação (esquerda)
-//           type: 'linear',
-//           position: 'left',
-//           title: {
-//             display: true,
-//             text: 'Ocupação', // Rótulo do eixo Y da ocupação
-//             font: {
-//               size: 16,
-//               weight: 'bold'
-//             }
-//           },
-//           ticks: {
-//             beginAtZero: true // Começa em zero
-//           },
-//           grid: {
-//             drawOnChartArea: true, // Manter as linhas de grade horizontais para ocupação
-//             color: 'rgba(0, 0, 0, 0.1)' // Cor da grade clara
-//           }
-//         },
-//         yTemperatura: { // Eixo Y para Temperatura (direita)
-//           type: 'linear',
-//           position: 'right',
-//           title: {
-//             display: true,
-//             text: 'Temperatura (°C)', // Rótulo do eixo Y da temperatura
-//             font: {
-//               size: 16,
-//               weight: 'bold'
-//             }
-//           },
-//           ticks: {
-//             // Você pode definir min/max aqui se quiser um controle mais preciso da escala.
-//             // Exemplo: min: 20, max: 30
-//           },
-//           grid: {
-//             drawOnChartArea: false // Não desenhar linhas de grade para este eixo (para não duplicar)
-//           }
-//         }
-//       }
-//     }
-//   });
-// }
+  allCharts.ocupacaoTemperaturaChart = new Chart(ctx, {
+    type: 'bar', // O tipo principal é 'bar' porque 'ocupação' será barras
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Ocupação (número de pessoas)', // Ocupação como barras
+          data: dadosOcupacao,
+          backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para ocupação
+          borderColor: 'rgba(173, 216, 230, 1)', // Borda azul clara
+          borderWidth: 1,
+          yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
+        },
+        {
+          label: 'Temperatura Ambiente (°C)', // Temperatura como linha
+          data: dadosTemperatura,
+          type: 'line', // Define este dataset como um gráfico de linha
+          borderColor: 'rgba(255, 0, 0, 1)', // Cor da linha vermelha
+          backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
+          fill: false, // Não preenche a área abaixo da linha
+          tension: 0.1, // Suaviza a linha
+          pointRadius: 3, // Tamanho dos pontos na linha
+          pointHoverRadius: 5,
+          yAxisID: 'yTemperatura' // Associa ao eixo Y da temperatura
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Permite maior controle sobre a altura/largura
+      plugins: {
+        title: {
+          display: true,
+          // Título mais conciso, alinhado com a imagem de referência
+          text: 'Ocupação da Sala vs Temperatura',
+          font: {
+            size: 20 // Tamanho da fonte do título
+          }
+        },
+        legend: {
+          display: true,
+          position: 'top', // Legenda no topo
+          labels: {
+            font: {
+              size: 14 // Tamanho da fonte da legenda
+            },
+            usePointStyle: true // Usa o estilo do ponto/barra na legenda
+          }
+        },
+        tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                label: function(context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                        label += ': ';
+                    }
+                    if (context.dataset.label === 'Temperatura Ambiente (°C)') {
+                        return label + context.parsed.y + '°C';
+                    } else if (context.dataset.label === 'Ocupação (número de pessoas)') {
+                        return label + context.parsed.y + ' pessoas';
+                    }
+                    return label + context.parsed.y;
+                }
+            }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Hora do Dia', // Rótulo do eixo X
+            font: {
+              size: 16 // Tamanho da fonte do rótulo do eixo X
+            }
+          },
+          // Garante que todos os rótulos sejam visíveis, se houver muitos, pode haver sobreposição.
+          // Para um "a cada 1 hora" é melhor ter dados para cada hora exata ou agrupar.
+          ticks: {
+            autoSkip: false, // Tenta mostrar todos os ticks
+            maxRotation: 45, // Rotaciona os rótulos se houver muitos
+            minRotation: 0,
+            font: {
+                size: 12
+            }
+          },
+          grid: {
+              display: false // Remover linhas de grade verticais para um visual mais limpo
+          }
+        },
+        yOcupacao: { // Eixo Y para Ocupação (esquerda)
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Ocupação', // Rótulo do eixo Y da ocupação
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          ticks: {
+            beginAtZero: true // Começa em zero
+          },
+          grid: {
+            drawOnChartArea: true, // Manter as linhas de grade horizontais para ocupação
+            color: 'rgba(0, 0, 0, 0.1)' // Cor da grade clara
+          }
+        },
+        yTemperatura: { // Eixo Y para Temperatura (direita)
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Temperatura (°C)', // Rótulo do eixo Y da temperatura
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          ticks: {
+            // Você pode definir min/max aqui se quiser um controle mais preciso da escala.
+            // Exemplo: min: 20, max: 30
+          },
+          grid: {
+            drawOnChartArea: false // Não desenhar linhas de grade para este eixo (para não duplicar)
+          }
+        }
+      }
+    }
+  });
+}
 
 // GRÁFICO 4 
 
@@ -1195,24 +1197,15 @@ function enviarSelecao() {
         .withSuccessHandler(function(chartData) {
             console.log("Dados recebidos para o Gráfico de Ocupação vs Temperatura:", chartData);
             if (chartData && chartData.length > 0) {
-                // Se a função plotarGraficoOcupacaoTemperatura não usa upaNome e dataFormatada,
-                // você pode omitir passá-los aqui, mas é uma boa prática incluí-los
-                // se for atualizar o título do gráfico dentro dela.
                 plotarGraficoOcupacaoTemperatura(chartData);
             } else {
                 console.warn("Nenhum dado válido de ocupação vs temperatura encontrado.");
-                // Opcionalmente, limpar o gráfico ou mostrar uma mensagem no próprio canvas.
             }
         })
         .withFailureHandler(function(error) {
             console.error("Erro ao carregar dados para o Gráfico de Ocupação vs Temperatura:", error);
         })
-        // **IMPORTANTE**: Sua função getOcupacaoTemperaturaPorHora no Apps Script
-        // precisa ser modificada para aceitar upaNome e dataSelecionadaInput
-        // se você quiser filtrar os dados por UPA e data. Atualmente, ela não os recebe.
-        .getOcupacaoTemperaturaPorHora(); // Chamando a função do Apps Script
-                                          // Se precisar de UPA/Data, mude para:
-                                          // .getOcupacaoTemperaturaPorHora(upaNome, dataSelecionadaInput);
+        .getOcupacaoTemperaturaPorHora(); 
 
     // 1.4 Chamar a função para o Gráfico de ?
     // 1.5 Chamar a função para o Gráfico de temperatura do paciente
@@ -1286,6 +1279,24 @@ function enviarSelecao() {
         console.error("Erro ao carregar dados para o Gráfico de Ocupação vs Temperatura:", error);
     })
     .getGraficoVisaoComputacionalSemanal(idUpa); // Esta é a função no seu Apps Script
+
+    //Chamar a função KPI quantidade média de pessoas
+  google.script.run
+    .withSuccessHandler(function(variacao) {
+     const span = document.getElementById('variacaoQtdPessoas');
+     const valor = parseFloat(variacao);
+      if (isNaN(valor)) {
+        span.textContent = "Sem dados";
+        span.style.color = "gray";
+      } else {
+        span.textContent = `${valor > 0 ? '+' : ''}${variacao}%`;
+        span.style.color = valor > 0 ? 'green' : 'red';
+     }
+   })
+    .withFailureHandler(function(error) {
+     console.error("Erro ao calcular KPI:", error);
+    })
+  .getKpiQuantidadeMediaPessoas(dataSelecionadaInput);
 }
 
       /**
