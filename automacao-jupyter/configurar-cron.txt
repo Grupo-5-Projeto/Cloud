@@ -1,0 +1,10 @@
+crontab -e
+
+verificar se está ativo:
+sudo systemctl status crond
+-- caso nao:
+    sudo systemctl enable crond
+    sudo systemctl start crond
+
+
+../Cloud/automacao-jupyter/crontab-jupyter.py
