@@ -242,46 +242,62 @@
     }
 
     .chart-container-biometria {
-        position: relative; /* Importante para que a legenda absoluta flutue dentro dele */
-        min-height: 650px;
-        background-color: #ffffff;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 0.5rem;
-        padding: 1rem;
+      position: relative;
+      /* Importante para que a legenda absoluta flutue dentro dele */
+      min-height: 650px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
     }
 
     /* Estilo da legenda flutuante */
     .chart-legend {
-        position: absolute; /* Posiciona a legenda sobre o gráfico */
-        top: 10px;          /* Distância do topo do container */
-        right: 10px;        /* Distância da direita do container */
-        background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
-        border: 1px solid #ccc; /* Borda leve */
-        border-radius: 5px; /* Cantos arredondados */
-        padding: 10px 15px; /* Espaçamento interno */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
-        z-index: 10;        /* Garante que a legenda fique acima do gráfico */
-        display: flex;      /* Para organizar os itens da legenda */
-        flex-direction: column; /* Itens um abaixo do outro */
-        gap: 8px;           /* Espaçamento entre os itens */
+      position: absolute;
+      /* Posiciona a legenda sobre o gráfico */
+      top: 10px;
+      /* Distância do topo do container */
+      right: 10px;
+      /* Distância da direita do container */
+      background-color: rgba(255, 255, 255, 0.9);
+      /* Fundo branco semi-transparente */
+      border: 1px solid #ccc;
+      /* Borda leve */
+      border-radius: 5px;
+      /* Cantos arredondados */
+      padding: 10px 15px;
+      /* Espaçamento interno */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      /* Sombra para dar profundidade */
+      z-index: 10;
+      /* Garante que a legenda fique acima do gráfico */
+      display: flex;
+      /* Para organizar os itens da legenda */
+      flex-direction: column;
+      /* Itens um abaixo do outro */
+      gap: 8px;
+      /* Espaçamento entre os itens */
     }
 
     .chart-legend-item {
-        display: flex;
-        align-items: center;
-        font-size: 0.9em;
-        color: #333;
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      color: #333;
     }
 
     .chart-legend-color-box {
-        width: 18px;     /* Tamanho do quadrado de cor */
-        height: 18px;    /* Tamanho do quadrado de cor */
-        margin-right: 8px; /* Espaçamento entre o quadrado e o texto */
-        border: 1px solid rgba(0, 0, 0, 0.2); /* Borda leve para o quadrado */
-        border-radius: 3px; /* Leve arredondamento nos quadrados de cor */
+      width: 18px;
+      /* Tamanho do quadrado de cor */
+      height: 18px;
+      /* Tamanho do quadrado de cor */
+      margin-right: 8px;
+      /* Espaçamento entre o quadrado e o texto */
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      /* Borda leve para o quadrado */
+      border-radius: 3px;
+      /* Leve arredondamento nos quadrados de cor */
     }
-
-
   </style>
 </head>
 
@@ -310,8 +326,8 @@
       <!-- Linha 1 - KPIs -->
       <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 1</h2>
-          <p class="text-2xl font-bold text-black">123</p>
+          <h2 class="text-sm text-black">Umidade com limite ultrapassado</h2>
+          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">KPI 2</h2>
@@ -337,16 +353,9 @@
           <h2 class="text-sm text-black">KPI 6</h2>
           <p class="text-2xl font-bold text-black">303</p>
         </div>
-<div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-  <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
-    Palavras Mais Frequentes
-    <div id="topPalavras" style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;"></div>
-  </div>
-</div>
-
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Palavras Mais Frequentes</h2>
           <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
-            Palavras Mais Frequentes
             <div id="topPalavras"
               style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;">
             </div>
@@ -354,14 +363,10 @@
         </div>
 
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Quantidade Média de Pessoas</h2>
           <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
-            Quantidade Média de Pessoas<br>
             <span id="variacaoQtdPessoas"></span>
           </div>
-          <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
-          Quantidade Média de Pessoas<br>
-          <span id="variacaoQtdPessoas"></span>
-        </div>
         </div>
       </div>
 
@@ -680,14 +685,17 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
     * @param {string} upaNome O nome da UPA selecionada.
     * @param {string} dataFormatada A data formatada para o título.
     */
-    function renderLineChart(chartData, upaNome, dataFormatada) {
-        // if (allCharts.lineChart) {
-        //     allCharts.lineChart.destroy();
-        // }
+function renderLineChart(chartData, upaNome, dataFormatada) {
+    // Se você estiver recriando o gráfico várias vezes, 
+    // é uma boa prática destruir a instância anterior para evitar problemas de memória.
+    // Descomente o bloco abaixo se necessário.
+    // if (allCharts.lineChart) {
+    //     allCharts.lineChart.destroy();
+    // }
 
-        const ctx = document.getElementById('lineChart').getContext('2d');
+    const ctx = document.getElementById('lineChart').getContext('2d');
 
-            const datasets = [
+    const datasets = [
         {
             label: 'Umidade',
             data: chartData.umidade, // Array de {x: hora, y: umidade}
@@ -696,7 +704,6 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
             borderWidth: 2,
             pointRadius: 6,
             pointHoverRadius: 8,
-
             fill: false,
             tension: 0.1,
             yAxisID: 'yUmidade' // Associa ao eixo Y da umidade
@@ -739,6 +746,12 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
         }
     ];
 
+    // Supondo que 'allCharts' seja um objeto global para armazenar as instâncias dos gráficos
+    window.allCharts = window.allCharts || {};
+    if (window.allCharts.lineChart) {
+        window.allCharts.lineChart.destroy();
+    }
+
     allCharts.lineChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -757,12 +770,12 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                 },
                 legend: {
                     display: true,
-                    position: 'top', // Posição da legenda como na imagem
+                    position: 'top',
                     labels: {
                         font: {
                             size: 12
                         },
-                        usePointStyle: true // Usar o estilo do ponto/linha para os itens da legenda
+                        usePointStyle: true
                     }
                 },
                 tooltip: {
@@ -772,17 +785,18 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                             if (label === 'Umidade') {
                                 return `Umidade: ${context.parsed.y}%`;
                             } else {
-                                // Para as linhas de temperatura, só queremos o rótulo
                                 return `${label}: ${context.parsed.y}°C`;
                             }
                         },
+                        // =================== ALTERAÇÃO 2 (Tooltip) ===================
+                        // Adiciona o "h" no título do tooltip que mostra a hora.
                         title: function(context) {
-                            // Only show hour for humidity points, for temperature lines, no title is needed
-                            if (context[0].dataset.label === 'Umidade') {
-                                return `Hora: ${context[0].parsed.x}`;
+                            if (context.length > 0 && context[0].dataset.label === 'Umidade') {
+                                return `Hora: ${context[0].parsed.x}h`; // Adicionado "h" aqui
                             }
-                            return null; // Don't show title for temperature lines
+                            return null;
                         }
+                        // =============================================================
                     }
                 }
             },
@@ -800,10 +814,17 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     min: 0,
                     max: 23,
                     ticks: {
-                        stepSize: 1
+                        stepSize: 1,
+                        // =================== ALTERAÇÃO 1 (Eixo X) ===================
+                        // Usa um callback para formatar cada rótulo do eixo X,
+                        // adicionando a letra "h" ao final do número da hora.
+                        callback: function(value, index, ticks) {
+                            return value + 'h';
+                        }
+                        // ============================================================
                     },
                     grid: {
-                        display: false // Remover as linhas de grade verticais
+                        display: false
                     }
                 },
                 yUmidade: {
@@ -814,45 +835,48 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                         text: 'Umidade (%)',
                         font: {
                             size: 14,
-                            weight: 'bold', // Deixar o título do eixo em negrito
-                            color: '#36A2EB' // Cor do texto do eixo Y da umidade
+                            weight: 'bold',
+                            color: '#36A2EB'
                         }
                     },
-                    min: 40, // Ajuste de acordo com a imagem
-                    max: 95, // Ajuste de acordo com a imagem
+                    min: 20,
+                    max: 95,
                     ticks: {
-                        color: '#36A2EB' // Cor dos ticks do eixo Y da umidade
+                        color: '#36A2EB'
                     },
                     grid: {
-                        drawOnChartArea: true // Manter as linhas de grade horizontais para umidade
+                        drawOnChartArea: true
                     }
                 },
                 yTemperatura: {
                     type: 'linear',
-                    position: 'right', // Eixo Y secundário à direita
+                    position: 'right',
                     title: {
                         display: true,
                         text: 'Temperatura (°C)',
                         font: {
                             size: 14,
-                            weight: 'bold', // Deixar o título do eixo em negrito
-                            color: 'red' // Cor do texto do eixo Y da temperatura
+                            weight: 'bold',
+                            color: 'red'
                         }
                     },
-                    min: 16, // Ajuste de acordo com a imagem
-                    max: 27, // Ajuste de acordo com a imagem
+                    // =================== ALTERAÇÃO AQUI ===================
+                    // As linhas 'min' e 'max' foram removidas para permitir a escala automática.
+                    // O Chart.js vai definir o mínimo e máximo com base nos seus dados.
+                    // Adicionando 'grace' para dar uma pequena margem visual (opcional).
+                    grace: '10%',
+                    // ======================================================
                     ticks: {
-                        color: 'red' // Cor dos ticks do eixo Y da temperatura
+                        color: 'red'
                     },
                     grid: {
-                        drawOnChartArea: false // Não desenhar linhas de grade para este eixo
+                        drawOnChartArea: false
                     }
                 }
             }
         }
     });
-
-    }
+}
 
 function plotarGraficoMediaPessoasSemanal(dados){
   // graficoVisaoComputacionalSemanal
@@ -1455,12 +1479,12 @@ function enviarSelecao() {
                 const ctx = document.getElementById('lineChart').getContext('2d');
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 // Opcional: mostrar uma mensagem de "nenhum dado" ao usuário
-                alert("Nenhum dado de umidade disponível para a UPA e data selecionadas.");
+                // alert("Nenhum dado de umidade disponível para a UPA e data selecionadas.");
             }
         })
         .withFailureHandler(function(error) {
             console.error("Erro ao carregar dados para o Gráfico de Umidade:", error);
-            alert("Erro ao carregar dados de Umidade e Temperatura: " + error.message); // Substituído alert()
+            // alert("Erro ao carregar dados de Umidade e Temperatura: " + error.message); // Substituído alert()
 
             if (allCharts.lineChart) {
                 allCharts.lineChart.destroy();
@@ -1575,6 +1599,44 @@ function enviarSelecao() {
         console.error("Erro ao carregar dados para o Gráfico de Ocupação vs Temperatura:", error);
     })
     .getGraficoVisaoComputacionalSemanal(idUpa); // Esta é a função no seu Apps Script
+
+//Chamar a função KPI qtde de vezes que a média da umidade ultrapassou o limite no dia
+  google.script.run
+  .withSuccessHandler(function(quantidade) {
+    const span = document.getElementById('kpiUmidadeUltrapassada'); // Mantenha este ID se for o elemento onde a KPI será exibida
+    const valor = parseFloat(quantidade);
+  const upaNome = document.getElementById('upa').value;
+    if (isNaN(valor)) {
+      span.textContent = "Sem dados";
+      span.style.color = "gray";
+    } else {
+        if(valor == 1) {
+          span.textContent = `${valor} registro`; // Mostra a quantidade de registros
+        } else {
+          span.textContent = `${valor} registros`; // Mostra a quantidade de registros
+        }
+      
+
+      if (valor >= 20) {
+        span.style.color = "red";
+      } else if (valor >= 12 && valor < 20) {
+        span.style.color = "orange";
+      } else if (valor >= 3 && valor < 12) {
+        span.style.color = "yellow";
+      } else if (valor >= 1 && valor < 3) {
+        span.style.color = "green";
+      } else {
+        span.style.color = "gray"; // Para casos onde o valor é 0 ou negativo, embora o KPI de contagem não deva ser negativo.
+      }
+    }
+  })
+  .withFailureHandler(function(error) {
+    console.error("Erro ao calcular KPI:", error);
+    const span = document.getElementById('kpiUmidadeUltrapassada');
+    span.textContent = "Erro";
+    span.style.color = "gray";
+  })
+  .getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaNome); // Chama a função correta da sua KPI
 
     //Chamar a função KPI quantidade média de pessoas
   google.script.run

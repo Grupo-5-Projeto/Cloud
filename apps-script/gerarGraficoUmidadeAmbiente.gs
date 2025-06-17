@@ -86,7 +86,6 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
   // Cria um objeto Date para a data selecionada, normalizando para o início do dia
   // Importante: new Date(year, month, day) cria a data no fuso horário local do script.
   const selectedDate = new Date(anoSelecionado, mesSelecionado, diaSelecionado);
-  console.log(`Função chamada com UPA: "${upaNome}" e Data: "${dateString}" (Objeto Date selecionado: ${selectedDate.toLocaleDateString('pt-BR')} - ISO: ${selectedDate.toISOString()})`);
 
   if (dataRows.length === 0) {
     console.warn("Nenhuma linha de dados encontrada na planilha (além do cabeçalho).");
@@ -101,12 +100,6 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
     // Normaliza os nomes da UPA para comparação (remove espaços em branco e garante string)
     const normalizedUpaFromSheet = String(currentUpaRaw).trim();
     const normalizedUpaName = String(upaNome).trim();
-
-    // --- Depuração de UPA ---
-    console.log(`--- Linha ${index + START_ROW} ---`); // +START_ROW porque pula o cabeçalho e é base 1
-    console.log(`UPA na linha (raw): "${currentUpaRaw}" (typeof: ${typeof currentUpaRaw}) | UPA na linha (normalized): "${normalizedUpaFromSheet}"`);
-    console.log(`UPA Selecionada (raw): "${upaNome}" (typeof: ${typeof upaNome}) | UPA Selecionada (normalized): "${normalizedUpaName}"`);
-    console.log(`Comparação UPA (normalized): ${normalizedUpaFromSheet === normalizedUpaName}`);
 
     // --- Depuração e Normalização de Data da Planilha ---
     let dateFromSheet = null;
@@ -133,13 +126,7 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
       // Normaliza as datas para comparação (removendo a hora, fuso horário do script)
       const normalizedSheetDate = new Date(dateFromSheet.getFullYear(), dateFromSheet.getMonth(), dateFromSheet.getDate());
       dateMatch = (normalizedSheetDate.getTime() === selectedDate.getTime());
-      console.log(`Data na linha (bruta): "${rowDateRaw}" (typeof: ${typeof rowDateRaw})`);
-      console.log(`Data na linha (convertida): ${dateFromSheet ? dateFromSheet.toLocaleDateString('pt-BR') : 'Inválida'} - ISO: ${dateFromSheet ? dateFromSheet.toISOString() : 'N/A'}`);
-      console.log(`Data na linha (normalizada para 00:00:00): ${normalizedSheetDate.toLocaleDateString('pt-BR')} - ISO: ${normalizedSheetDate.toISOString()}`);
-      console.log(`Data Selecionada (normalizada para 00:00:00): ${selectedDate.toLocaleDateString('pt-BR')} - ISO: ${selectedDate.toISOString()}`);
-      console.log(`Comparação Data (getTime()): ${normalizedSheetDate.getTime()} === ${selectedDate.getTime()} -> ${dateMatch}`);
     } else {
-      console.log(`Data na linha (bruta): "${rowDateRaw}" (typeof: ${typeof rowDateRaw})`);
       console.log("Data na linha inválida, não pode ser parseada.");
     }
 
@@ -167,7 +154,6 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
           x: hora,
           y: umidade
         });
-        console.log(`Dado de umidade por hora adicionado: Hora=${hora}, Umidade=${umidade}`);
       } else {
         console.warn(`Dados inválidos (NaN) para umidade ou hora na linha: ${row.join(', ')}`);
       }
@@ -186,7 +172,5 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
     tempMedia: tempMedia !== null ? tempMedia : 0,
     tempMaxima: tempMaxima !== null ? tempMaxima : 0
   };
-
-  console.log(`Dados filtrados para gráfico de umidade (final): ${JSON.stringify(result)}`);
   return result;
 }
