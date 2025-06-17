@@ -384,7 +384,12 @@
         <canvas id="occupancyTempChart"></canvas>
       </div>
       <!-- EDUARDO -->
-      <div class="chart-container">
+      <div class="grafico-container p-4 border rounded bg-white shadow-md">
+        <div class="flex items-end" id="botaoVoltarBarras" style="display: none;">
+          <button onclick="voltarGraficoBarrasPacientes()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+            Voltar
+          </button>
+        </div>
         <canvas id="graficoVisaoComputacionalSemanal"></canvas>
       </div>
       <!-- Gabriel -->
@@ -396,88 +401,104 @@
       <div class="grafico-container p-4 border rounded bg-white shadow-md">
 
         <!-- Controles -->
-        <div class="flex items-center gap-4 mb-4">
-          <label for="horarioInicio">Início:</label>
-          <select id="horarioInicio" class="border p-1 rounded">
+        <div class="mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+
+            <!-- Bloco de Horário -->
+            <div class="flex flex-col">
+              <label for="horarioInicio" class="mb-1 font-semibold text-sm text-gray-700">Horário de Início:</label>
+              <select id="horarioInicio" class="border p-2 rounded">
+              <script>
+                for (let h = 0; h < 24; h++) {
+                  const hora = h.toString().padStart(2, '0') + ":00:00";
+                  document.write(`<option value="${hora}">${hora}</option>`);
+                }
+              </script>
+              </select>
+            </div>
+
+            <div class="flex flex-col">
+              <label for="horarioFim" class="mb-1 font-semibold text-sm text-gray-700">Horário de Fim:</label>
+              <select id="horarioFim" class="border p-2 rounded">
+              <script>
+                for (let h = 0; h < 24; h++) {
+                  const hora = h.toString().padStart(2, '0') + ":00:00";
+                  document.write(`<option value="${hora}">${hora}</option>`);
+                }
+                document.write(`<option value="23:59:59">23:59:59</option>`);
+              </script>
+              </select>
+            </div>
+
+            <div class="flex items-end">
+              <button onclick="filtrarPorHorario()" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded">
+                Filtrar gráfico por horário
+              </button>
+            </div>
+          </div>
+
+          <!-- Bloco de Critério -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+            <div class="flex flex-col">
+              <label class="mb-1 font-semibold text-sm text-gray-700">Critério de Risco:</label>
+              <select onchange="buscarContagem(this.value)" class="border p-2 rounded text-sm">
+                <option disabled selected>Selecionar...</option>
+                <option>Atenção - Temperatura Baixa</option>
+                <option>Atenção - Oxigenação Baixa</option>
+                <option>Atenção - Febre</option>
+                <option>Alerta - Febre Alta e Oxigenação Reduzida</option>
+                <option>Alerta - Hipotermia e Hipoxemia</option>
+                <option>Emergência - Febre Hipertermia</option>
+                <option>Emergência - Oxigenação Crítica</option>
+                <option>Normal - Sem Alertas</option>
+              </select>
+            </div>
+
+            <!-- Resultado -->
+            <!-- Resultado (Ocorrências) -->
+            <div class="mt-4 w-fit px-5 py-2 border-2 border-blue-500 bg-gray-50 rounded-lg shadow-sm">
+              <div id="resultadoContagem" class="text-base font-size: 1.2em text-gray-800">
+                Ocorrências: Selecione um critério 
+              </div>
+            </div>
+          </div>
+
           <script>
-            for (let h = 0; h < 24; h++) {
-              const hora = h.toString().padStart(2, '0') + ":00:00";
-              document.write(`<option value="${hora}">${hora}</option>`);
-            }
-          </script>
-          </select>
-
-          <label for="horarioFim">Fim:</label>
-          <select id="horarioFim" class="border p-1 rounded">
-            <script>
-              for (let h = 0; h < 24; h++) {
-                const hora = h.toString().padStart(2, '0') + ":00:00";
-                document.write(`<option value="${hora}">${hora}</option>`);
-              }
-            </script>
-          </select>
-
-          <button onclick="filtrarPorHorario()" class="bg-blue-600 text-white px-4 py-1 rounded">
-              Filtrar
-            </button>
-
-          <!-- Novo select de critérios -->
-          <select onchange="buscarContagem(this.value)" class="border p-1 rounded text-sm">
-            <option disabled selected>Critério de Risco</option>
-            <option>Atenção - Temperatura Baixa</option>
-            <option>Atenção - Oxigenação Baixa</option>
-            <option>Atenção - Febre</option>
-            <option>Alerta - Febre Alta e Oxigenação Reduzida</option>
-            <option>Alerta - Hipotermia e Hipoxemia</option>
-            <option>Emergência - Febre Hipertermia</option>
-            <option>Emergência - Oxigenação Crítica</option>
-            <option>Normal - Sem Alertas</option>
-          </select>
-
-          <!-- Div onde o resultado será exibido -->
-          <div id="resultadoContagem" class="text-sm text-black"></div>
-
-          <!-- Função JS para lidar com a mudança de opção -->
-          <script>
-            function handleOptionChange(selectedValue) {
-              console.log("Critério selecionado:", selectedValue);
-              // Aqui você pode adicionar sua lógica de tratamento do critério
-            }
-
             function buscarContagem(criterioSelecionado) {
+              const upaNome = document.getElementById('upa').value;
+              const dataSelecionadaInput = document.getElementById("data").value;
+              const horarioInicio = document.getElementById('horarioInicio').value || '00:00:00';
+              const horarioFim = document.getElementById('horarioFim').value || '23:59:59';
               google.script.run.withSuccessHandler(function (quantidade) {
                 const divResultado = document.getElementById("resultadoContagem");
                 divResultado.textContent = `Ocorrências: ${quantidade}`;
-              }).contarOcorrenciasPorCriterio(criterioSelecionado, );
+              }).contarOcorrenciasPorCriterio(criterioSelecionado, upaNome, dataSelecionadaInput, horarioInicio, horarioFim);
             }
-
           </script>
+
+          <!-- Gráfico -->
+          <div class="chart-container mt-4">
+            <canvas id="scatterChart"></canvas>
+          </div>
         </div>
 
-        <!-- Gráfico -->
         <div class="chart-container">
-          <canvas id="scatterChart"></canvas>
+          <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
+          <div class="word-cloud-legend mb-4 text-sm text-gray-600">
+            <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
+            <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
+          </div>
+          <div id="wordCloudContainer"
+            style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
+            <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
+          </div>
+          <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
+            UPA/data.</p>
         </div>
-      </div>
-
-
-      <div class="chart-container">
-        <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
-        <div class="word-cloud-legend mb-4 text-sm text-gray-600">
-          <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
-          <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
-        </div>
-        <div id="wordCloudContainer"
-          style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
-          <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
-        </div>
-        <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
-          UPA/data.</p>
       </div>
     </div>
-  </div>
-  <script>
-    let scatterChartInstance = null;
+    <script>
+      let scatterChartInstance = null;
     let lineChartInstance = null;
     let allCharts = {}; // Objeto para armazenar todas as instâncias de gráficos
     let highchartsWordCloudInstance = null; // Variável para armazenar a instância do Highcharts WordCloud
@@ -878,6 +899,84 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
     });
 }
 
+function voltarGraficoBarrasPacientes() {
+  const select = document.getElementById("upa");
+  const selectedOption = select.options[select.selectedIndex];
+  const idUpa = selectedOption.dataset.id;
+
+  document.getElementById('botaoVoltarBarras').style.display = 'none';
+
+
+  google.script.run
+    .withSuccessHandler(function(chartData) {
+        if (chartData && chartData.length > 0) {
+            plotarGraficoMediaPessoasSemanal(chartData); // Passa chartData para a função de plotagem
+        } else {
+            console.warn("Nenhum dado válido de Média Diário.");
+            // Opcionalmente, limpe ou mostre uma mensagem para este gráfico específico se não houver dados
+        }
+    })
+    .withFailureHandler(function(error) {
+        console.error("Erro ao carregar dados para o Gráfico de Média Diário:", error);
+    })
+    .getGraficoVisaoComputacionalSemanal(idUpa);
+}
+
+function plotarGraficoMediaPessoasDiario(dados){
+  // graficoVisaoComputacionalSemanal
+  const ctx = document.getElementById('graficoVisaoComputacionalSemanal').getContext('2d');
+
+  if (allCharts.graficoVisaoComputacionalSemanal) {
+    allCharts.graficoVisaoComputacionalSemanal.destroy();
+  }
+
+  const labels = dados.map(d => d.x);
+  const mediaPessoas = dados.map(d => d.y);
+
+  allCharts.graficoVisaoComputacionalSemanal = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Média Qtde Pacientes - Dia',
+          data: mediaPessoas,
+          backgroundColor: '#4dc9f6',
+          fill: false,
+          tension: 0.1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Média Pessoas por hora do dia'
+        },
+        legend: {
+          position: 'top'
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'Média'
+          },
+          max: 120,
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Hora do Dia'
+          }
+        }
+      }
+    }
+  });
+}
+
 function plotarGraficoMediaPessoasSemanal(dados){
   // graficoVisaoComputacionalSemanal
   const ctx = document.getElementById('graficoVisaoComputacionalSemanal').getContext('2d');
@@ -928,12 +1027,35 @@ function plotarGraficoMediaPessoasSemanal(dados){
             text: 'Data (DD/MM)'
           }
         }
+      },
+      onClick: (event, elements) => {
+        if (elements.length > 0) {
+          const index = elements[0].index;
+          const label = labels[index];
+
+          const select = document.getElementById("upa");
+          const selectedOption = select.options[select.selectedIndex];
+          const idUpa = selectedOption.dataset.id;
+
+          document.getElementById('botaoVoltarBarras').style.display = 'inline-block';
+
+          google.script.run
+            .withSuccessHandler(function(chartData) {
+                if (chartData && chartData.length > 0) {
+                    plotarGraficoMediaPessoasDiario(chartData); // Passa chartData para a função de plotagem
+                } else {
+                    console.warn("Nenhum dado válido de Média Diário.");
+                    // Opcionalmente, limpe ou mostre uma mensagem para este gráfico específico se não houver dados
+                }
+            })
+            .withFailureHandler(function(error) {
+                console.error("Erro ao carregar dados para o Gráfico de Média Diário:", error);
+            })
+            .getGraficoVisaoComputacionalDiario(label, idUpa);
+        }
       }
     }
   });
-
-  console.log(dados)
-  return {}
 }
 
 // GRÁFICO 3: OCUPAÇÃO VS TEMPERATURA
@@ -1262,8 +1384,8 @@ function plotarGraficoTemperaturasPorMes(dados) {
                                 size: 14
                             }
                         },
-                        min: 36.0,
-                        max: 40.0,
+                        min: 34.5,
+                        max: 41.0,
                         ticks: {
                             stepSize: 0.5
                         }
@@ -1589,6 +1711,7 @@ function enviarSelecao() {
     google.script.run
     .withSuccessHandler(function(chartData) {
         if (chartData && chartData.length > 0) {
+          console.log("aaa", chartData)
             plotarGraficoMediaPessoasSemanal(chartData); // Passa chartData para a função de plotagem
         } else {
             console.warn("Nenhum dado válido de ocupação vs temperatura encontrado.");
@@ -1882,42 +2005,45 @@ palavras.forEach(({ palavra, sentimento }, index) => {
       }
 
       function filtrarPorHorario() {
-  const upaNome = document.getElementById('upa').value;
-  const dataSelecionadaInput = document.getElementById("data").value;
-   const horarioInicio = document.getElementById('horarioInicio').value || '00:00:00';
-   const horarioFim = document.getElementById('horarioFim').value || '23:59:59';
+        const upaNome = document.getElementById('upa').value;
+        const dataSelecionadaInput = document.getElementById("data").value;
+        const horarioInicio = document.getElementById('horarioInicio').value || '00:00:00';
+        const horarioFim = document.getElementById('horarioFim').value || '23:59:59';
 
-  const dataSelecionada = new Date(dataSelecionadaInput);
-  const dataFormatadaParaTitulo = dataSelecionada.toLocaleDateString('pt-BR');
+        const dataSelecionada = new Date(dataSelecionadaInput);
+        const dataFormatadaParaTitulo = dataSelecionada.toLocaleDateString('pt-BR');
 
-  google.script.run
-    .withSuccessHandler(function(chartData) {
-      console.log("Dados recebidos para o Gráfico de Dispersão (planos):", chartData);
-      if (chartData && chartData.length > 0) {
-        renderScatterChart(chartData, upaNome, dataFormatadaParaTitulo, horarioInicio, horarioFim);
-      } else {
-        console.warn("Nenhum dado encontrado para o Gráfico de Dispersão com a UPA e data selecionadas.");
-        if (allCharts.scatterChart) {
-          allCharts.scatterChart.destroy();
-          allCharts.scatterChart = null;
-        }
-        const ctx = document.getElementById('scatterChart').getContext('2d');
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const divResultado = document.getElementById("resultadoContagem");
+        divResultado.textContent = `Ocorrências: Selecione um critério`;
+
+        google.script.run
+          .withSuccessHandler(function(chartData) {
+            console.log("Dados recebidos para o Gráfico de Dispersão (planos):", chartData);
+            if (chartData && chartData.length > 0) {
+              renderScatterChart(chartData, upaNome, dataFormatadaParaTitulo, horarioInicio, horarioFim);
+            } else {
+              console.warn("Nenhum dado encontrado para o Gráfico de Dispersão com a UPA e data selecionadas.");
+              if (allCharts.scatterChart) {
+                allCharts.scatterChart.destroy();
+                allCharts.scatterChart = null;
+              }
+              const ctx = document.getElementById('scatterChart').getContext('2d');
+              ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            }
+          })
+          .withFailureHandler(function(error) {
+            console.error("Erro ao carregar dados para o Gráfico de Dispersão:", error);
+            alert("Erro ao carregar dados de Temperatura/Oximetria: " + error.message);
+            if (allCharts.scatterChart) {
+              allCharts.scatterChart.destroy();
+              allCharts.scatterChart = null;
+            }
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          })
+          .getScatterChartDataForUpaAndDate(upaNome, dataSelecionadaInput, horarioInicio, horarioFim);
       }
-    })
-    .withFailureHandler(function(error) {
-      console.error("Erro ao carregar dados para o Gráfico de Dispersão:", error);
-      alert("Erro ao carregar dados de Temperatura/Oximetria: " + error.message);
-      if (allCharts.scatterChart) {
-        allCharts.scatterChart.destroy();
-        allCharts.scatterChart = null;
-      }
-      const ctx = document.getElementById('scatterChart').getContext('2d');
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    })
-    .getScatterChartDataForUpaAndDate(upaNome, dataSelecionadaInput, horarioInicio, horarioFim);
-}
-  </script>
+    </script>
 
 </body>
 
