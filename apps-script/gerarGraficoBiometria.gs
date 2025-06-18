@@ -1,14 +1,10 @@
-// --- DEFINIÇÕES DE CONSTANTES NO TOPO DO ARQUIVO ---Add commentMore actions
+// --- DEFINIÇÕES DE CONSTANTES NO TOPO DO ARQUIVO ---
 const BIOMETRY_DATA_SHEET_NAME = 'BiometriaPaciente'; // O nome exato da sua planilha
-const COL_FAIXA_ETARIA = 4;       // Coluna D: Faixa_Etaria
-const COL_DATA_BIOMETRIA = 5;     // Coluna E: data_biometria
-const COL_HORA_BIOMETRIA = 6;     // Coluna F: hora_biometria
-const COL_FAIXA_HORA = 7;         // Coluna G: Faixa_Hora
-const COL_FK_UPA_BIOMETRIA = 8;             // Coluna H: fk_upa
-const COL_NOME_DA_UPA_BIOMETRIA = 9; // Coluna I: fk_nome_da_upa (assumindo que seja a mesma estrutura de nome da UPA)
-// --- FIM DAS DEFINIÇÕES DE CONSTANTES ---
-
-//const DATA_START_ROW_BIOMETRIA = 2; // A linha onde seus dados começam (pulando o cabeçalho)
+const COL_FAIXA_ETARIA = 1;      // Coluna A: Faixa_Etaria
+const COL_DATA_BIOMETRIA = 2;    // Coluna B: data_biometria
+const COL_FAIXA_HORA = 3;        // Coluna C: Faixa_Hora
+const COL_NOME_DA_UPA_BIOMETRIA = 4; // Coluna D: nome_upa
+// Removidas as constantes para 'valor', 'nome_paciente', 'idade_paciente', 'hora_biometria', 'fk_upa'
 
 // --- Funções de Ajuda ---
 
@@ -58,7 +54,7 @@ function getBiometricChartDataForUpaAndDate(upaNome, dateString) {
 
   // Esta é a data que você selecionou, no fuso horário do seu script.
   const selectedDate = new Date(anoSelecionado, mesSelecionado, diaSelecionado);
-  console.log(`Função chamada com UPA: "${upaNome}" e Data: "${dateString}" (Objeto Date: ${selectedDate.toLocaleDateString('pt-BR')})`);
+  // console.log(`Função chamada com UPA: "${upaNome}" e Data: "${dateString}" (Objeto Date: ${selectedDate.toLocaleDateString('pt-BR')})`);
 
   if (dataRows.length === 0) {
     console.warn("Nenhuma linha de dados encontrada na planilha (além do cabeçalho).");
@@ -67,13 +63,13 @@ function getBiometricChartDataForUpaAndDate(upaNome, dateString) {
 
   dataRows.forEach((row, index) => {
     // Obter valores brutos da linha
-    const currentUpaRaw = row[COL_NOME_DA_UPA_BIOMETRIA - 1];
-    const rowDateRaw = row[COL_DATA_BIOMETRIA - 1];
+    const currentUpaRaw = row[COL_NOME_DA_UPA_BIOMETRIA - 1]; // Corrigido para a nova coluna 'nome_upa'
+    const rowDateRaw = row[COL_DATA_BIOMETRIA - 1]; // Corrigido para a nova coluna 'data_biometria'
 
     // --- Depuração de UPA ---
-    console.log(`--- Linha ${index + 2} ---`); // +2 porque pula o cabeçalho e é base 1
-    console.log(`UPA na linha: "${currentUpaRaw}" | UPA Selecionada: "${upaNome}"`);
-    console.log(`Comparação UPA: ${currentUpaRaw === upaNome}`);
+    // console.log(`--- Linha ${index + 2} ---`); // +2 porque pula o cabeçalho e é base 1
+    // console.log(`UPA na linha: "${currentUpaRaw}" | UPA Selecionada: "${upaNome}"`);
+    // console.log(`Comparação UPA: ${currentUpaRaw === upaNome}`);
 
     // --- Depuração de Data ---
     let dateFromSheet = null;
@@ -101,37 +97,37 @@ function getBiometricChartDataForUpaAndDate(upaNome, dateString) {
       dateMatch = (normalizedSheetDate.getTime() === selectedDate.getTime());
     }
 
-    console.log(`Data na linha (bruta): "${rowDateRaw}" | Data convertida: ${dateFromSheet ? dateFromSheet.toLocaleDateString('pt-BR') : 'Inválida'}`);
-    console.log(`Data Selecionada (convertida): ${selectedDate.toLocaleDateString('pt-BR')}`);
-    console.log(`Comparação Data (normalized): ${dateMatch}`);
+    // console.log(`Data na linha (bruta): "${rowDateRaw}" | Data convertida: ${dateFromSheet ? dateFromSheet.toLocaleDateString('pt-BR') : 'Inválida'}`);
+    // console.log(`Data Selecionada (convertida): ${selectedDate.toLocaleDateString('pt-BR')}`);
+    // console.log(`Comparação Data (normalized): ${dateMatch}`);
 
     // Condição final de filtro
     if (currentUpaRaw === upaNome && dateMatch) {
-      const faixaEtaria = row[COL_FAIXA_ETARIA - 1];
-      const horaBiometria = row[COL_HORA_BIOMETRIA - 1];
-      const faixaHora = row[COL_FAIXA_HORA - 1];
-      const fkUpaId = row[COL_FK_UPA_BIOMETRIA - 1]; // Assuming you might still want this ID for some reason
+      const faixaEtaria = row[COL_FAIXA_ETARIA - 1]; // Corrigido
+      // const horaBiometria = row[COL_HORA_BIOMETRIA - 1]; // REMOVIDA
+      const faixaHora = row[COL_FAIXA_HORA - 1];     // Corrigido
+      // const fkUpaId = row[COL_FK_UPA_BIOMETRIA - 1]; // REMOVIDA
 
       const faixaEtariaNormalizada = typeof faixaEtaria === 'string' ? faixaEtaria.trim().replace(/–/g, '-') : faixaEtaria;
       const faixaHoraNormalizada = typeof faixaHora === 'string' ? faixaHora.trim().replace(/–/g, '-') : faixaHora;
 
-      console.log(`Condição de filtro ATENDIDA! Processando linha...`);
-      console.log(`Valores para biometria: Faixa Etária="${faixaEtariaNormalizada}", Hora="${horaBiometria}", Faixa Hora="${faixaHoraNormalizada}"`);
+      // console.log(`Condição de filtro ATENDIDA! Processando linha...`);
+      // console.log(`Valores para biometria: Faixa Etária="${faixaEtariaNormalizada}", Hora="${horaBiometria}", Faixa Hora="${faixaHoraNormalizada}"`);
 
       biometricData.push({
         faixaEtaria: faixaEtariaNormalizada,
         dataBiometria: dateFromSheet ? formatSheetDate(dateFromSheet, "dd/MM/yyyy") : 'Data Inválida',
-        horaBiometria: horaBiometria,
+        // horaBiometria: horaBiometria, // REMOVIDA
         faixaHora: faixaHoraNormalizada,
         upa: upaNome,
-        fkUpaId: fkUpaId
+        // fkUpaId: fkUpaId // REMOVIDA
       });
-      console.log("Ponto adicionado aos dados de biometria.");
+      // console.log("Ponto adicionado aos dados de biometria.");
     } else {
       console.log("Condição de filtro NÃO ATENDIDA.");
     }
   });
 
-  console.log(`Dados filtrados para biometria (final): ${JSON.stringify(biometricData)}`);
+  // console.log(`Dados filtrados para biometria (final): ${JSON.stringify(biometricData)}`);
   return biometricData;
 }

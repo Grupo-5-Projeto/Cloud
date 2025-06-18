@@ -497,7 +497,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
     }
 
     // Definir as faixas de horário fixas
-    const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
+    const faixasHorario = ['0h-6h', '6h-9h', '9h-12h', '12h-15h', '15h-18h', '18h-21h', '21h-24h'];
 
     // Definir as faixas etárias fixas e na ordem desejada
     const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
@@ -525,21 +525,25 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
         const currentFaixaEtaria = item.faixaEtaria;
         const currentFaixaHora = item.faixaHora;
 
-        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
+        // Normalize faixas de hora para corresponder aos rótulos fixos
+        const normalizedFaixaHora = currentFaixaHora.replace(/–/g, '-');
+
+
+        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(normalizedFaixaHora)) {
             if (!counts[currentFaixaEtaria]) {
                 counts[currentFaixaEtaria] = {};
             }
-            if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
-                counts[currentFaixaEtaria][currentFaixaHora] = 0;
+            if (typeof counts[currentFaixaEtaria][normalizedFaixaHora] === 'undefined') {
+                counts[currentFaixaEtaria][normalizedFaixaHora] = 0;
             }
-            counts[currentFaixaEtaria][currentFaixaHora]++;
+            counts[currentFaixaEtaria][normalizedFaixaHora]++;
         } else {
             console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
         }
     });
 
     // Preparar os datasets para o Chart.js
-      const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
+    const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
         const data = faixasHorario.map(hora => counts[faixaEtaria][hora]);
         const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)';
         const borderColor = backgroundColor.replace('0.8', '1');
@@ -571,7 +575,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     }
                 },
                 legend: {
-                    display: false,
+                    display: false, // Desabilitar a legenda padrão do Chart.js
                 },
                 tooltip: {
                     callbacks: {
@@ -603,7 +607,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Número de Pacientes',
+                        text: 'Número de Pacientes (qtd)',
                         font: {
                             size: 14
                         }
@@ -612,17 +616,24 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                         precision: 0 // Ensure integer ticks on Y-axis
                     },
                     grid: {
-                        display: true, // Show horizontal grid lines (default is usually true, but explicit for clarity)
+                        display: true, // Show horizontal grid lines
                         color: 'rgba(0, 0, 0, 0.1)' // Light gray grid lines
                     }
                 }
             }
         }
     });
-// --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
+
+    // --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
     const customLegendContainer = document.getElementById('customBiometriaLegend');
     if (customLegendContainer) {
         customLegendContainer.innerHTML = ''; // Limpa qualquer conteúdo anterior
+
+        // Adicionar o título da legenda
+        const legendTitle = document.createElement('div');
+        legendTitle.className = 'legend-title';
+        legendTitle.textContent = 'FAIXAS ETÁRIAS (anos)';
+        customLegendContainer.appendChild(legendTitle);
 
         fixedFaixasEtarias.forEach(faixaEtaria => {
             const itemDiv = document.createElement('div');
