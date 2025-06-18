@@ -999,29 +999,65 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
         type: 'bar', 
         data: {
             datasets: [
-                // SEGUNDO DATASET: Temperatura (linha) - Este será desenhado POR CIMA
-                {
-                    label: 'Temperatura (°C)',
-                    data: chartData.temperatura, // Array de {x: hora, y: temperatura}
-                    borderColor: 'rgba(255, 0, 0, 1)', // Cor vermelha para a linha
-                    backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
-                    borderWidth: 2,
-                    pointRadius: 4, // Tamanho dos pontos na linha
-                    pointHoverRadius: 6,
-                    type: 'line', // Este dataset será uma linha
-                    fill: false,
-                    tension: 0.1, // Suaviza a linha
-                    yAxisID: 'yTemperaturaOcupacao' // Associa ao eixo Y da temperatura
-                },
-                // PRIMEIRO DATASET: Ocupação (barras) - Será desenhado primeiro
-                {
-                    label: 'Ocupação (Nº Pessoas)',
-                    data: chartData.ocupacao, // Array de {x: hora, y: ocupacao}
-                    backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para as barras
-                    borderColor: 'rgba(173, 216, 230, 1)', // Borda azul
-                    borderWidth: 1,
-                    yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
-                }
+      // SEGUNDO DATASET: Ocupação (barras) - Será desenhado primeiro
+      {
+          label: 'Ocupação (Nº Pessoas)',
+          data: chartData.ocupacao, // Array de {x: hora, y: ocupacao}
+          backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para as barras
+          borderColor: 'rgba(173, 216, 230, 1)', // Borda azul
+          borderWidth: 1,
+          yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
+      },
+      // NOVO DATASET: Linha de Capacidade Máxima de Ocupação
+      {
+          label: 'Capacidade Máxima (45)',
+          data: [{ x: 0, y: 45 }, { x: 23, y: 45 }], // Linha horizontal em 45
+          borderColor: 'rgba(255, 99, 132, 1)', // Vermelho
+          backgroundColor: 'rgba(255, 99, 132, 0)',
+          borderWidth: 2,
+          borderDash: [5, 5], // Linha pontilhada
+          pointRadius: 0, // Sem pontos
+          type: 'line',
+          fill: false,
+          yAxisID: 'yOcupacao'
+      },
+      // TERCEIRO DATASET: Temperatura (linha) - Este será desenhado POR CIMA
+      {
+          label: 'Temperatura (°C)',
+          data: chartData.temperatura, // Array de {x: hora, y: temperatura}
+          borderColor: 'rgba(255, 0, 0, 1)', // Cor vermelha para a linha
+          backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
+          borderWidth: 2,
+          pointRadius: 4, // Tamanho dos pontos na linha
+          pointHoverRadius: 6,
+          type: 'line', // Este dataset será uma linha
+          fill: false,
+          tension: 0.1, // Suaviza a linha
+          yAxisID: 'yTemperaturaOcupacao' // Associa ao eixo Y da temperatura
+      },
+      // NOVOS DATASETS: Zonas de Temperatura Ideal
+      {
+          label: 'Temp. Ideal (20-24°C)',
+          data: [{ x: 0, y: 20 }, { x: 23, y: 20 }],
+          borderColor: 'rgba(75, 192, 192, 0.5)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Preenchimento claro
+          borderWidth: 0, // Sem borda para a área
+          type: 'line',
+          fill: '+1', // Preenche para cima (até o próximo dataset)
+          pointRadius: 0,
+          yAxisID: 'yTemperaturaOcupacao'
+      },
+      {
+          label: '', // Sem label para não aparecer na legenda
+          data: [{ x: 0, y: 24 }, { x: 23, y: 24 }],
+          borderColor: 'rgba(255, 255, 255, 0.5)', 
+          backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+          borderWidth: 0,
+          type: 'line',
+          fill: '-1', // Preenche para baixo (até o dataset anterior)
+          pointRadius: 0,
+          yAxisID: 'yTemperaturaOcupacao'
+      }
             ]
         },
         options: {
