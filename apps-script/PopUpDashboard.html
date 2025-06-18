@@ -264,7 +264,7 @@
 
     <div id="chartGrid" class="chart-grid hidden">
       <!-- Linha 1 - KPIs -->
-      <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
+      <!-- <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">KPI 2</h2>
           <p class="text-2xl font-bold text-black">456</p>
@@ -278,24 +278,23 @@
           <p class="text-2xl font-bold text-black">101</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">Umidade acima do limite</h2>
-          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
-      </div>
+      </div> -->
 
       <!-- Linha 2 - KPIs -->
       <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 5</h2>
-          <p class="text-2xl font-bold text-black">202</p>
+          <h2 class="text-sm text-black">Umidade acima do limite</h2>
+          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 6</h2>
-          <p class="text-2xl font-bold text-black">303</p>
+          <h2 class="text-sm text-black">Temperatura Média</h2>
+          <h4 class="text-sm text-black" style="font-size: 0.8em;">Interna / Externa</h4>
+          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">...</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">Palavras Mais Frequentes</h2>
-          <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
+          <div id="kpiTopPalavras">
             <div id="topPalavras"
               style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;">
             </div>
@@ -1598,6 +1597,32 @@ function enviarSelecao() {
                 }
             })
             .getOccupancyChartDataForUpaAndDate(upaNome, dataSelecionadaInput);
+
+    // Chamar a função KPI para Temperatura Média Interna e Externa
+    const spanTemperaturasMedias = document.getElementById('kpiTemperaturasMedias');
+
+    spanTemperaturasMedias.textContent = 'Carregando...';
+    spanTemperaturasMedias.style.color = 'gray';
+
+    google.script.run
+    .withSuccessHandler(function(temperaturasMedias) {
+        if (temperaturasMedias) {
+            let internaText = temperaturasMedias.mediaInterna !== null ? `${temperaturasMedias.mediaInterna}°C` : "N/D";
+            let externaText = temperaturasMedias.mediaExterna !== null ? `${temperaturasMedias.mediaExterna}°C` : "N/D";
+
+            spanTemperaturasMedias.textContent = `${internaText} / ${externaText}`;
+            spanTemperaturasMedias.style.color = "black"; // Defina a cor desejada para o texto combinado
+        } else {
+            spanTemperaturasMedias.textContent = "Erro";
+            spanTemperaturasMedias.style.color = "gray";
+        }
+    })
+    .withFailureHandler(function(error) {
+        console.error("Erro ao calcular KPI de Temperatura Média:", error);
+        spanTemperaturasMedias.textContent = "Erro";
+        spanTemperaturasMedias.style.color = "gray";
+    })
+    .getKpiTemperaturaMedia(dataSelecionadaInput, upaNome);
 
     // 1.4 Chamar a função para o Gráfico de ?
     // 1.5 Chamar a função para o Gráfico de temperatura do paciente
