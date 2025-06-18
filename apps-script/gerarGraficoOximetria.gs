@@ -149,3 +149,56 @@ function formatSheetDate(dateValue, format) {
   }
   return dateValue; // Retorna o valor original se não for Date ou formato não suportado
 }
+
+function contarOcorrenciasPorCriterio(criterio) {
+  const horarioInicioGlobal = "00:00:00";
+  const horarioFimGlobal = "23:59:59";
+  const nomeUpaGlobal = "UPA 21 DE JUNHO";
+  const dataGlobal = "28/05/2025"; // formato dd/MM/yyyy
+
+  const planilha = SpreadsheetApp.getActiveSpreadsheet();
+  const aba = planilha.getSheetByName("OximetriaPaciente");
+  const dados = aba.getDataRange().getValues();
+
+  const header = dados[0];
+  const indiceLegenda = header.indexOf("Legenda Gravidade");
+  const indiceHorario = header.indexOf("horario_chegada");
+  const indiceData = header.indexOf("data_chegada");
+  const indiceUpa = header.indexOf("nome_da_upa");
+
+  let contador = 0;
+
+  for (let i = 1; i < dados.length; i++) {
+    const legenda = dados[i][indiceLegenda];
+    const horario = formatarHora(dados[i][indiceHorario]);
+    const data = formatarData(dados[i][indiceData]);
+    const upa = dados[i][indiceUpa];
+
+    const criterioIgual = legenda === criterio;
+    const upaCorreta = upa === nomeUpaGlobal;
+    const dataCorreta = data === dataGlobal;
+    const dentroDoHorario = horario >= horarioInicioGlobal && horario <= horarioFimGlobal;
+
+    if (criterioIgual && upaCorreta && dataCorreta && dentroDoHorario) {
+      contador++;
+    }
+  }
+
+  return contador;
+}
+
+// Formata objeto Date ou string de data para "dd/MM/yyyy"
+function formatarData(valor) {
+  if (Object.prototype.toString.call(valor) === '[object Date]') {
+    return Utilities.formatDate(valor, Session.getScriptTimeZone(), 'dd/MM/yyyy');
+  }
+  return valor;
+}
+
+// Formata hora para "HH:mm:ss"
+function formatarHora(valor) {
+  if (Object.prototype.toString.call(valor) === '[object Date]') {
+    return Utilities.formatDate(valor, Session.getScriptTimeZone(), 'HH:mm:ss');
+  }
+  return valor;
+}
