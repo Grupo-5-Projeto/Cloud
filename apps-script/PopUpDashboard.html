@@ -260,6 +260,7 @@
       <input type="date" id="data">
 
       <button onclick="enviarSelecao()">Confirmar</button>
+
     </div>
 
     <div id="chartGrid" class="chart-grid hidden">
@@ -284,15 +285,6 @@
       <!-- Linha 2 - KPIs -->
       <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">Umidade acima do limite</h2>
-          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
-        </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">Temperatura Média</h2>
-          <h4 class="text-sm text-black" style="font-size: 0.8em;">Interna / Externa</h4>
-          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">...</p>
-        </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">Palavras Mais Frequentes</h2>
           <div id="kpiTopPalavras">
             <div id="topPalavras"
@@ -306,6 +298,15 @@
           <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
             <span id="variacaoQtdPessoas"></span>
           </div>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Temperatura Média</h2>
+          <h4 class="text-sm text-black" style="font-size: 0.8em;">Interna / Externa</h4>
+          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">...</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Umidade acima do limite</h2>
+          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
       </div>
 
@@ -1524,7 +1525,6 @@ function enviarSelecao() {
     document.getElementById('dashboardTitle').textContent = `Dashboard da ${upaNome} ${dataFormatadaParaTitulo}`;
 
 
-
     // 1.1 Chamar a função para o Gráfico de biometria
     google.script.run
     .withSuccessHandler(function(biometricChartData) {
@@ -1785,6 +1785,50 @@ palavras.forEach(({ palavra, sentimento }, index) => {
     console.error("Erro ao carregar palavras:", error);
   })
   .getTop3PalavrasSentimento();
+
+
+  const carregarDashsPopUp = document.createElement('div');
+  carregarDashsPopUp.id = 'graphLoadingPopup';
+  carregarDashsPopUp.classList.add('graphLoadingPopup');
+
+  // Apply inline styles (or better, use CSS classes)
+  carregarDashsPopUp.style.cssText = `
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+  `;
+
+  document.body.appendChild(carregarDashsPopUp);
+
+  // --- Animation Logic ---
+  let dotCount = 0;
+  const baseText = 'Carregando Gráficos'; // Base text without dots
+
+  // Set up an interval to update the text
+  const animationInterval = setInterval(() => {
+      dotCount = (dotCount + 1) % 4; // Cycles through 0, 1, 2, 3
+      let dots = '';
+      for (let i = 0; i < dotCount; i++) {
+          dots += '.';
+      }
+      carregarDashsPopUp.textContent = baseText + dots;
+  }, 300); // Update every 300 milliseconds
+
+  // --- Pop-up Removal Logic ---
+  setTimeout(() => {
+      clearInterval(animationInterval); // Stop the animation when the pop-up is removed
+      carregarDashsPopUp.remove();
+  }, 7000);
 
 }
 

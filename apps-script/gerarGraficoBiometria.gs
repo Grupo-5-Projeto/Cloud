@@ -124,7 +124,7 @@ function getBiometricChartDataForUpaAndDate(upaNome, dateString) {
       });
       // console.log("Ponto adicionado aos dados de biometria.");
     } else {
-      console.log("Condição de filtro NÃO ATENDIDA.");
+      // console.log("Condição de filtro NÃO ATENDIDA.");
     }
   });
 

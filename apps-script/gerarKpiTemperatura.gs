@@ -1,12 +1,5 @@
 /**
  * Calcula a temperatura média interna e externa para um dia e UPA específicos.
- *
- * A temperatura interna é a média da coluna 'temperatura'.
- * A temperatura externa é a média da coluna 'temperatura_media'.
- *
- * @param {string} dataSelecionadaInput A data para a qual o cálculo deve ser feito, no formato "YYYY-MM-DD".
- * @param {string} upaSelecionada O nome da UPA para a qual o cálculo deve ser feito.
- * @returns {Object | null} Um objeto contendo 'mediaInterna' e 'mediaExterna', ou null se houver um erro.
  */
 function getKpiTemperaturaMedia(dataSelecionadaInput, upaSelecionada) {
   if (!dataSelecionadaInput || !upaSelecionada) return null;

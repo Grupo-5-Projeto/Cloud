@@ -40,11 +40,11 @@ function onOpen() {
 
   const ui = SpreadsheetApp.getUi();
   // Cria um novo menu chamado "Dashboard"
-  ui.createMenu("Dashboard")
-    // Adiciona um item ao menu que chama a função 'abrirDashboard'
-    .addItem("Abrir Dashboard", "abrirDashboard")
-    // Adiciona o menu à interface do usuário
-    .addToUi();
+  ui.createMenu('Dashboard')
+      // Adiciona um item ao menu que chama a função 'abrirDashboard'
+      .addItem('Abrir Dashboard', 'abrirDashboard')
+      // Adiciona o menu à interface do usuário
+      .addToUi();
 }
 
 /**
@@ -52,10 +52,9 @@ function onOpen() {
  * Esta função é o ponto de entrada inicial.
  */
 function abrirDashboard() {
-  const htmlOutput = HtmlService.createHtmlOutputFromFile(
-    "ScreenSizeDetector"
-  ).setTitle("Detectando Tamanho da Tela...");
-  SpreadsheetApp.getUi().showModalDialog(htmlOutput, "Carregando ...");
+  const htmlOutput = HtmlService.createHtmlOutputFromFile('ScreenSizeDetector')
+      .setTitle('Detectando Tamanho da Tela...');
+  SpreadsheetApp.getUi().showModalDialog(htmlOutput, 'Carregando ...');
 }
 
 /**
@@ -69,11 +68,11 @@ function openDashboardWithDynamicSize(width, height) {
   const dashboardWidth = Math.round(width * 10);
   const dashboardHeight = Math.round(height * 10);
 
-  const html = HtmlService.createHtmlOutputFromFile("PopUpDashboard")
-    .setWidth(dashboardWidth)
-    .setHeight(dashboardHeight)
-    .setTitle("Dashboard de Atendimentos"); // Título do seu dashboard
-  SpreadsheetApp.getUi().showModalDialog(html, "Dashboard de Atendimentos");
+  const html = HtmlService.createHtmlOutputFromFile('PopUpDashboard')
+      .setWidth(dashboardWidth)
+      .setHeight(dashboardHeight)
+      .setTitle('Dashboard de Atendimentos'); // Título do seu dashboard
+  SpreadsheetApp.getUi().showModalDialog(html, 'Dashboard de Atendimentos');
 }
 
 /**
@@ -100,9 +99,7 @@ function getListaUpas() {
   }
 
   if (!upaSheet) {
-    Logger.log(
-      "getListaUpas(): upaSheet ainda é nulo após inicialização. Impossível ler dados."
-    );
+    Logger.log("getListaUpas(): upaSheet ainda é nulo após inicialização. Impossível ler dados.");
     return [];
   }
   Logger.log("Aba UPA encontrada: " + upaSheet.getName());
@@ -111,53 +108,32 @@ function getListaUpas() {
   // Ajuste "B2:B" se a coluna for diferente.
   const rangeToReadNames = "B2:B";
   const rangeToReadIds = "A2:A";
-  Logger.log(
-    "Tentando ler o range de nomes: " +
-      rangeToReadNames +
-      " da planilha '" +
-      UPA_SHEET_NAME +
-      "'."
-  );
+  Logger.log("Tentando ler o range de nomes: " + rangeToReadNames + " da planilha '" + UPA_SHEET_NAME + "'.");
 
   let nomesUpas;
   let idsUpas;
   try {
     // .flat() transforma [[nome1], [nome2]] em [nome1, nome2]
     // .filter(String) remove valores nulos/undefined antes de .trim()
-    nomesUpas = upaSheet
-      .getRange(rangeToReadNames)
-      .getValues()
-      .flat()
-      .filter(String);
-    idsUpas = upaSheet
-      .getRange(rangeToReadIds)
-      .getValues()
-      .flat()
-      .filter(Number);
+    nomesUpas = upaSheet.getRange(rangeToReadNames).getValues().flat().filter(String);
+    idsUpas = upaSheet.getRange(rangeToReadIds).getValues().flat().filter(Number);
 
     Logger.log("Nomes de UPAs brutos lidos: " + JSON.stringify(nomesUpas));
   } catch (e) {
-    Logger.log(
-      "ERRO ao ler os nomes das UPAs do range " +
-        rangeToReadNames +
-        ": " +
-        e.message
-    );
+    Logger.log("ERRO ao ler os nomes das UPAs do range " + rangeToReadNames + ": " + e.message);
     return [];
   }
 
   // Filtra por valores que não sejam vazios ou apenas espaços em branco
-  const filteredNames = nomesUpas
-    .map((name) => String(name).trim())
-    .filter((name) => name !== "");
-  const filteredIds = idsUpas.map((id) => Number(id)).filter((id) => id !== 0);
+  const filteredNames = nomesUpas.map(name => String(name).trim()).filter(name => name !== "");
+  const filteredIds = idsUpas.map(id => Number(id)).filter(id => id !== 0);
 
-  let upas = [];
-  for (let i = 0; i < filteredNames.length; i++) {
+  let upas = []
+  for(let i = 0; i < filteredNames.length; i++) {
     upas.push({
       id: filteredIds[i],
       nome: filteredNames[i],
-    });
+    })
   }
 
   Logger.log("Nomes de UPAs formatados para retorno: " + JSON.stringify(upas));
@@ -185,25 +161,14 @@ function getUpaIdByName(nomeUpa) {
   // Assume que os IDs das UPAs estão na COLUNA A e os NOMES na COLUNA B da sua planilha "UPA".
   // Ajuste "A2:B" se as colunas forem diferentes ou a linha inicial.
   const allUpaDataRange = "A2:B";
-  Logger.log(
-    "Tentando ler dados completos da UPA para busca de ID do range: " +
-      allUpaDataRange
-  );
+  Logger.log("Tentando ler dados completos da UPA para busca de ID do range: " + allUpaDataRange);
 
   let upaData;
   try {
     upaData = upaSheet.getRange(allUpaDataRange).getValues();
-    Logger.log(
-      "Dados completos da UPA para busca de ID lidos: " +
-        JSON.stringify(upaData)
-    );
+    Logger.log("Dados completos da UPA para busca de ID lidos: " + JSON.stringify(upaData));
   } catch (e) {
-    Logger.log(
-      "ERRO ao ler dados da UPA para busca de ID do range " +
-        allUpaDataRange +
-        ": " +
-        e.message
-    );
+    Logger.log("ERRO ao ler dados da UPA para busca de ID do range " + allUpaDataRange + ": " + e.message);
     return null;
   }
 
@@ -218,24 +183,20 @@ function getUpaIdByName(nomeUpa) {
     // Compara os nomes (removendo espaços extras para maior tolerância)
     if (String(nome).trim() === String(nomeUpa).trim()) {
       idUpaSelecionada = id;
-      Logger.log(
-        "ID encontrado para UPA '" + nomeUpa + "': " + idUpaSelecionada
-      );
+      Logger.log("ID encontrado para UPA '" + nomeUpa + "': " + idUpaSelecionada);
       break;
     }
   }
 
   if (!idUpaSelecionada) {
-    Logger.log(
-      'ID para UPA selecionada "' + nomeUpa + '" não encontrado na planilha.'
-    );
+    Logger.log('ID para UPA selecionada "' + nomeUpa + '" não encontrado na planilha.');
   }
   return idUpaSelecionada;
 }
 
 // Função para iniciar os serviços do WebApp
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile("PopUpDashboard"); // PopUpDashboard.html
+  return HtmlService.createHtmlOutputFromFile('PopUpDashboard'); // PopUpDashboard.html
 }
 
 /**
