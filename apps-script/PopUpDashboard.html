@@ -11,6 +11,12 @@
   <script src="https://code.highcharts.com/modules/wordcloud.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+
 
   <style>
     html,
@@ -242,6 +248,30 @@
 </head>
 
 <body>
+
+ <!-- Login -->
+<div id="loginContainer" class="flex flex-col items-center justify-center h-screen bg-gray-100">
+  <div class="bg-white shadow-md rounded p-6 w-full max-w-sm">
+    <h2 class="text-2xl mb-4 text-center">Login</h2>
+    <input id="emailInput" type="email" placeholder="Seu e-mail" class="w-full p-2 border border-gray-300 rounded mb-4">
+    <input id="senhaInput" type="password" placeholder="Senha" class="w-full p-2 border border-gray-300 rounded mb-4">
+    <button onclick="fazerLogin()" class="w-full bg-blue-500 text-white py-2 rounded mb-2">Entrar</button>
+  </div>
+</div>
+
+<!-- Verificação de código -->
+<div id="codigoContainer" class="hidden flex flex-col items-center justify-center h-screen bg-gray-100">
+  <div class="bg-white shadow-md rounded p-6 w-full max-w-sm">
+    <h2 class="text-2xl mb-4 text-center">Verificação</h2>
+    <input id="codigoInput" type="text" placeholder="Digite o código recebido"
+      class="w-full p-2 border border-gray-300 rounded mb-4">
+    <button onclick="validarCodigo()" class="w-full bg-blue-500 text-white py-2 rounded mb-2">Verificar</button>
+  </div>
+</div>
+
+
+
+
   <div class="full-screen-container">
 
     <div class="cabecalho">
@@ -302,10 +332,11 @@
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">Temperatura Média</h2>
           <h4 class="text-sm text-black" style="font-size: 0.8em;">Interna / Externa</h4>
-          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">...</p>
+          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">
+            ...</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">Umidade acima do limite</h2>
+          <h2 class="text-sm text-black">Umidade acima/abaixo do limite</h2>
           <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
       </div>
@@ -329,7 +360,7 @@
       <!-- EDUARDO -->
       <div class="grafico-container p-4 border rounded bg-white shadow-md">
         <div class="flex items-end" id="botaoVoltarBarras" style="display: none;">
-          <button onclick="voltarGraficoBarrasPacientes()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+          <button onclick="voltarGraficoBarrasPacientes()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded" style="padding-left: 10px; padding-right: 10px;" >
             Voltar
           </button>
         </div>
@@ -403,7 +434,7 @@
             <!-- Resultado (Ocorrências) -->
             <div class="mt-4 w-fit px-5 py-2 border-2 border-blue-500 bg-gray-50 rounded-lg shadow-sm">
               <div id="resultadoContagem" class="text-base font-size: 1.2em text-gray-800">
-                Ocorrências: Selecione um critério 
+                Ocorrências: Selecione um critério
               </div>
             </div>
           </div>
@@ -428,19 +459,19 @@
         </div>
       </div>
 
-        <div class="chart-container">
-          <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
-          <div class="word-cloud-legend mb-4 text-sm text-gray-600">
-            <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
-            <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
-          </div>
-          <div id="wordCloudContainer"
-            style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
-            <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
-          </div>
-          <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
-            UPA/data.</p>
+      <div class="chart-container">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
+        <div class="word-cloud-legend mb-4 text-sm text-gray-600">
+          <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
+          <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
         </div>
+        <div id="wordCloudContainer"
+          style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
+          <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
+        </div>
+        <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
+          UPA/data.</p>
+      </div>
     </div>
     <script>
       let scatterChartInstance = null;
@@ -595,7 +626,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                 x: {
                     title: {
                         display: true,
-                        text: 'Horário do Dia',
+                        text: 'Hora do Dia',
                         font: {
                             size: 14
                         }
@@ -887,7 +918,10 @@ function plotarGraficoMediaPessoasDiario(dados){
       plugins: {
         title: {
           display: true,
-          text: 'Média Pessoas por hora do dia'
+          text: `Média Pessoas por hora do dia`,
+          font: {
+                  size: 18
+                }
         },
         legend: {
           position: 'top'
@@ -897,7 +931,7 @@ function plotarGraficoMediaPessoasDiario(dados){
         y: {
           title: {
             display: true,
-            text: 'Média'
+            text: 'Média (qtd de pacientes)'
           },
           max: 120,
         },
@@ -942,7 +976,10 @@ function plotarGraficoMediaPessoasSemanal(dados){
       plugins: {
         title: {
           display: true,
-          text: 'Média Paciente Por Dia'
+          text: 'Média Paciente Por Dia',
+          font: {
+                  size: 18
+                }
         },
         legend: {
           position: 'top'
@@ -952,7 +989,7 @@ function plotarGraficoMediaPessoasSemanal(dados){
         y: {
           title: {
             display: true,
-            text: 'Média'
+            text: 'Média (qtd de pacientes)'
           },
           max: 80,
         },
@@ -1078,9 +1115,9 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
             plugins: {
                 title: {
                     display: true,
-                    text: `Ocupação da Sala vs. Temperatura`,
+                    text: `Ocupação da Sala vs. Temperatura - (${upaNome} - ${dataFormatada})`,
                     font: {
-                        size: 15
+                        size: 18
                     }
                 },
                 legend: {
@@ -1153,7 +1190,7 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
                     },
                     beginAtZero: true, // Iniciar o eixo Y em 0
                     min: 0, // Ajustado para corresponder à imagem e evitar ultrapassagem em baixo
-                    max: 49, // Ajustado para ser um pouco acima do máximo (47-49) na imagem
+                    max: 55, // Ajustado para ser um pouco acima do máximo (47-49) na imagem
                     ticks: {
                         color: 'blue',
                         precision: 0, // Apenas números inteiros para pessoas
@@ -1231,7 +1268,10 @@ function plotarGraficoTemperaturasPorMes(dados) {
       plugins: {
         title: {
           display: true,
-          text: 'Temperatura Média por Mês (Paciente vs Ambiente)'
+          text: `Temperatura Média por Mês (Paciente vs Ambiente)`,
+          font: {
+                  size: 18
+                }
         },
         legend: {
           position: 'top'
@@ -2072,6 +2112,92 @@ palavras.forEach(({ palavra, sentimento }, index) => {
           .getScatterChartDataForUpaAndDate(upaNome, dataSelecionadaInput, horarioInicio, horarioFim);
       }
     </script>
+
+    <script>
+  // Configuração do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCklDNAQn2qR5EXJgGdJS60abrpLUTsnqA",
+    authDomain: "autentication-upa1.firebaseapp.com",
+    projectId: "autentication-upa1",
+    appId: "1:247149710188:web:1505fdfdcf155bc0f5c149"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Oculta o dashboard até login
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.full-screen-container').classList.add('hidden');
+  });
+
+  function fazerLogin() {
+    const email = document.getElementById('emailInput').value;
+    const senha = document.getElementById('senhaInput').value;
+
+    auth.signInWithEmailAndPassword(email, senha)
+      .then((userCredential) => {
+        document.getElementById('codigoContainer').classList.remove('hidden');
+        enviarCodigo();
+        document.getElementById('loginContainer').classList.add('hidden');
+      })
+      .catch((error) => {
+        alert("Erro ao fazer login: " + error.message);
+      });
+  }
+
+
+  // Inicializa EmailJS
+  (function(){
+     emailjs.init("MayHbJmWGE-Lx9ZeD"); // Public Key
+  })();
+
+  var codigoGerado = "";
+
+  function gerarCodigo() {
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let codigo = '';
+  for (let i = 0; i < 7; i++) {
+    const randomIndex = Math.floor(Math.random() * caracteres.length);
+    codigo += caracteres[randomIndex];
+  }
+  return codigo;
+}
+
+  function enviarCodigo() {
+    alert("Gerando código")
+    const codigo = gerarCodigo();
+    codigoGerado = codigo;
+
+    emailjs.send("service_k6jv23s", "template_bpu8f4c", {
+      to_name: document.getElementById('emailInput').value,
+      code: codigo,
+      to_email: document.getElementById('emailInput').value
+    })
+    .then(() => {
+      alert("Código enviado com sucesso para o e-mail!");
+    }, (err) => {
+      alert("Erro ao enviar email: " + JSON.stringify(err));
+    });
+  }
+
+  function validarCodigo(){
+    const codigoInput = document.getElementById('codigoInput').value;
+
+    if(codigoGerado != codigoInput){
+      document.getElementById('codigoInput').value = " ";
+      alert("Código inválido!")
+      document.getElementById('codigoContainer').classList.add('hidden');
+      document.getElementById('loginContainer').classList.remove('hidden');
+    } else if (codigoGerado == codigoInput){
+      document.getElementById('codigoContainer').classList.add('hidden');
+      document.querySelector('.full-screen-container').classList.remove('hidden'); // Exibe dashboard
+    }
+
+  }
+
+</script>
+
+
 
 </body>
 
