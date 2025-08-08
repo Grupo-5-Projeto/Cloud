@@ -260,11 +260,12 @@
       <input type="date" id="data">
 
       <button onclick="enviarSelecao()">Confirmar</button>
+
     </div>
 
     <div id="chartGrid" class="chart-grid hidden">
       <!-- Linha 1 - KPIs -->
-      <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
+      <!-- <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">KPI 2</h2>
           <p class="text-2xl font-bold text-black">456</p>
@@ -278,24 +279,14 @@
           <p class="text-2xl font-bold text-black">101</p>
         </div>
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">Umidade acima do limite</h2>
-          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
-      </div>
+      </div> -->
 
       <!-- Linha 2 - KPIs -->
       <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 5</h2>
-          <p class="text-2xl font-bold text-black">202</p>
-        </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 6</h2>
-          <p class="text-2xl font-bold text-black">303</p>
-        </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">Palavras Mais Frequentes</h2>
-          <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
+          <div id="kpiTopPalavras">
             <div id="topPalavras"
               style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;">
             </div>
@@ -307,6 +298,15 @@
           <div id="kpiQuantidadeMediaPessoas" style="font-size: 1.2em; font-weight: bold;">
             <span id="variacaoQtdPessoas"></span>
           </div>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Temperatura Média</h2>
+          <h4 class="text-sm text-black" style="font-size: 0.8em;">Interna / Externa</h4>
+          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">...</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Umidade acima do limite</h2>
+          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
         </div>
       </div>
 
@@ -498,7 +498,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
     }
 
     // Definir as faixas de horário fixas
-    const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
+    const faixasHorario = ['0h-6h', '6h-9h', '9h-12h', '12h-15h', '15h-18h', '18h-21h', '21h-24h'];
 
     // Definir as faixas etárias fixas e na ordem desejada
     const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
@@ -526,21 +526,25 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
         const currentFaixaEtaria = item.faixaEtaria;
         const currentFaixaHora = item.faixaHora;
 
-        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
+        // Normalize faixas de hora para corresponder aos rótulos fixos
+        const normalizedFaixaHora = currentFaixaHora.replace(/–/g, '-');
+
+
+        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(normalizedFaixaHora)) {
             if (!counts[currentFaixaEtaria]) {
                 counts[currentFaixaEtaria] = {};
             }
-            if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
-                counts[currentFaixaEtaria][currentFaixaHora] = 0;
+            if (typeof counts[currentFaixaEtaria][normalizedFaixaHora] === 'undefined') {
+                counts[currentFaixaEtaria][normalizedFaixaHora] = 0;
             }
-            counts[currentFaixaEtaria][currentFaixaHora]++;
+            counts[currentFaixaEtaria][normalizedFaixaHora]++;
         } else {
             console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
         }
     });
 
     // Preparar os datasets para o Chart.js
-      const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
+    const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
         const data = faixasHorario.map(hora => counts[faixaEtaria][hora]);
         const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)';
         const borderColor = backgroundColor.replace('0.8', '1');
@@ -572,7 +576,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     }
                 },
                 legend: {
-                    display: false,
+                    display: false, // Desabilitar a legenda padrão do Chart.js
                 },
                 tooltip: {
                     callbacks: {
@@ -604,7 +608,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Número de Pacientes',
+                        text: 'Número de Pacientes (qtd)',
                         font: {
                             size: 14
                         }
@@ -613,17 +617,24 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                         precision: 0 // Ensure integer ticks on Y-axis
                     },
                     grid: {
-                        display: true, // Show horizontal grid lines (default is usually true, but explicit for clarity)
+                        display: true, // Show horizontal grid lines
                         color: 'rgba(0, 0, 0, 0.1)' // Light gray grid lines
                     }
                 }
             }
         }
     });
-// --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
+
+    // --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
     const customLegendContainer = document.getElementById('customBiometriaLegend');
     if (customLegendContainer) {
         customLegendContainer.innerHTML = ''; // Limpa qualquer conteúdo anterior
+
+        // Adicionar o título da legenda
+        const legendTitle = document.createElement('div');
+        legendTitle.className = 'legend-title';
+        legendTitle.textContent = 'FAIXAS ETÁRIAS (anos)';
+        customLegendContainer.appendChild(legendTitle);
 
         fixedFaixasEtarias.forEach(faixaEtaria => {
             const itemDiv = document.createElement('div');
@@ -1000,29 +1011,65 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
         type: 'bar', 
         data: {
             datasets: [
-                // SEGUNDO DATASET: Temperatura (linha) - Este será desenhado POR CIMA
-                {
-                    label: 'Temperatura (°C)',
-                    data: chartData.temperatura, // Array de {x: hora, y: temperatura}
-                    borderColor: 'rgba(255, 0, 0, 1)', // Cor vermelha para a linha
-                    backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
-                    borderWidth: 2,
-                    pointRadius: 4, // Tamanho dos pontos na linha
-                    pointHoverRadius: 6,
-                    type: 'line', // Este dataset será uma linha
-                    fill: false,
-                    tension: 0.1, // Suaviza a linha
-                    yAxisID: 'yTemperaturaOcupacao' // Associa ao eixo Y da temperatura
-                },
-                // PRIMEIRO DATASET: Ocupação (barras) - Será desenhado primeiro
-                {
-                    label: 'Ocupação (Nº Pessoas)',
-                    data: chartData.ocupacao, // Array de {x: hora, y: ocupacao}
-                    backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para as barras
-                    borderColor: 'rgba(173, 216, 230, 1)', // Borda azul
-                    borderWidth: 1,
-                    yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
-                }
+      // SEGUNDO DATASET: Ocupação (barras) - Será desenhado primeiro
+      {
+          label: 'Ocupação (Nº Pessoas)',
+          data: chartData.ocupacao, // Array de {x: hora, y: ocupacao}
+          backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para as barras
+          borderColor: 'rgba(173, 216, 230, 1)', // Borda azul
+          borderWidth: 1,
+          yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
+      },
+      // NOVO DATASET: Linha de Capacidade Máxima de Ocupação
+      {
+          label: 'Capacidade Máxima (45)',
+          data: [{ x: 0, y: 45 }, { x: 23, y: 45 }], // Linha horizontal em 45
+          borderColor: 'rgba(255, 99, 132, 1)', // Vermelho
+          backgroundColor: 'rgba(255, 99, 132, 0)',
+          borderWidth: 2,
+          borderDash: [5, 5], // Linha pontilhada
+          pointRadius: 0, // Sem pontos
+          type: 'line',
+          fill: false,
+          yAxisID: 'yOcupacao'
+      },
+      // TERCEIRO DATASET: Temperatura (linha) - Este será desenhado POR CIMA
+      {
+          label: 'Temperatura (°C)',
+          data: chartData.temperatura, // Array de {x: hora, y: temperatura}
+          borderColor: 'rgba(255, 0, 0, 1)', // Cor vermelha para a linha
+          backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
+          borderWidth: 2,
+          pointRadius: 4, // Tamanho dos pontos na linha
+          pointHoverRadius: 6,
+          type: 'line', // Este dataset será uma linha
+          fill: false,
+          tension: 0.1, // Suaviza a linha
+          yAxisID: 'yTemperaturaOcupacao' // Associa ao eixo Y da temperatura
+      },
+      // NOVOS DATASETS: Zonas de Temperatura Ideal
+      {
+          label: 'Temp. Ideal (20-24°C)',
+          data: [{ x: 0, y: 20 }, { x: 23, y: 20 }],
+          borderColor: 'rgba(75, 192, 192, 0.5)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Preenchimento claro
+          borderWidth: 0, // Sem borda para a área
+          type: 'line',
+          fill: '+1', // Preenche para cima (até o próximo dataset)
+          pointRadius: 0,
+          yAxisID: 'yTemperaturaOcupacao'
+      },
+      {
+          label: '', // Sem label para não aparecer na legenda
+          data: [{ x: 0, y: 24 }, { x: 23, y: 24 }],
+          borderColor: 'rgba(255, 255, 255, 0.5)', 
+          backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+          borderWidth: 0,
+          type: 'line',
+          fill: '-1', // Preenche para baixo (até o dataset anterior)
+          pointRadius: 0,
+          yAxisID: 'yTemperaturaOcupacao'
+      }
             ]
         },
         options: {
@@ -1478,7 +1525,6 @@ function enviarSelecao() {
     document.getElementById('dashboardTitle').textContent = `Dashboard da ${upaNome} ${dataFormatadaParaTitulo}`;
 
 
-
     // 1.1 Chamar a função para o Gráfico de biometria
     google.script.run
     .withSuccessHandler(function(biometricChartData) {
@@ -1599,6 +1645,32 @@ function enviarSelecao() {
             })
             .getOccupancyChartDataForUpaAndDate(upaNome, dataSelecionadaInput);
 
+    // Chamar a função KPI para Temperatura Média Interna e Externa
+    const spanTemperaturasMedias = document.getElementById('kpiTemperaturasMedias');
+
+    spanTemperaturasMedias.textContent = 'Carregando...';
+    spanTemperaturasMedias.style.color = 'gray';
+
+    google.script.run
+    .withSuccessHandler(function(temperaturasMedias) {
+        if (temperaturasMedias) {
+            let internaText = temperaturasMedias.mediaInterna !== null ? `${temperaturasMedias.mediaInterna}°C` : "N/D";
+            let externaText = temperaturasMedias.mediaExterna !== null ? `${temperaturasMedias.mediaExterna}°C` : "N/D";
+
+            spanTemperaturasMedias.textContent = `${internaText} / ${externaText}`;
+            spanTemperaturasMedias.style.color = "black"; // Defina a cor desejada para o texto combinado
+        } else {
+            spanTemperaturasMedias.textContent = "Erro";
+            spanTemperaturasMedias.style.color = "gray";
+        }
+    })
+    .withFailureHandler(function(error) {
+        console.error("Erro ao calcular KPI de Temperatura Média:", error);
+        spanTemperaturasMedias.textContent = "Erro";
+        spanTemperaturasMedias.style.color = "gray";
+    })
+    .getKpiTemperaturaMedia(dataSelecionadaInput, upaNome);
+
     // 1.4 Chamar a função para o Gráfico de ?
     // 1.5 Chamar a função para o Gráfico de temperatura do paciente
     google.script.run
@@ -1713,6 +1785,50 @@ palavras.forEach(({ palavra, sentimento }, index) => {
     console.error("Erro ao carregar palavras:", error);
   })
   .getTop3PalavrasSentimento();
+
+
+  const carregarDashsPopUp = document.createElement('div');
+  carregarDashsPopUp.id = 'graphLoadingPopup';
+  carregarDashsPopUp.classList.add('graphLoadingPopup');
+
+  // Apply inline styles (or better, use CSS classes)
+  carregarDashsPopUp.style.cssText = `
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+  `;
+
+  document.body.appendChild(carregarDashsPopUp);
+
+  // --- Animation Logic ---
+  let dotCount = 0;
+  const baseText = 'Carregando Gráficos'; // Base text without dots
+
+  // Set up an interval to update the text
+  const animationInterval = setInterval(() => {
+      dotCount = (dotCount + 1) % 4; // Cycles through 0, 1, 2, 3
+      let dots = '';
+      for (let i = 0; i < dotCount; i++) {
+          dots += '.';
+      }
+      carregarDashsPopUp.textContent = baseText + dots;
+  }, 300); // Update every 300 milliseconds
+
+  // --- Pop-up Removal Logic ---
+  setTimeout(() => {
+      clearInterval(animationInterval); // Stop the animation when the pop-up is removed
+      carregarDashsPopUp.remove();
+  }, 7000);
 
 }
 

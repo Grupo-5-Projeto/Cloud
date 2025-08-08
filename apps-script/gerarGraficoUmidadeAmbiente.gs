@@ -11,12 +11,12 @@ const COL_DATA = 2;                                // Coluna B: data
 const COL_HORA = 3;                                // Coluna C: hora
 const COLUNA_NOME_DA_UPA = 4;                         // Coluna D: nome da upa
 const COL_MEDIA_UMID_HORA = 5;                     // Coluna E: média da umidade por hora
-const COL_UNIDADE_DE_MEDIDA = 6;                // Coluna F: unidade de medida - não usada diretamente no gráfico
-const COL_LEGENDA_UMIDADE = 7;                          // Coluna G: legenda - não usada diretamente no gráfico
+const COL_UNIDADE_DE_MEDIDA = 6;            // Coluna F: unidade de medida - não usada diretamente no gráfico
+const COL_LEGENDA_UMIDADE = 7;                      // Coluna G: legenda - não usada diretamente no gráfico
 const COL_TEMP_MIN = 8;                            // Coluna H: temperatura mínima - climatempo
 const COL_TEMP_MAX = 9;                            // Coluna I: temperatura máxima - climatempo
 const COL_TEMP_MEDIA = 10;                         // Coluna J: temperatura média - climatempo
-// --- FIM DAS DEFINIÇÕES DE CONSTANTES ---
+
 const START_ROW = 2; // A linha onde seus dados começam (pulando o cabeçalho)
 
 // --- Funções de Ajuda ---
@@ -46,9 +46,6 @@ function formatSheetDate(dateObj, format) {
   const timeZone = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
   return Utilities.formatDate(dateObj, timeZone, format);
 }
-
-
-// --- Função Principal para Obter Dados do Gráfico de Dispersão ---
 
 /**
  * Retorna os dados formatados para o gráfico de dispersão de Oximetria vs Temperatura.
@@ -93,62 +90,49 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
   }
 
   dataRows.forEach((row, index) => {
-    // Obter valores brutos da linha
     const currentUpaRaw = row[COLUNA_NOME_DA_UPA - 1];
     const rowDateRaw = row[COL_DATA - 1];
 
-    // Normaliza os nomes da UPA para comparação (remove espaços em branco e garante string)
     const normalizedUpaFromSheet = String(currentUpaRaw).trim();
     const normalizedUpaName = String(upaNome).trim();
 
-    // --- Depuração e Normalização de Data da Planilha ---
     let dateFromSheet = null;
     if (rowDateRaw instanceof Date) {
       dateFromSheet = rowDateRaw;
     } else if (typeof rowDateRaw === 'string' && rowDateRaw.includes('/')) {
         const parts = rowDateRaw.split('/');
         if (parts.length === 3) {
-          // Converte "DD/MM/YYYY" para um objeto Date. Observação: o mês é baseado em 0 (janeiro é 0).
-          // new Date(ano, mês, dia) cria a data no fuso horário local do script.
           dateFromSheet = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
         }
     } else if (typeof rowDateRaw === 'string' && rowDateRaw.includes('-')) {
-      // Assume "YYYY-MM-DD" ou formato similar de string, tenta criar Date
-      dateFromSheet = new Date(rowDateRaw); // This will parse in local timezone or UTC depending on string format
+      dateFromSheet = new Date(rowDateRaw); 
     } else if (typeof rowDateRaw === 'number') {
-      // Se for um número que representa uma data (serial number de Excel/Sheets)
-      // Ajusta o epoch para 1970-01-01 e converte para milissegundos
       dateFromSheet = new Date((rowDateRaw - 25569) * 86400 * 1000);
     }
 
     let dateMatch = false;
     if (dateFromSheet) {
-      // Normaliza as datas para comparação (removendo a hora, fuso horário do script)
       const normalizedSheetDate = new Date(dateFromSheet.getFullYear(), dateFromSheet.getMonth(), dateFromSheet.getDate());
       dateMatch = (normalizedSheetDate.getTime() === selectedDate.getTime());
     } else {
       console.log("Data na linha inválida, não pode ser parseada.");
     }
 
-    // Condição final de filtro
     if (normalizedUpaFromSheet === normalizedUpaName && dateMatch) {
       const umidade = parseNumber(row[COL_MEDIA_UMID_HORA - 1]);
-      // Extrai apenas a parte da hora da string "HH:MM:SS" ou assume que é um número
       let hora = row[COL_HORA - 1];
       if (typeof hora === 'string' && hora.includes(':')) {
-          hora = parseInt(hora.split(':')[0]); // Pega só a hora e converte para número
+          hora = parseInt(hora.split(':')[0]); 
       } else {
-          hora = parseNumber(hora); // Se já for número ou outro formato, tenta parsear
+          hora = parseNumber(hora); 
       }
 
-      // Captura as temperaturas diárias da primeira linha que corresponde
       if (tempMinima === null) {
           tempMinima = parseNumber(row[COL_TEMP_MIN - 1]);
           tempMedia = parseNumber(row[COL_TEMP_MEDIA - 1]);
           tempMaxima = parseNumber(row[COL_TEMP_MAX - 1]);
       }
 
-      // Adiciona o ponto de umidade apenas se for um número válido
       if (!isNaN(umidade) && !isNaN(hora)) {
         umidadeDataPoints.push({
           x: hora,
@@ -157,18 +141,14 @@ function getLineChartDataForUpaAndDate(upaNome, dateString) {
       } else {
         console.warn(`Dados inválidos (NaN) para umidade ou hora na linha: ${row.join(', ')}`);
       }
-    } else {
-      console.log("Condição de filtro NÃO ATENDIDA.");
     }
   });
 
-  // Ordena os pontos de umidade por hora para garantir a renderização correta do gráfico de linha
   umidadeDataPoints.sort((a, b) => a.x - b.x);
 
-  // Prepara o objeto de retorno no formato esperado pelo frontend
   const result = {
     umidade: umidadeDataPoints,
-    tempMinima: tempMinima !== null ? tempMinima : 0, // Retorna 0 se não encontrar dados
+    tempMinima: tempMinima !== null ? tempMinima : 0, 
     tempMedia: tempMedia !== null ? tempMedia : 0,
     tempMaxima: tempMaxima !== null ? tempMaxima : 0
   };

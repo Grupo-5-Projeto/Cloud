@@ -150,11 +150,20 @@ function formatSheetDate(dateValue, format) {
   return dateValue; // Retorna o valor original se não for Date ou formato não suportado
 }
 
-function contarOcorrenciasPorCriterio(criterio) {
-  const horarioInicioGlobal = "00:00:00";
-  const horarioFimGlobal = "23:59:59";
-  const nomeUpaGlobal = "UPA 21 DE JUNHO";
-  const dataGlobal = "28/05/2025"; // formato dd/MM/yyyy
+function contarOcorrenciasPorCriterio(criterio, upaNome, dateString, horaInicio, horaFim) {
+  var horarioInicioGlobal = horaInicio;
+  var horarioFimGlobal = horaFim;
+  var nomeUpaGlobal = upaNome;
+  console.log(dateString);
+  const [ano, mes, dia] = dateString.split("-");
+  var dataGlobal = `${dia}/${mes}/${ano}`; // formato dd/MM/yyyy
+
+  if(horaInicio == "00:00:00" && horaFim == "00:00:00"){
+    horarioInicioGlobal = horaInicio;
+    horarioFimGlobal = "23:59:59";
+  }
+
+  console.log(nomeUpaGlobal, dataGlobal, horarioInicioGlobal, horarioFimGlobal);
 
   const planilha = SpreadsheetApp.getActiveSpreadsheet();
   const aba = planilha.getSheetByName("OximetriaPaciente");
