@@ -157,16 +157,6 @@ Resources:
         - Key: Name
           Value: !Sub ${AWS::StackName}-${Client}
 
-  S3BucketRaw:
-    Type: "AWS::S3::Bucket"
-    Properties:
-      BucketName: raw-iot-data-edu
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
-
   MyBucketPolicyRaw:
     Type: "AWS::S3::BucketPolicy"
     Properties:
@@ -187,10 +177,20 @@ Resources:
                   - Ref: "S3BucketRaw"
                   - "/*"
 
+  S3BucketRaw:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: raw-iot-data-edu-2
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
   S3BucketTrusted:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: trusted-iot-data-edu
+      BucketName: trusted-iot-data-edu-2
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         BlockPublicPolicy: false
@@ -220,7 +220,7 @@ Resources:
   S3BucketClient:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: client-iot-data-edu
+      BucketName: client-iot-data-edu-2
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         BlockPublicPolicy: false
@@ -258,7 +258,7 @@ Resources:
       MemorySize: 128
       Code:
         S3Bucket: !Ref S3BucketRaw
-        S3Key: inputdata.zip
+        S3Key: index.zip
 
   SensorDataTable:
     Type: AWS::DynamoDB::Table
@@ -293,28 +293,6 @@ Resources:
         - Key: Project
           Value: Healthcare
 
-
-  # IotDataInput:
-  #   Type: AWS::KinesisFirehose::DeliveryStream
-  #   Properties:
-  #     DeliveryStreamName: iot-input-delivery
-  #     DeliveryStreamType: DirectPut
-  #     ExtendedS3DestinationConfiguration:
-  #       BucketARN: !GetAtt S3BucketRaw.Arn
-  #       RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
-  #       Prefix: "!{timestamp:yyyy}-!{timestamp:MM}-!{timestamp:dd}/data.csv"
-  #       ErrorOutputPrefix: "error/!{firehose:error-output-type}/!{timestamp:yyyy}-!{timestamp:MM}-!{timestamp:dd}/"
-  #       BufferingHints:
-  #         IntervalInSeconds: 60
-  #         SizeInMBs: 5
-  #       ProcessingConfiguration:
-  #         Enabled: true
-  #         Processors:
-  #           - Type: Lambda
-  #             Parameters:
-  #               - ParameterName: LambdaArn
-  #                 ParameterValue: !GetAtt TransformLambda.Arn
-
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -341,7 +319,7 @@ Resources:
       Integration:
         Type: AWS
         IntegrationHttpMethod: POST
-        Uri: !Sub 
+        Uri: !Sub
           - arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations
           - Region: !Ref "AWS::Region"
             LambdaArn: !GetAtt LambdaInputData.Arn
@@ -360,6 +338,33 @@ Resources:
     Properties:
       RestApiId: !Ref RestApi
       StageName: prod
+
+  LambdaProcessorDynamo:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaProcessorDynamo
+      Runtime: python3.9
+      Handler: scheduler.lambda_handler
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
+      Timeout: 60
+      MemorySize: 128
+      Code:
+        S3Bucket: !Ref S3BucketRaw
+        S3Key: scheduler.zip
+
+  EventBridgeScheduler:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      FlexibleTimeWindow:
+        MaximumWindowInMinutes: 1
+        Mode: "FLEXIBLE"
+      Name: "SchedulerProcessIotData"
+      ScheduleExpression: "rate(5 minutes)"
+      ScheduleExpressionTimezone: America/Sao_Paulo
+      State: ENABLED
+      Target:
+        Arn: !GetAtt LambdaProcessorDynamo.Arn
+        RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
 
   Instance:
     DependsOn: [RouteTableAssociationPublicSubnet, InstanceSecurityGroup]
