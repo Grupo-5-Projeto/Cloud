@@ -3,30 +3,24 @@ import boto3
 import time
 import os
 from decimal import Decimal
+from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table("SensorData")
 
 def lambda_handler(event, context):
+    print(event, context)
     print("Received event:", json.dumps(event))  # Log do evento completo
 
     try:
-        body = event.get("body")
-        if body is None:
-            print("No body found in the event")
-            return {
-                "statusCode": 400,
-                "body": json.dumps({"message": "No body found"})
-            }
-
-        if isinstance(body, str):
+        if isinstance(event, str):
             print("Parsing body string to dict")
-            data = json.loads(body)
-        elif isinstance(body, dict):
+            data = json.loads(event)
+        elif isinstance(event, dict):
             print("Body is already a dict")
-            data = body
+            data = event
         else:
-            print("Unsupported body type:", type(body))
+            print("Unsupported body type:", type(event))
             return {
                 "statusCode": 400,
                 "body": json.dumps({"message": "Invalid body type"})
@@ -49,14 +43,15 @@ def lambda_handler(event, context):
         fk_unid_medida = data.get("fk_unid_medida")
         fk_paciente = data.get("fk_paciente")
 
-        ttl = int(time.time()) + 30*24*60*60
-
+        data = datetime.strptime(data_hora, "%Y-%m-%dT%H:%M:%S")
+        timestamp = data.timestamp()
+      
         item = {
             "fk_sensor": int(fk_sensor),
             "data_hora": data_hora,
             "valor": Decimal(str(valor)),
             "fk_upa": int(fk_upa),
-            "ttl": ttl
+            "timestamp": Decimal(str(timestamp))
         }
 
         if fk_unid_medida is not None:
