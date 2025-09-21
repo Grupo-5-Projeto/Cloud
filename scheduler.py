@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     # === 1. Buscar dados do DynamoDB do dia atual ===
     table = dynamodb.Table(TABLE_NAME)
 
-    # Aqui assumo que você tem um atributo "data" na tabela em formato YYYY-MM-DD
+    # Aqui assumo que você tem um atributo "data" na tabela em formato ,YYYY-MM-DD
     response = table.scan(
         FilterExpression=boto3.dynamodb.conditions.Attr("data").begins_with(today)
     )

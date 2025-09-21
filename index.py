@@ -4,11 +4,8 @@ import time
 import os
 from decimal import Decimal
 
-# Nome da tabela (pode ser definido via variável de ambiente)
-TABLE_NAME = os.environ.get("DYNAMODB_TABLE", "SensorData")
-
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(TABLE_NAME)
+table = dynamodb.Table("SensorData")
 
 def lambda_handler(event, context):
     print("Received event:", json.dumps(event))  # Log do evento completo
