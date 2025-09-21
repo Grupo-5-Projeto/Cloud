@@ -157,6 +157,16 @@ Resources:
         - Key: Name
           Value: !Sub ${AWS::StackName}-${Client}
 
+  S3BucketRaw:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: raw-iot-final-data-edu-2
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
   MyBucketPolicyRaw:
     Type: "AWS::S3::BucketPolicy"
     Properties:
@@ -177,20 +187,10 @@ Resources:
                   - Ref: "S3BucketRaw"
                   - "/*"
 
-  S3BucketRaw:
-    Type: "AWS::S3::Bucket"
-    Properties:
-      BucketName: raw-iot-data-edu-2
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
-
   S3BucketTrusted:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: trusted-iot-data-edu-2
+      BucketName: trusted-iot-final-data-edu-2
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         BlockPublicPolicy: false
@@ -220,7 +220,7 @@ Resources:
   S3BucketClient:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: client-iot-data-edu-2
+      BucketName: client-iot-final-data-edu-2
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         BlockPublicPolicy: false
