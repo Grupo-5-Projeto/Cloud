@@ -11,9 +11,14 @@
   <script src="https://code.highcharts.com/modules/wordcloud.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+
 
   <style>
-    /* Garante que o HTML e o BODY ocupem 100% da altura e largura da janela do diálogo */
     html,
     body {
       height: 100%;
@@ -21,30 +26,22 @@
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      /* Usando Poppins conforme seu CSS original */
       overflow: auto;
-      /* Permite rolagem se o conteúdo for maior que a janela */
     }
 
     .full-screen-container {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      /* Alinha ao topo */
       align-items: center;
       width: 100%;
       min-height: 100%;
-      /* Garante que o contêiner ocupe pelo menos 100% */
       background-color: #f0f4f8;
-      /* Cor de fundo para visualização */
       padding: 1rem;
-      /* Adiciona um pouco de padding interno */
       box-sizing: border-box;
-      /* Inclui padding na largura/altura total */
     }
 
     .content-box {
-      /* Este estilo não está sendo usado diretamente, mas pode ser útil */
       background-color: #ffffff;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border-radius: 0.5rem;
@@ -58,12 +55,9 @@
     .chart-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(1000px, 1fr));
-      /* Ajustado para 2 colunas, mais flexível */
       gap: 2rem;
-      /* Espaçamento entre os gráficos */
       width: 100%;
       max-width: 90%;
-      /* Mesma largura máxima do content-box */
       padding: 1rem;
       box-sizing: border-box;
     }
@@ -78,21 +72,16 @@
       align-items: center;
       justify-content: center;
       min-height: 650px;
-      /* Altura mínima para o contêiner do gráfico */
     }
 
     canvas {
       max-width: 100%;
-      /* Garante que o canvas não transborde */
       height: auto;
-      /* Mantém a proporção */
     }
 
     .cabecalho {
       display: flex;
       align-items: center;
-      /* Centraliza verticalmente os itens */
-      /* justify-content: space-between; -- REMOVA ISTO! Usaremos margins automáticas */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border-radius: 0.5rem;
       padding: 2rem;
@@ -101,15 +90,11 @@
       margin-bottom: 1rem;
       min-height: 100px;
       gap: 1.5rem;
-      /* Espaçamento padrão entre os elementos */
-      /* flex-wrap: nowrap; /* Garante que os itens não quebrem linha, a menos que especificado */
     }
 
     .logo {
       width: 120px;
       flex-shrink: 0;
-      /* Impede que a logo encolha */
-      /* A logo ficará à esquerda por padrão em um flex container com flex-start */
     }
 
     .titulo {
@@ -117,20 +102,13 @@
       font-size: 1.8rem;
       color: #2d3748;
       margin: 0 auto;
-      /* ESSENCIAL! Isso centraliza o título entre a logo e o botão */
       font-weight: bold;
       padding: 5px;
       flex-grow: 1;
-      /* Permite que o título ocupe o espaço restante */
       flex-shrink: 1;
-      /* Permite que o título encolha, se necessário */
       text-align: center;
-      /* Centraliza o texto DENTRO do espaço do título */
-      /* max-width: 60%; /* Opcional: Para controlar a quebra de linha em telas muito grandes */
       white-space: normal;
-      /* Garante que o texto quebre linha */
       word-break: break-word;
-      /* Ajuda na quebra de palavras longas */
     }
 
     .btnUpa {
@@ -145,8 +123,6 @@
       transition: background-color 0.3s ease;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       flex-shrink: 0;
-      /* Impede que o botão encolha */
-      /* Não precisamos de margin-left: auto; aqui porque o margin auto do título já o empurra */
     }
 
 
@@ -154,14 +130,11 @@
       background-color: #319795;
     }
 
-    /* Estilos para o formulário de seleção */
     .selection-form {
       display: flex;
       flex-direction: column;
       gap: 15px;
-      /* Espaçamento entre os elementos do formulário */
       margin-bottom: 2rem;
-      /* Espaçamento abaixo do formulário */
       background-color: #ffffff;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border-radius: 0.5rem;
@@ -169,7 +142,6 @@
       width: 100%;
       min-height: 400px;
       max-width: 600px;
-      /* Largura máxima para o formulário */
       align-items: center;
     }
 
@@ -182,7 +154,6 @@
     .selection-form select,
     .selection-form input {
       width: 80%;
-      /* Largura dos campos de seleção */
       padding: 10px;
       font-size: 1rem;
       border: 1px solid #cbd5e0;
@@ -192,7 +163,6 @@
 
     .selection-form button {
       width: 80%;
-      /* Largura do botão de confirmar */
       height: 45px;
       background-color: #4285F4;
       color: white;
@@ -214,7 +184,6 @@
       box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     }
 
-    /* Classes utilitárias para ocultar/mostrar elementos */
     .hidden {
       display: none !important;
     }
@@ -225,17 +194,13 @@
     }
 
     #wordCloudContainer {
-      /* Ajuste a altura e largura conforme o desejado para a nuvem de palavras */
       width: 100%;
       height: 650px;
-      /* Altura fixa para a nuvem */
       display: flex;
-      /* Para centralizar o canvas */
       justify-content: center;
       align-items: center;
     }
 
-    /* Estilo para o container do Highcharts, que substituirá o canvas */
     #wordCloudChartContainer {
       width: 100%;
       height: 100%;
@@ -243,7 +208,6 @@
 
     .chart-container-biometria {
       position: relative;
-      /* Importante para que a legenda absoluta flutue dentro dele */
       min-height: 650px;
       background-color: #ffffff;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -251,32 +215,19 @@
       padding: 1rem;
     }
 
-    /* Estilo da legenda flutuante */
     .chart-legend {
       position: absolute;
-      /* Posiciona a legenda sobre o gráfico */
       top: 10px;
-      /* Distância do topo do container */
       right: 10px;
-      /* Distância da direita do container */
       background-color: rgba(255, 255, 255, 0.9);
-      /* Fundo branco semi-transparente */
       border: 1px solid #ccc;
-      /* Borda leve */
       border-radius: 5px;
-      /* Cantos arredondados */
       padding: 10px 15px;
-      /* Espaçamento interno */
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      /* Sombra para dar profundidade */
       z-index: 10;
-      /* Garante que a legenda fique acima do gráfico */
       display: flex;
-      /* Para organizar os itens da legenda */
       flex-direction: column;
-      /* Itens um abaixo do outro */
       gap: 8px;
-      /* Espaçamento entre os itens */
     }
 
     .chart-legend-item {
@@ -288,20 +239,39 @@
 
     .chart-legend-color-box {
       width: 18px;
-      /* Tamanho do quadrado de cor */
       height: 18px;
-      /* Tamanho do quadrado de cor */
       margin-right: 8px;
-      /* Espaçamento entre o quadrado e o texto */
       border: 1px solid rgba(0, 0, 0, 0.2);
-      /* Borda leve para o quadrado */
       border-radius: 3px;
-      /* Leve arredondamento nos quadrados de cor */
     }
   </style>
 </head>
 
 <body>
+
+ <!-- Login -->
+<div id="loginContainer" class="flex flex-col items-center justify-center h-screen bg-gray-100">
+  <div class="bg-white shadow-md rounded p-6 w-full max-w-sm">
+    <h2 class="text-2xl mb-4 text-center">Login</h2>
+    <input id="emailInput" type="email" placeholder="Seu e-mail" class="w-full p-2 border border-gray-300 rounded mb-4">
+    <input id="senhaInput" type="password" placeholder="Senha" class="w-full p-2 border border-gray-300 rounded mb-4">
+    <button onclick="fazerLogin()" class="w-full bg-blue-500 text-white py-2 rounded mb-2">Entrar</button>
+  </div>
+</div>
+
+<!-- Verificação de código -->
+<div id="codigoContainer" class="hidden flex flex-col items-center justify-center h-screen bg-gray-100">
+  <div class="bg-white shadow-md rounded p-6 w-full max-w-sm">
+    <h2 class="text-2xl mb-4 text-center">Verificação</h2>
+    <input id="codigoInput" type="text" placeholder="Digite o código recebido"
+      class="w-full p-2 border border-gray-300 rounded mb-4">
+    <button onclick="validarCodigo()" class="w-full bg-blue-500 text-white py-2 rounded mb-2">Verificar</button>
+  </div>
+</div>
+
+
+
+
   <div class="full-screen-container">
 
     <div class="cabecalho">
@@ -320,15 +290,12 @@
       <input type="date" id="data">
 
       <button onclick="enviarSelecao()">Confirmar</button>
+
     </div>
 
     <div id="chartGrid" class="chart-grid hidden">
       <!-- Linha 1 - KPIs -->
-      <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">Umidade com limite ultrapassado</h2>
-          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
-        </div>
+      <!-- <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">KPI 2</h2>
           <p class="text-2xl font-bold text-black">456</p>
@@ -341,21 +308,15 @@
           <h2 class="text-sm text-black">KPI 4</h2>
           <p class="text-2xl font-bold text-black">101</p>
         </div>
-      </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+        </div>
+      </div> -->
 
       <!-- Linha 2 - KPIs -->
       <div class="grid grid-cols-4 gap-3" style="margin-bottom: 4px;">
         <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 5</h2>
-          <p class="text-2xl font-bold text-black">202</p>
-        </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
-          <h2 class="text-sm text-black">KPI 6</h2>
-          <p class="text-2xl font-bold text-black">303</p>
-        </div>
-        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
           <h2 class="text-sm text-black">Palavras Mais Frequentes</h2>
-          <div id="kpiTopPalavras" style="font-size: 1.2em; font-weight: bold;">
+          <div id="kpiTopPalavras">
             <div id="topPalavras"
               style="text-align: left; margin-top: 8px; margin-left: auto; margin-right: auto; max-width: fit-content;">
             </div>
@@ -368,6 +329,16 @@
             <span id="variacaoQtdPessoas"></span>
           </div>
         </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Temperatura Média</h2>
+          <h4 class="text-sm text-black" style="font-size: 0.8em;">Interna / Externa</h4>
+          <p style="font-size: 1.2em;margin-top: 3px;" id="kpiTemperaturasMedias" class="text-2xl font-bold text-black">
+            ...</p>
+        </div>
+        <div class="bg-gray-200 p-4 h-32 rounded-xl shadow-md text-center flex flex-col justify-center">
+          <h2 class="text-sm text-black">Umidade acima/abaixo do limite</h2>
+          <p id="kpiUmidadeUltrapassada" class="text-2xl font-bold text-black">...</p>
+        </div>
       </div>
 
       <!-- MATEUS -->
@@ -375,27 +346,32 @@
         <canvas id="comparativoBarChartBiometria"></canvas>
         <div id="customBiometriaLegend" class="chart-legend"></div>
       </div>
+
       <!-- SOFHIA -->
       <div class="chart-container">
         <canvas id="lineChart"></canvas>
       </div>
+
       <!-- AMANDA -->
       <div class="chart-container">
         <canvas id="occupancyTempChart"></canvas>
       </div>
+
       <!-- EDUARDO -->
       <div class="grafico-container p-4 border rounded bg-white shadow-md">
         <div class="flex items-end" id="botaoVoltarBarras" style="display: none;">
-          <button onclick="voltarGraficoBarrasPacientes()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+          <button onclick="voltarGraficoBarrasPacientes()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded" style="padding-left: 10px; padding-right: 10px;" >
             Voltar
           </button>
         </div>
         <canvas id="graficoVisaoComputacionalSemanal"></canvas>
       </div>
+
       <!-- Gabriel -->
       <div class="chart-container">
         <canvas id="lineChartTemperaturaPaciente"></canvas>
       </div>
+
       <!-- OTÁVIO -->
       <!-- Container único para controles e gráfico -->
       <div class="grafico-container p-4 border rounded bg-white shadow-md">
@@ -458,7 +434,7 @@
             <!-- Resultado (Ocorrências) -->
             <div class="mt-4 w-fit px-5 py-2 border-2 border-blue-500 bg-gray-50 rounded-lg shadow-sm">
               <div id="resultadoContagem" class="text-base font-size: 1.2em text-gray-800">
-                Ocorrências: Selecione um critério 
+                Ocorrências: Selecione um critério
               </div>
             </div>
           </div>
@@ -481,32 +457,31 @@
             <canvas id="scatterChart"></canvas>
           </div>
         </div>
+      </div>
 
-        <div class="chart-container">
-          <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
-          <div class="word-cloud-legend mb-4 text-sm text-gray-600">
-            <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
-            <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
-          </div>
-          <div id="wordCloudContainer"
-            style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
-            <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
-          </div>
-          <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
-            UPA/data.</p>
+      <div class="chart-container">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Nuvem de Palavras (Sentimentos)</h3>
+        <div class="word-cloud-legend mb-4 text-sm text-gray-600">
+          <span style="color: #dc3545;">&#9632; Sentimento Negativo</span>
+          <span class="ml-4" style="color: #28a745;">&#9632; Sentimento Positivo</span>
         </div>
+        <div id="wordCloudContainer"
+          style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;">
+          <div id="wordCloudChartContainer" style="width: 100%; height: 100%;"></div>
+        </div>
+        <p id="noWordCloudDataMessage" class="hidden text-gray-500 mt-2">Nenhum dado para a nuvem de palavras nesta
+          UPA/data.</p>
       </div>
     </div>
     <script>
       let scatterChartInstance = null;
     let lineChartInstance = null;
-    let allCharts = {}; // Objeto para armazenar todas as instâncias de gráficos
-    let highchartsWordCloudInstance = null; // Variável para armazenar a instância do Highcharts WordCloud
+    let allCharts = {}; 
+    let highchartsWordCloudInstance = null; 
 
 
     document.addEventListener('DOMContentLoaded', function() {
         carregarUpas();
-        // O formulário e os gráficos já começam ocultos pelo CSS
     });
 
     /**
@@ -554,7 +529,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
     }
 
     // Definir as faixas de horário fixas
-    const faixasHorario = ['0-6h', '6-9h', '9-12h', '12-15h', '15-18h', '18-21h', '21-24h'];
+    const faixasHorario = ['0h-6h', '6h-9h', '9h-12h', '12h-15h', '15h-18h', '18h-21h', '21h-24h'];
 
     // Definir as faixas etárias fixas e na ordem desejada
     const fixedFaixasEtarias = ['0-12', '13-17', '18-39', '40-59', '60+'];
@@ -582,21 +557,25 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
         const currentFaixaEtaria = item.faixaEtaria;
         const currentFaixaHora = item.faixaHora;
 
-        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(currentFaixaHora)) {
+        // Normalize faixas de hora para corresponder aos rótulos fixos
+        const normalizedFaixaHora = currentFaixaHora.replace(/–/g, '-');
+
+
+        if (fixedFaixasEtarias.includes(currentFaixaEtaria) && faixasHorario.includes(normalizedFaixaHora)) {
             if (!counts[currentFaixaEtaria]) {
                 counts[currentFaixaEtaria] = {};
             }
-            if (typeof counts[currentFaixaEtaria][currentFaixaHora] === 'undefined') {
-                counts[currentFaixaEtaria][currentFaixaHora] = 0;
+            if (typeof counts[currentFaixaEtaria][normalizedFaixaHora] === 'undefined') {
+                counts[currentFaixaEtaria][normalizedFaixaHora] = 0;
             }
-            counts[currentFaixaEtaria][currentFaixaHora]++;
+            counts[currentFaixaEtaria][normalizedFaixaHora]++;
         } else {
             console.warn(`Data point with unrecognized faixaEtaria: "${currentFaixaEtaria}" or faixaHora: "${currentFaixaHora}" - skipping.`);
         }
     });
 
     // Preparar os datasets para o Chart.js
-      const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
+    const datasets = fixedFaixasEtarias.map((faixaEtaria) => {
         const data = faixasHorario.map(hora => counts[faixaEtaria][hora]);
         const backgroundColor = faixaEtariaColors[faixaEtaria] || 'rgba(128, 128, 128, 0.8)';
         const borderColor = backgroundColor.replace('0.8', '1');
@@ -628,7 +607,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     }
                 },
                 legend: {
-                    display: false,
+                    display: false, // Desabilitar a legenda padrão do Chart.js
                 },
                 tooltip: {
                     callbacks: {
@@ -647,7 +626,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                 x: {
                     title: {
                         display: true,
-                        text: 'Horário do Dia',
+                        text: 'Hora do Dia',
                         font: {
                             size: 14
                         }
@@ -660,7 +639,7 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Número de Pacientes',
+                        text: 'Número de Pacientes (qtd)',
                         font: {
                             size: 14
                         }
@@ -669,17 +648,24 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
                         precision: 0 // Ensure integer ticks on Y-axis
                     },
                     grid: {
-                        display: true, // Show horizontal grid lines (default is usually true, but explicit for clarity)
+                        display: true, // Show horizontal grid lines
                         color: 'rgba(0, 0, 0, 0.1)' // Light gray grid lines
                     }
                 }
             }
         }
     });
-// --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
+
+    // --- CÓDIGO NOVO PARA CRIAR A LEGENDA CUSTOMIZADA ---
     const customLegendContainer = document.getElementById('customBiometriaLegend');
     if (customLegendContainer) {
         customLegendContainer.innerHTML = ''; // Limpa qualquer conteúdo anterior
+
+        // Adicionar o título da legenda
+        const legendTitle = document.createElement('div');
+        legendTitle.className = 'legend-title';
+        legendTitle.textContent = 'FAIXAS ETÁRIAS (anos)';
+        customLegendContainer.appendChild(legendTitle);
 
         fixedFaixasEtarias.forEach(faixaEtaria => {
             const itemDiv = document.createElement('div');
@@ -707,19 +693,12 @@ function renderComparativoBarChartBiometria(chartData, upaNome, dataFormatada) {
     * @param {string} dataFormatada A data formatada para o título.
     */
 function renderLineChart(chartData, upaNome, dataFormatada) {
-    // Se você estiver recriando o gráfico várias vezes, 
-    // é uma boa prática destruir a instância anterior para evitar problemas de memória.
-    // Descomente o bloco abaixo se necessário.
-    // if (allCharts.lineChart) {
-    //     allCharts.lineChart.destroy();
-    // }
-
     const ctx = document.getElementById('lineChart').getContext('2d');
 
     const datasets = [
         {
             label: 'Umidade',
-            data: chartData.umidade, // Array de {x: hora, y: umidade}
+            data: chartData.umidade,
             borderColor: '#36A2EB', // Azul
             backgroundColor: '#36A2EB',
             borderWidth: 2,
@@ -727,11 +706,11 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
             pointHoverRadius: 8,
             fill: false,
             tension: 0.1,
-            yAxisID: 'yUmidade' // Associa ao eixo Y da umidade
+            yAxisID: 'yUmidade' 
         },
         {
             label: 'Temp. mínima',
-            data: [{ x: 0, y: chartData.tempMinima }, { x: 23, y: chartData.tempMinima }], // Linha horizontal
+            data: [{ x: 0, y: chartData.tempMinima }, { x: 23, y: chartData.tempMinima }], 
             borderColor: 'green',
             backgroundColor: 'green',
             borderWidth: 2,
@@ -739,15 +718,15 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
             pointRadius: 0, // Sem pontos
             fill: false,
             showLine: true,
-            yAxisID: 'yTemperatura' // Associa ao eixo Y da temperatura
+            yAxisID: 'yTemperatura'
         },
         {
             label: 'Temp. média',
-            data: [{ x: 0, y: chartData.tempMedia }, { x: 23, y: chartData.tempMedia }], // Linha horizontal
+            data: [{ x: 0, y: chartData.tempMedia }, { x: 23, y: chartData.tempMedia }],
             borderColor: 'yellow',
             backgroundColor: 'yellow',
             borderWidth: 2,
-            borderDash: [5, 5], // Linha tracejada
+            borderDash: [5, 5], 
             pointRadius: 0,
             fill: false,
             showLine: true,
@@ -755,11 +734,11 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
         },
         {
             label: 'Temp. máxima',
-            data: [{ x: 0, y: chartData.tempMaxima }, { x: 23, y: chartData.tempMaxima }], // Linha horizontal
+            data: [{ x: 0, y: chartData.tempMaxima }, { x: 23, y: chartData.tempMaxima }], 
             borderColor: 'red',
             backgroundColor: 'red',
             borderWidth: 2,
-            borderDash: [5, 5], // Linha tracejada
+            borderDash: [5, 5], 
             pointRadius: 0,
             fill: false,
             showLine: true,
@@ -767,7 +746,6 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
         }
     ];
 
-    // Supondo que 'allCharts' seja um objeto global para armazenar as instâncias dos gráficos
     window.allCharts = window.allCharts || {};
     if (window.allCharts.lineChart) {
         window.allCharts.lineChart.destroy();
@@ -809,15 +787,12 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
                                 return `${label}: ${context.parsed.y}°C`;
                             }
                         },
-                        // =================== ALTERAÇÃO 2 (Tooltip) ===================
-                        // Adiciona o "h" no título do tooltip que mostra a hora.
                         title: function(context) {
                             if (context.length > 0 && context[0].dataset.label === 'Umidade') {
-                                return `Hora: ${context[0].parsed.x}h`; // Adicionado "h" aqui
+                                return `Hora: ${context[0].parsed.x}h`; 
                             }
                             return null;
                         }
-                        // =============================================================
                     }
                 }
             },
@@ -836,13 +811,9 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
                     max: 23,
                     ticks: {
                         stepSize: 1,
-                        // =================== ALTERAÇÃO 1 (Eixo X) ===================
-                        // Usa um callback para formatar cada rótulo do eixo X,
-                        // adicionando a letra "h" ao final do número da hora.
                         callback: function(value, index, ticks) {
                             return value + 'h';
                         }
-                        // ============================================================
                     },
                     grid: {
                         display: false
@@ -881,12 +852,7 @@ function renderLineChart(chartData, upaNome, dataFormatada) {
                             color: 'red'
                         }
                     },
-                    // =================== ALTERAÇÃO AQUI ===================
-                    // As linhas 'min' e 'max' foram removidas para permitir a escala automática.
-                    // O Chart.js vai definir o mínimo e máximo com base nos seus dados.
-                    // Adicionando 'grace' para dar uma pequena margem visual (opcional).
                     grace: '10%',
-                    // ======================================================
                     ticks: {
                         color: 'red'
                     },
@@ -952,7 +918,10 @@ function plotarGraficoMediaPessoasDiario(dados){
       plugins: {
         title: {
           display: true,
-          text: 'Média Pessoas por hora do dia'
+          text: `Média Pessoas por hora do dia`,
+          font: {
+                  size: 18
+                }
         },
         legend: {
           position: 'top'
@@ -962,7 +931,7 @@ function plotarGraficoMediaPessoasDiario(dados){
         y: {
           title: {
             display: true,
-            text: 'Média'
+            text: 'Média (qtd de pacientes)'
           },
           max: 120,
         },
@@ -1007,7 +976,10 @@ function plotarGraficoMediaPessoasSemanal(dados){
       plugins: {
         title: {
           display: true,
-          text: 'Média Paciente Por Dia'
+          text: 'Média Paciente Por Dia',
+          font: {
+                  size: 18
+                }
         },
         legend: {
           position: 'top'
@@ -1017,7 +989,7 @@ function plotarGraficoMediaPessoasSemanal(dados){
         y: {
           title: {
             display: true,
-            text: 'Média'
+            text: 'Média (qtd de pacientes)'
           },
           max: 80,
         },
@@ -1076,29 +1048,65 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
         type: 'bar', 
         data: {
             datasets: [
-                // SEGUNDO DATASET: Temperatura (linha) - Este será desenhado POR CIMA
-                {
-                    label: 'Temperatura (°C)',
-                    data: chartData.temperatura, // Array de {x: hora, y: temperatura}
-                    borderColor: 'rgba(255, 0, 0, 1)', // Cor vermelha para a linha
-                    backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
-                    borderWidth: 2,
-                    pointRadius: 4, // Tamanho dos pontos na linha
-                    pointHoverRadius: 6,
-                    type: 'line', // Este dataset será uma linha
-                    fill: false,
-                    tension: 0.1, // Suaviza a linha
-                    yAxisID: 'yTemperaturaOcupacao' // Associa ao eixo Y da temperatura
-                },
-                // PRIMEIRO DATASET: Ocupação (barras) - Será desenhado primeiro
-                {
-                    label: 'Ocupação (Nº Pessoas)',
-                    data: chartData.ocupacao, // Array de {x: hora, y: ocupacao}
-                    backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para as barras
-                    borderColor: 'rgba(173, 216, 230, 1)', // Borda azul
-                    borderWidth: 1,
-                    yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
-                }
+      // SEGUNDO DATASET: Ocupação (barras) - Será desenhado primeiro
+      {
+          label: 'Ocupação (Nº Pessoas)',
+          data: chartData.ocupacao, // Array de {x: hora, y: ocupacao}
+          backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro para as barras
+          borderColor: 'rgba(173, 216, 230, 1)', // Borda azul
+          borderWidth: 1,
+          yAxisID: 'yOcupacao' // Associa ao eixo Y da ocupação
+      },
+      // NOVO DATASET: Linha de Capacidade Máxima de Ocupação
+      {
+          label: 'Capacidade Máxima (45)',
+          data: [{ x: 0, y: 45 }, { x: 23, y: 45 }], // Linha horizontal em 45
+          borderColor: 'rgba(255, 99, 132, 1)', // Vermelho
+          backgroundColor: 'rgba(255, 99, 132, 0)',
+          borderWidth: 2,
+          borderDash: [5, 5], // Linha pontilhada
+          pointRadius: 0, // Sem pontos
+          type: 'line',
+          fill: false,
+          yAxisID: 'yOcupacao'
+      },
+      // TERCEIRO DATASET: Temperatura (linha) - Este será desenhado POR CIMA
+      {
+          label: 'Temperatura (°C)',
+          data: chartData.temperatura, // Array de {x: hora, y: temperatura}
+          borderColor: 'rgba(255, 0, 0, 1)', // Cor vermelha para a linha
+          backgroundColor: 'rgba(255, 0, 0, 0)', // Transparente para a área sob a linha
+          borderWidth: 2,
+          pointRadius: 4, // Tamanho dos pontos na linha
+          pointHoverRadius: 6,
+          type: 'line', // Este dataset será uma linha
+          fill: false,
+          tension: 0.1, // Suaviza a linha
+          yAxisID: 'yTemperaturaOcupacao' // Associa ao eixo Y da temperatura
+      },
+      // NOVOS DATASETS: Zonas de Temperatura Ideal
+      {
+          label: 'Temp. Ideal (20-24°C)',
+          data: [{ x: 0, y: 20 }, { x: 23, y: 20 }],
+          borderColor: 'rgba(75, 192, 192, 0.5)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Preenchimento claro
+          borderWidth: 0, // Sem borda para a área
+          type: 'line',
+          fill: '+1', // Preenche para cima (até o próximo dataset)
+          pointRadius: 0,
+          yAxisID: 'yTemperaturaOcupacao'
+      },
+      {
+          label: '', // Sem label para não aparecer na legenda
+          data: [{ x: 0, y: 24 }, { x: 23, y: 24 }],
+          borderColor: 'rgba(255, 255, 255, 0.5)', 
+          backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+          borderWidth: 0,
+          type: 'line',
+          fill: '-1', // Preenche para baixo (até o dataset anterior)
+          pointRadius: 0,
+          yAxisID: 'yTemperaturaOcupacao'
+      }
             ]
         },
         options: {
@@ -1107,9 +1115,9 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
             plugins: {
                 title: {
                     display: true,
-                    text: `Ocupação da Sala vs. Temperatura`,
+                    text: `Ocupação da Sala vs. Temperatura - (${upaNome} - ${dataFormatada})`,
                     font: {
-                        size: 15
+                        size: 18
                     }
                 },
                 legend: {
@@ -1182,7 +1190,7 @@ function renderOccupancyTempChart(chartData, upaNome, dataFormatada) {
                     },
                     beginAtZero: true, // Iniciar o eixo Y em 0
                     min: 0, // Ajustado para corresponder à imagem e evitar ultrapassagem em baixo
-                    max: 49, // Ajustado para ser um pouco acima do máximo (47-49) na imagem
+                    max: 55, // Ajustado para ser um pouco acima do máximo (47-49) na imagem
                     ticks: {
                         color: 'blue',
                         precision: 0, // Apenas números inteiros para pessoas
@@ -1260,7 +1268,10 @@ function plotarGraficoTemperaturasPorMes(dados) {
       plugins: {
         title: {
           display: true,
-          text: 'Temperatura Média por Mês (Paciente vs Ambiente)'
+          text: `Temperatura Média por Mês (Paciente vs Ambiente)`,
+          font: {
+                  size: 18
+                }
         },
         legend: {
           position: 'top'
@@ -1554,7 +1565,6 @@ function enviarSelecao() {
     document.getElementById('dashboardTitle').textContent = `Dashboard da ${upaNome} ${dataFormatadaParaTitulo}`;
 
 
-
     // 1.1 Chamar a função para o Gráfico de biometria
     google.script.run
     .withSuccessHandler(function(biometricChartData) {
@@ -1583,31 +1593,57 @@ function enviarSelecao() {
     })
     .getBiometricChartDataForUpaAndDate(upaNome, dataSelecionadaInput);
 
+  const span = document.getElementById('kpiUmidadeUltrapassada'); 
+  span.textContent = 'Carregando...';
+  span.style.color = 'gray';
+    //Chamar a função KPI qtde de vezes que a média da umidade ultrapassou o limite no dia
+  google.script.run
+  .withSuccessHandler(function(quantidade) {
+    const valor = parseFloat(quantidade);
+  const upaNome = document.getElementById('upa').value;
+    if (isNaN(valor)) {
+      span.textContent = "Sem dados";
+      span.style.color = "gray";
+    } else {
+        if(valor == 1) {
+          span.textContent = `${valor} registro`; 
+        } else {
+          span.textContent = `${valor} registros`; 
+        }
+      
+      if (valor >= 15) {
+        span.style.color = "red";
+      } else if (valor >= 3 && valor < 15) {
+        span.style.color = "orange";
+      } else if (valor >= 1 && valor < 3) {
+        span.style.color = "green";
+      } else {
+        span.style.color = "gray";
+      }
+    }
+  })
+  .withFailureHandler(function(error) {
+    console.error("Erro ao calcular KPI:", error);
+    const span = document.getElementById('kpiUmidadeUltrapassada');
+    span.textContent = "Erro";
+    span.style.color = "gray";
+  })
+  .getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaNome); 
+
     // 1.2 Chamar a função para o Gráfico de Umidade
     google.script.run
         .withSuccessHandler(function(chartData) {
-            console.log("Dados recebidos para o Gráfico de Umidade:", chartData);
-            
-
-            // Validação para verificar o array 'umidade' dentro do objeto
+            // console.log("Dados recebidos para o Gráfico de Umidade:", chartData);
             if (chartData && chartData.umidade.length > 0) {
                 renderLineChart(chartData, upaNome, dataFormatadaParaTitulo);
             } else {
                 console.warn("Nenhum dado válido de umidade encontrado para o Gráfico de Umidade com a UPA e data selecionadas.");
-                // if (allCharts.lineChart) {
-                //     allCharts.lineChart.destroy();
-                //     allCharts.lineChart = null;
-                // }
                 const ctx = document.getElementById('lineChart').getContext('2d');
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                // Opcional: mostrar uma mensagem de "nenhum dado" ao usuário
-                // alert("Nenhum dado de umidade disponível para a UPA e data selecionadas.");
             }
         })
         .withFailureHandler(function(error) {
             console.error("Erro ao carregar dados para o Gráfico de Umidade:", error);
-            // alert("Erro ao carregar dados de Umidade e Temperatura: " + error.message); // Substituído alert()
-
             if (allCharts.lineChart) {
                 allCharts.lineChart.destroy();
                 allCharts.lineChart = null;
@@ -1648,6 +1684,32 @@ function enviarSelecao() {
                 }
             })
             .getOccupancyChartDataForUpaAndDate(upaNome, dataSelecionadaInput);
+
+    // Chamar a função KPI para Temperatura Média Interna e Externa
+    const spanTemperaturasMedias = document.getElementById('kpiTemperaturasMedias');
+
+    spanTemperaturasMedias.textContent = 'Carregando...';
+    spanTemperaturasMedias.style.color = 'gray';
+
+    google.script.run
+    .withSuccessHandler(function(temperaturasMedias) {
+        if (temperaturasMedias) {
+            let internaText = temperaturasMedias.mediaInterna !== null ? `${temperaturasMedias.mediaInterna}°C` : "N/D";
+            let externaText = temperaturasMedias.mediaExterna !== null ? `${temperaturasMedias.mediaExterna}°C` : "N/D";
+
+            spanTemperaturasMedias.textContent = `${internaText} / ${externaText}`;
+            spanTemperaturasMedias.style.color = "black"; // Defina a cor desejada para o texto combinado
+        } else {
+            spanTemperaturasMedias.textContent = "Erro";
+            spanTemperaturasMedias.style.color = "gray";
+        }
+    })
+    .withFailureHandler(function(error) {
+        console.error("Erro ao calcular KPI de Temperatura Média:", error);
+        spanTemperaturasMedias.textContent = "Erro";
+        spanTemperaturasMedias.style.color = "gray";
+    })
+    .getKpiTemperaturaMedia(dataSelecionadaInput, upaNome);
 
     // 1.4 Chamar a função para o Gráfico de ?
     // 1.5 Chamar a função para o Gráfico de temperatura do paciente
@@ -1723,44 +1785,6 @@ function enviarSelecao() {
     })
     .getGraficoVisaoComputacionalSemanal(idUpa); // Esta é a função no seu Apps Script
 
-//Chamar a função KPI qtde de vezes que a média da umidade ultrapassou o limite no dia
-  google.script.run
-  .withSuccessHandler(function(quantidade) {
-    const span = document.getElementById('kpiUmidadeUltrapassada'); // Mantenha este ID se for o elemento onde a KPI será exibida
-    const valor = parseFloat(quantidade);
-  const upaNome = document.getElementById('upa').value;
-    if (isNaN(valor)) {
-      span.textContent = "Sem dados";
-      span.style.color = "gray";
-    } else {
-        if(valor == 1) {
-          span.textContent = `${valor} registro`; // Mostra a quantidade de registros
-        } else {
-          span.textContent = `${valor} registros`; // Mostra a quantidade de registros
-        }
-      
-
-      if (valor >= 20) {
-        span.style.color = "red";
-      } else if (valor >= 12 && valor < 20) {
-        span.style.color = "orange";
-      } else if (valor >= 3 && valor < 12) {
-        span.style.color = "yellow";
-      } else if (valor >= 1 && valor < 3) {
-        span.style.color = "green";
-      } else {
-        span.style.color = "gray"; // Para casos onde o valor é 0 ou negativo, embora o KPI de contagem não deva ser negativo.
-      }
-    }
-  })
-  .withFailureHandler(function(error) {
-    console.error("Erro ao calcular KPI:", error);
-    const span = document.getElementById('kpiUmidadeUltrapassada');
-    span.textContent = "Erro";
-    span.style.color = "gray";
-  })
-  .getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaNome); // Chama a função correta da sua KPI
-
     //Chamar a função KPI quantidade média de pessoas
   google.script.run
     .withSuccessHandler(function(variacao) {
@@ -1801,6 +1825,50 @@ palavras.forEach(({ palavra, sentimento }, index) => {
     console.error("Erro ao carregar palavras:", error);
   })
   .getTop3PalavrasSentimento();
+
+
+  const carregarDashsPopUp = document.createElement('div');
+  carregarDashsPopUp.id = 'graphLoadingPopup';
+  carregarDashsPopUp.classList.add('graphLoadingPopup');
+
+  // Apply inline styles (or better, use CSS classes)
+  carregarDashsPopUp.style.cssText = `
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+  `;
+
+  document.body.appendChild(carregarDashsPopUp);
+
+  // --- Animation Logic ---
+  let dotCount = 0;
+  const baseText = 'Carregando Gráficos'; // Base text without dots
+
+  // Set up an interval to update the text
+  const animationInterval = setInterval(() => {
+      dotCount = (dotCount + 1) % 4; // Cycles through 0, 1, 2, 3
+      let dots = '';
+      for (let i = 0; i < dotCount; i++) {
+          dots += '.';
+      }
+      carregarDashsPopUp.textContent = baseText + dots;
+  }, 300); // Update every 300 milliseconds
+
+  // --- Pop-up Removal Logic ---
+  setTimeout(() => {
+      clearInterval(animationInterval); // Stop the animation when the pop-up is removed
+      carregarDashsPopUp.remove();
+  }, 7000);
 
 }
 
@@ -2044,6 +2112,92 @@ palavras.forEach(({ palavra, sentimento }, index) => {
           .getScatterChartDataForUpaAndDate(upaNome, dataSelecionadaInput, horarioInicio, horarioFim);
       }
     </script>
+
+    <script>
+  // Configuração do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCklDNAQn2qR5EXJgGdJS60abrpLUTsnqA",
+    authDomain: "autentication-upa1.firebaseapp.com",
+    projectId: "autentication-upa1",
+    appId: "1:247149710188:web:1505fdfdcf155bc0f5c149"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Oculta o dashboard até login
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.full-screen-container').classList.add('hidden');
+  });
+
+  function fazerLogin() {
+    const email = document.getElementById('emailInput').value;
+    const senha = document.getElementById('senhaInput').value;
+
+    auth.signInWithEmailAndPassword(email, senha)
+      .then((userCredential) => {
+        document.getElementById('codigoContainer').classList.remove('hidden');
+        enviarCodigo();
+        document.getElementById('loginContainer').classList.add('hidden');
+      })
+      .catch((error) => {
+        alert("Erro ao fazer login: " + error.message);
+      });
+  }
+
+
+  // Inicializa EmailJS
+  (function(){
+     emailjs.init("MayHbJmWGE-Lx9ZeD"); // Public Key
+  })();
+
+  var codigoGerado = "";
+
+  function gerarCodigo() {
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let codigo = '';
+  for (let i = 0; i < 7; i++) {
+    const randomIndex = Math.floor(Math.random() * caracteres.length);
+    codigo += caracteres[randomIndex];
+  }
+  return codigo;
+}
+
+  function enviarCodigo() {
+    alert("Gerando código")
+    const codigo = gerarCodigo();
+    codigoGerado = codigo;
+
+    emailjs.send("service_k6jv23s", "template_bpu8f4c", {
+      to_name: document.getElementById('emailInput').value,
+      code: codigo,
+      to_email: document.getElementById('emailInput').value
+    })
+    .then(() => {
+      alert("Código enviado com sucesso para o e-mail!");
+    }, (err) => {
+      alert("Erro ao enviar email: " + JSON.stringify(err));
+    });
+  }
+
+  function validarCodigo(){
+    const codigoInput = document.getElementById('codigoInput').value;
+
+    if(codigoGerado != codigoInput){
+      document.getElementById('codigoInput').value = " ";
+      alert("Código inválido!")
+      document.getElementById('codigoContainer').classList.add('hidden');
+      document.getElementById('loginContainer').classList.remove('hidden');
+    } else if (codigoGerado == codigoInput){
+      document.getElementById('codigoContainer').classList.add('hidden');
+      document.querySelector('.full-screen-container').classList.remove('hidden'); // Exibe dashboard
+    }
+
+  }
+
+</script>
+
+
 
 </body>
 

@@ -6,22 +6,12 @@
  * @param {string} upaSelecionada O nome da UPA para a qual a contagem deve ser feita.
  * @returns {number | null} O número de registros fora do padrão no dia e UPA especificados, ou null se houver um erro.
  */
-function getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaSelecionada) { // Adicionado upaSelecionada
-  if (!dataSelecionadaInput) {
-    console.log("Erro: Nenhuma data foi fornecida como entrada.");
-    return null;
-  }
-  if (!upaSelecionada) { // Verificação para UPA também
-    console.log("Erro: Nenhuma UPA foi fornecida como entrada.");
-    return null;
-  }
+function getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaSelecionada) { 
+  if (!dataSelecionadaInput || !upaSelecionada) return null;
 
   const planilha = SpreadsheetApp.getActiveSpreadsheet();
   const aba = planilha.getSheetByName('UmidadeAmbiente');
-  if (!aba) {
-    console.log("Erro: A aba 'UmidadeAmbiente' não foi encontrada.");
-    return null;
-  }
+  if (!aba) return null;
 
   const dados = aba.getDataRange().getValues();
   const cabecalho = dados[0];
@@ -29,25 +19,19 @@ function getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaSelecionada) { // Ad
 
   const nomeColunaData = "data";
   const nomeColunaUmidade = "media_umid_hora";
-  const nomeColunaUpa = "nome_da_upa"; // <-- 4. CONFIRME O NOME DA SUA COLUNA DE UPA AQUI!
-
+  const nomeColunaUpa = "nome_da_upa"; 
   const indiceData = cabecalho.indexOf(nomeColunaData);
   const indiceUmidade = cabecalho.indexOf(nomeColunaUmidade);
-  const indiceUpa = cabecalho.indexOf(nomeColunaUpa); // Obtenha o índice da coluna UPA
+  const indiceUpa = cabecalho.indexOf(nomeColunaUpa); 
 
-  if (indiceData === -1 || indiceUmidade === -1 || indiceUpa === -1) { // Adicionado verificação para UPA
-    console.log(`Erro: Verifique se os nomes das colunas "${nomeColunaData}", "${nomeColunaUmidade}" e "${nomeColunaUpa}" estão corretos no cabeçalho.`);
-    return null;
-  }
+  if (indiceData === -1 || indiceUmidade === -1 || indiceUpa === -1) return null;
 
   let contagemDoDia = 0;
 
   linhas.forEach((linha) => {
     const valorDataBruto = linha[indiceData];
-    const valorUpa = linha[indiceUpa]; // Pega o valor da UPA da linha
-    
-    if (!valorDataBruto || !valorUpa) return; // Pula a linha se data ou UPA estiverem vazios
-
+    const valorUpa = linha[indiceUpa]; 
+    if (!valorDataBruto || !valorUpa) return; 
     let dataObjeto;
 
     if (typeof valorDataBruto === 'object' && valorDataBruto instanceof Date) {
@@ -58,11 +42,11 @@ function getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaSelecionada) { // Ad
       const partesData = valorDataBruto.split('/');
       if (partesData.length === 3) {
         const dia = parseInt(partesData[0], 10);
-        const mes = parseInt(partesData[1], 10) - 1; // Mês é zero-based (0-11)
+        const mes = parseInt(partesData[1], 10) - 1; 
         const ano = parseInt(partesData[2], 10);
         
         dataObjeto = new Date(ano, mes, dia);
-        dataObjeto.setHours(0, 0, 0, 0); // Zera o tempo
+        dataObjeto.setHours(0, 0, 0, 0); 
       } else {
         dataObjeto = new Date(valorDataBruto);
       }
@@ -84,26 +68,24 @@ function getKpiUmidadeForaDoPadrao(dataSelecionadaInput, upaSelecionada) { // Ad
       return;
     }
 
-    // --- NOVA CONDIÇÃO DE FILTRO: COMPARA A UPA DA LINHA COM A UPA SELECIONADA ---
-    // A comparação é case-insensitive para maior robustez
     if (dataDaLinhaFormatada === dataSelecionadaInput && 
         String(valorUpa).trim().toLowerCase() === String(upaSelecionada).trim().toLowerCase()) {
       
       const umidade = parseFloat(String(linha[indiceUmidade]).replace(",", "."));
       const umidadeBruta = linha[indiceUmidade];
-      console.log("Umidade Bruta:", umidadeBruta, "Umidade Convertida:", umidade); // Mantenha ou desative para depuração
+      // console.log("Umidade Bruta:", umidadeBruta, "Umidade Convertida:", umidade); 
 
       if (isNaN(umidade)) {
         return;
       }
 
       if (umidade >= 70 || umidade <= 40) {
-        console.log("Registro FORA DO PADRÃO detectado. Umidade:", umidade, "UPA:", valorUpa); // Mantenha ou desative para depuração
+        // console.log("Registro FORA DO PADRÃO detectado. Umidade:", umidade, "UPA:", valorUpa); 
         contagemDoDia++;
       }
     }
   });
 
-  console.log(`KPI para o dia ${dataSelecionadaInput}, UPA ${upaSelecionada}: ${contagemDoDia} registros com umidade fora do padrão (<= 40% ou >= 70%).`);
+  // console.log(`KPI para o dia ${dataSelecionadaInput}, UPA ${upaSelecionada}: ${contagemDoDia} registros com umidade fora do padrão (<= 40% ou >= 70%).`);
   return contagemDoDia;
 }

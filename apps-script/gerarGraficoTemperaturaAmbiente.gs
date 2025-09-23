@@ -6,6 +6,14 @@ const COL_OCUP_TEMPERATURA = 4;                         // Coluna D: temperatura
 const COL_OCUP_OCUPACAO = 5;                            // Coluna E: ocupacao
 const OCUPACAO_START_ROW = 2; // A linha onde seus dados começam (pulando o cabeçalho)
 
+/**
+ * Retorna os dados formatados para o gráfico de Ocupação da Sala vs. Temperatura Ambiente.
+ * Os dados são filtrados pelo nome da UPA e pela data selecionada, e agregados por hora.
+ *
+ * @param {string} upaNome O nome da UPA a ser filtrada.
+ * @param {string} dateString A data no formato "yyyy-MM-dd".
+ * @returns {Object} Um objeto com arrays de dados para ocupação e temperatura.
+ */
 function getOccupancyChartDataForUpaAndDate(upaNome, dateString) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(OCUPACAO_DATA_SHEET_NAME);
