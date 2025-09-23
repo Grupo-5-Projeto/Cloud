@@ -17,6 +17,7 @@ aws cloudformation create-stack --stack-name arquitetura-upa-atualizada --templa
 
 - Vá no console em **Cloudformation** > **Pilhas** e verifique se a stack está com o status **CREATE_COMPLETE**
 
+- Dentro do **scheduler.py**, altera o valor da variável `S3_BUCKET`, colocando o nome do seu bucket raw
 - Faça o zip dos dois arquivos python: **index.py** e **scheduler.py**
     - os zips devem estar com o nome **index.zip** e **scheduler.zip** 
 

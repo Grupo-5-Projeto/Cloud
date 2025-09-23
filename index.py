@@ -3,10 +3,11 @@ import boto3
 import time
 import os
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo 
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table("SensorData")
+table = dynamodb.Table("SensorIotRawData")
 
 def lambda_handler(event, context):
     print(event, context)
@@ -44,6 +45,7 @@ def lambda_handler(event, context):
         fk_paciente = data.get("fk_paciente")
 
         data = datetime.strptime(data_hora, "%Y-%m-%dT%H:%M:%S")
+        data = data.replace(tzinfo=ZoneInfo("America/Sao_Paulo"))
         timestamp = data.timestamp()
       
         item = {

@@ -263,12 +263,14 @@ Resources:
   SensorDataTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: SensorData
+      TableName: SensorIotRawData
       AttributeDefinitions:
         - AttributeName: fk_sensor
           AttributeType: N
         - AttributeName: data_hora
           AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
         - AttributeName: fk_upa
           AttributeType: N
       KeySchema:
@@ -283,6 +285,14 @@ Resources:
             - AttributeName: fk_upa
               KeyType: HASH
             - AttributeName: data_hora
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UpaIndex2
+          KeySchema:
+            - AttributeName: fk_upa
+              KeyType: HASH
+            - AttributeName: timestamp
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
