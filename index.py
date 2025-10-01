@@ -31,7 +31,8 @@ def lambda_handler(event, context):
         data_hora = data.get("data_hora")
         valor = data.get("valor")
         fk_upa = data.get("fk_upa")
-
+        biometria = data.get("biometria")
+   
         print(f"Parsed data - fk_sensor: {fk_sensor}, data_hora: {data_hora}, valor: {valor}, fk_upa: {fk_upa}")
 
         if fk_sensor is None or data_hora is None or valor is None or fk_upa is None:
@@ -60,6 +61,8 @@ def lambda_handler(event, context):
             item["fk_unid_medida"] = int(fk_unid_medida)
         if fk_paciente is not None:
             item["fk_paciente"] = int(fk_paciente)
+        if biometria is not None:
+            item["biometria"] = biometria
 
         print("Putting item into DynamoDB:", item)
         table.put_item(Item=item)
