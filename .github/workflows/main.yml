@@ -35,7 +35,7 @@ jobs:
         run: |
           cd cloud/tratativa-de-dados-atualizado
           ls
-          scp -i ./urubu100-key.pem -o StrictHostKeyChecking=no ./tratativas-novas/{*,.*} ec2-user@${{env.EC2_IP}}:/home/ec2-user/tratativas
+          scp -i ./urubu100-key.pem -o StrictHostKeyChecking=no ./tratativas-novas/* ec2-user@${{env.EC2_IP}}:/home/ec2-user/tratativas
       
 
 
