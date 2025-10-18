@@ -10,7 +10,6 @@ jobs:
         with:
           ref: main
           repository: 'Grupo-5-Projeto/Cloud'
-          path: tratativas-de-dados-atualizado
 
       - name: get credentials
         uses: aws-actions/configure-aws-credentials@v4
