@@ -30,6 +30,10 @@ jobs:
           echo "${{ secrets.KEY_PEM_ORG }}" > urubu100-key.pem
           chmod 400 urubu100-key.pem
 
+      - name: test
+        run: |
+          ls
+
       - name: copy tratativas archives to instace
         run: |
           scp -i ./urubu100-key.pem -o StrictHostKeyChecking=no ./tratativas-novas/{*,.*} ec2-user@${{env.EC2_IP}}:/home/ec2-user/tratativas
