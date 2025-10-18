@@ -34,6 +34,7 @@ jobs:
 
       - name: test
         run: |
+          cd tratativas-de-dados-atualizado 
           ls
 
       - name: copy tratativas archives to instace
